@@ -21,26 +21,31 @@
 **Deskripsi**: Jelajahi berbagai lapangan olahraga terbaik di seluruh wilayah Jakarta, Bogor, Depok, Tangerang, dan Bekasi dengan sistem pencarian yang sederhana dan cepat. Filter berdasarkan jenis olahraga, lokasi terdekat, atau fasilitas sesuai preferensi. Lebih dari sekadar mencari lapangan, ASKMO juga memudahkan User menemukan dan terhubung dengan coach yang sesuai dengan kemampuan, lokasi, dan jenis olahraga pilihan mereka. Dengan kombinasi fitur pencarian lapangan dan akses langsung ke pelatih profesional, ASKMO menjadi solusi lengkap untuk berolahraga lebih mudah, terarah, dan sesuai kebutuhan di Jabodetabek.
 
 ## Daftar modul yang diimplementasikan
-### 1. Wishlist Lapangan
+### 1. Wishlist
 - **Target Pengguna**: User
 - **Deskripsi**: Simpan lapangan favoritmu! Dengan fitur Wishlist, kamu bisa menandai semua lapangan yang ingin kamu coba atau yang sering kamu kunjungi. Tidak perlu lagi repot mencari ulang, semua lapangan favoritmu akan tersimpan rapi dalam satu daftar pribadi. Rencanakan permainanmu selanjutnya dengan lebih cepat dan praktis!
+- **Person In Charge (PIC)**: Nisrina Alya Nabilah (2406425924)
 
-### 2. Tambah Lapangan
+### 2. Lapangan
 - **Target Pengguna**: Admin
 - **Deskripsi**: Fitur ini didesain khusus untuk Admin guna mendaftarkan dan mengelola informasi lapangan baru di platform ASKMO. Masukkan detail lengkap seperti nama lapangan, lokasi akurat, jenis olahraga yang didukung (futsal, badminton, basket, dll.), jadwal operasional, harga sewa per sesi, dan unggah foto-foto terbaik untuk menarik lebih banyak pengunjung.
+- **Person In Charge (PIC)**: Matthew Wijaya (2406359203)
 
-### 3. Tambah Event
+### 3. Event
 - **Target Pengguna**: Admin
 - **Deskripsi**: Promosikan acara untuk meramaikan komunitas! Dari turnamen persahabatan, sesi latihan bersama, hingga coaching clinic, fitur ini memungkinkan Admin untuk membuat dan mempublikasikan berbagai event olahraga. Tentukan tanggal, waktu, lokasi, biaya pendaftaran (jika ada), dan deskripsi lengkap event untuk menjangkau audiens yang lebih luas dan meningkatkan partisipasi.
+- **Person In Charge (PIC)**: Lessyarta Kamali Sopamena Pirade (2406356643)
 
 ### 4. Review
 - **Target Pengguna**: User dan Admin
 - **Deskripsi untuk User**: Bagikan pengalamanmu dan bantu komunitas! Berikan rating dan ulasan jujur mengenai lapangan, event, atau coach yang telah kamu ikuti. Ulasanmu sangat berarti untuk membantu User lain dalam membuat keputusan yang lebih baik sebelum memesan atau berpartisipasi.
 - **Deskripsi untuk Admin**: Admin dapat menggunakan fitur ini untuk memantau sekaligus mengelola semua ulasan dari User. Setiap masukan yang masuk bisa dijadikan bahan evaluasi bagi pemilik lapangan untuk meningkatkan layanan dan menjaga kepercayaan pelanggan.
+- **Person In Charge (PIC)**: Syafiq Faqih (2406439715)
 
 ### 5. Coach
 - **Target Pengguna**: Admin
 - **Deskripsi**: Fitur ini memungkinkan Admin untuk menambahkan dan mengelola profil para pelatih (coach) yang terhubung dengan ASKMO. Tampilkan informasi penting seperti spesialisasi cabang olahraga, pengalaman, sertifikasi, dan tarif jasa mereka. Ini akan memberikan pilihan pelatih berkualitas bagi User yang ingin meningkatkan kemampuan bermainnya.
+- **Person In Charge (PIC)**: Ahmad Fauzan Al Ayubi (2406344284)
 
 
 ## Link sumber dataset
