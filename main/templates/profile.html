@@ -140,14 +140,12 @@
 </div>
 
 <script>
-    // Ambil elemen Ikon di tampilan profil utama
     const mainSportIcon = document.getElementById('main-sport-icon');
     const mainAvatarImg = document.getElementById('main-profile-avatar');
     
     let tempSelectedAvatarId = "{{ profile.avatar.id|default:'null' }}";
     let tempSelectedSportKey = "{{ profile.olahraga_favorit|default:'lainnya' }}";
 
-    // Mapping Ikon Gambar (PENTING: Pastikan key sesuai nama file)
     const sportIconMap = {
         'sepakbola': 'sepakbola.png',
         'basket': 'basketball.png',
@@ -171,8 +169,6 @@
             }
         }
     }
-
-    // Panggil fungsi penandaan saat halaman dimuat
     document.addEventListener('DOMContentLoaded', markInitialAvatar);
     
     // --- Logika Pilih Avatar ---
@@ -213,7 +209,6 @@
     async function saveProfileChanges(e) {
         e.preventDefault(); 
         
-        // Cek validasi
         if (!tempSelectedSportKey || tempSelectedAvatarId === 'null') {
             showToast('Silakan pilih Avatar dan Olahraga Favorit.', 'error');
             return;
@@ -238,19 +233,16 @@
             if (result.status === 'success') {
                 showToast(result.message, 'success');
 
-                // 1. Update Tampilan Avatar Utama (AJAX)
                 const selectedAvatarElement = document.querySelector(`[data-avatar-id="${tempSelectedAvatarId}"]`);
                 if(selectedAvatarElement) {
                     mainAvatarImg.src = selectedAvatarElement.src;
                 }
                 
-                // 2. Update Ikon Olahraga (AJAX)
                 if (mainSportIcon && tempSelectedSportKey) {
                     const newIconFile = sportIconMap[tempSelectedSportKey] || sportIconMap['lainnya'];
                     mainSportIcon.src = `{% static 'icon-olahraga/' %}` + newIconFile;
                 }
 
-                // 3. Tutup Modal
                 document.getElementById('edit-profile-modal').classList.add('hidden');
 
             } else {
@@ -262,7 +254,6 @@
         }
     }
 
-    // Tambahkan event listener untuk form submit
     document.getElementById('edit-profile-form').addEventListener('submit', saveProfileChanges);
 
 </script>
