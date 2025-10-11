@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import User
 
 class Lapangan(models.Model):
     OLAHRAGA_CHOICES = [
@@ -80,3 +81,44 @@ class Event(models.Model):
     
     def __str__(self):
         return self.nama
+
+class Avatar(models.Model):
+    # Simpan URL/path ke gambar avatar
+    name = models.CharField(max_length=50, unique=True)
+    image_url = models.URLField(default='/static/avatar/default_avatar.png')
+
+    def __str__(self):
+        return self.name
+
+# --- Model Profile yang terhubung ke User ---
+class UserProfile(models.Model):
+    OLAHRAGA_CHOICES = [
+        ('sepakbola', 'Sepak Bola'),
+        ('basket', 'Basket'),
+        ('badminton', 'Badminton'),
+        ('tenis', 'Tenis'),
+        ('futsal', 'Futsal'),
+        ('voli', 'Voli'),
+        ('padel', 'Padel'),
+        ('golf', 'Golf'),
+        ('lainnya', 'Lainnya'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    avatar = models.ForeignKey(
+        Avatar, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    ) 
+
+    olahraga_favorit = models.CharField(
+        max_length=20, 
+        choices=OLAHRAGA_CHOICES, 
+        default='lainnya'
+    )
+    
+
+    def __str__(self):
+        return self.user.username

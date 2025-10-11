@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>My Profile - ASKMO</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="container mx-auto px-4 py-8 mt-16 text-white font-['Plus_Jakarta_Sans']">
+    <h1 class="text-5xl font-bold mb-8 text-center">PROFILE</h1>
+
+    <div class="bg-[#1A1A1A] p-8 md:p-12 rounded-xl shadow-lg max-w-4xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row items-center md:items-center space-y-6 md:space-y-0 md:space-x-10">
+            
+            <div class="flex flex-col items-center w-full md:w-1/3">
+                
+                <img 
+                    src="{% if profile.avatar %}{{ profile.avatar.image_url }}{% else %}{% static 'avatar/default_avatar.png' %}{% endif %}" 
+                    alt="Profile Avatar" 
+                    class="w-40 h-40 rounded-full object-cover border-4 border-[#6C5CE7]"
+                    id="main-profile-avatar"
+                >
+                <h2 class="text-2xl font-bold mt-4">{{ user.username }}</h2>
+                
+                <div class="flex items-center space-x-2 mt-2">
+                    <p class="text-gray-400">Olahraga favorit:</p>
+                    {% with sport_key=profile.olahraga_favorit|default:'lainnya' %}
+                        <img id="main-sport-icon" class="w-6 h-6" 
+                            src="{% static 'icon-olahraga/' %}{{ sport_key }}.png" 
+                            alt="{{ sport_key }}"
+                        >
+                    {% endwith %}
+                </div>
+                
+                <button 
+                    onclick="document.getElementById('edit-profile-modal').classList.remove('hidden')"
+                    class="mt-4 w-full bg-gradient-to-r from-[#06005E] to-[#571E88] hover:from-[#1A107A] hover:to-[#7A3EAA] text-white font-semibold py-3 px-10 rounded-full transition duration-200">
+                    Edit Profile
+                </button>
+            </div>
+
+            <div class="w-full md:w-2/3 space-y-6"> 
+                
+                <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full"> 
+                    <div class="grid grid-cols-2 grid-rows-2 h-[80%] gap-1"> 
+                        <div class="relative overflow-hidden row-span-2 rounded-lg">
+                            <img src="{% static 'image/wishlist_placeholder_1.png' %}" class="w-full h-full object-cover" alt="Lapangan Besar">
+                            <div class="absolute inset-0 bg-black/10"></div> 
+                        </div>
+                        <div class="relative overflow-hidden h-full rounded-lg">
+                            <img src="{% static 'image/wishlist_placeholder_2.png' %}" class="w-full h-full object-cover" alt="Lapangan Basket">
+                        </div>
+                        <div class="relative overflow-hidden h-full rounded-lg">
+                            <img src="{% static 'image/wishlist_placeholder_3.png' %}" class="w-full h-full object-cover" alt="Lapangan Malam">
+                        </div>
+                    </div>
+                    <p class="text-xl font-semibold mt-4">Wishlist - Koleksi Lapangan</p>
+                </div>
+
+                <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full">
+                    <div class="flex items-center justify-center h-full bg-[#1A1A1A] rounded-lg">
+                        <i class="fa-solid fa-user-tie text-6xl text-gray-700 opacity-60"></i>
+                    </div>
+                    <p class="text-xl font-semibold mt-4">List - Coach</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="edit-profile-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+    <div class="bg-[#1A1A1A] p-8 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <h2 class="text-3xl font-bold text-white mb-6 text-center">EDIT PROFILE</h2>
+        
+        <form id="edit-profile-form">
+            {% csrf_token %}
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold mb-4">Pilih Avatar</h3>
+                
+                <div class="flex flex-wrap justify-center gap-4" id="avatar-grid">
+                    {% for avatar in avatars %}
+                        <img 
+                            src="{{ avatar.image_url }}" 
+                            alt="Avatar {{ forloop.counter }}" 
+                            data-avatar-id="{{ avatar.id }}"
+                            class="w-32 h-32 rounded-full object-cover border-2 border-transparent cursor-pointer transition-all duration-200 
+                                {% if profile.avatar.id == avatar.id %}selected-avatar border-[#6C5CE7]{% endif %}"
+                            onclick="selectAvatar({{ avatar.id }}, '{{ avatar.image_url }}')"
+                        >
+                    {% empty %}
+                        <p class="text-gray-400">Belum ada pilihan avatar.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl text-white-700 font-semibold mb-4">Pilih Olahraga Favorit</h3>
+                <div class="space-y-3" id="sport-list">
+                    {% for key, name in olahraga_choices %}
+                        <div
+                            data-sport-key="{{ key }}"
+                            class="text-white sport-item flex items-center p-3 bg-[#2A2A2A] rounded-lg border-2 border-transparent cursor-pointer transition-all duration-200 
+                                {% if key == profile.olahraga_favorit %}selected-sport border-[#6C5CE7]{% endif %}"
+                            onclick="selectSport('{{ key }}')"
+                        >
+                            <img 
+                                src="{% static 'icon-olahraga/'|add:key|add:'.png' %}" 
+                                alt="{{ name }}" 
+                                class="w-6 h-6 mr-4" 
+                            >
+                            <span class="flex-grow">{{ name }}</span>
+                            <i class="fa-solid fa-check text-[#6C5CE7] ml-4 
+                                {% if key != profile.olahraga_favorit %}hidden{% endif %}"
+                                id="check-{{ key }}"
+                            ></i>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button type="submit"
+                class="mt-4 w-full bg-gradient-to-r from-[#06005E] to-[#571E88] hover:from-[#1A107A] hover:to-[#7A3EAA] text-white font-semibold py-3 px-10 rounded-full transition duration-200">
+                SIMPAN PERUBAHAN
+            </button>
+        </form>
+
+        <div class="flex justify-end mt-4">
+            <button 
+                onclick="document.getElementById('edit-profile-modal').classList.add('hidden')"
+                class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-full transition duration-200">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Ambil elemen Ikon di tampilan profil utama
+    const mainSportIcon = document.getElementById('main-sport-icon');
+    const mainAvatarImg = document.getElementById('main-profile-avatar');
+    
+    let tempSelectedAvatarId = "{{ profile.avatar.id|default:'null' }}";
+    let tempSelectedSportKey = "{{ profile.olahraga_favorit|default:'lainnya' }}";
+
+    // Mapping Ikon Gambar (PENTING: Pastikan key sesuai nama file)
+    const sportIconMap = {
+        'sepakbola': 'sepakbola.png',
+        'basket': 'basketball.png',
+        'badminton': 'badminton.png',
+        'tenis': 'tennis.png',
+        'futsal': 'futsal.png',
+        'voli': 'volley.png',
+        'padel': 'padel.png',
+        'golf': 'golf.png',
+        'lainnya': 'default.png' 
+    };
+
+    // Fungsi untuk menandai avatar yang sudah tersimpan saat modal dibuka
+    function markInitialAvatar() {
+        const currentId = "{{ profile.avatar.id|default:'null' }}";
+        if (currentId !== 'null') {
+            const initialAvatar = document.querySelector(`[data-avatar-id="${currentId}"]`);
+            if (initialAvatar) {
+                initialAvatar.classList.add('selected-avatar', 'border-[#6C5CE7]');
+                initialAvatar.classList.remove('border-transparent');
+            }
+        }
+    }
+
+    // Panggil fungsi penandaan saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', markInitialAvatar);
+    
+    // --- Logika Pilih Avatar ---
+    function selectAvatar(avatarId, avatarUrl) {
+        document.querySelectorAll('#avatar-grid img').forEach(img => {
+            img.classList.remove('selected-avatar', 'border-[#6C5CE7]');
+            img.classList.add('border-transparent');
+        });
+
+        const selectedImg = document.querySelector(`[data-avatar-id="${avatarId}"]`);
+        if (selectedImg) {
+            selectedImg.classList.add('selected-avatar', 'border-[#6C5CE7]');
+            selectedImg.classList.remove('border-transparent');
+            tempSelectedAvatarId = avatarId;
+        }
+    }
+
+    // --- Logika Pilih Olahraga ---
+    function selectSport(sportKey) {
+        document.querySelectorAll('.sport-item').forEach(item => {
+            item.classList.remove('selected-sport', 'border-[#6C5CE7]');
+            item.classList.add('border-transparent');
+            const checkIcon = document.getElementById(`check-${item.dataset.sportKey}`);
+            if (checkIcon) checkIcon.classList.add('hidden');
+        });
+
+        const selectedSportItem = document.querySelector(`[data-sport-key="${sportKey}"]`);
+        if (selectedSportItem) {
+            selectedSportItem.classList.add('selected-sport', 'border-[#6C5CE7]');
+            selectedSportItem.classList.remove('border-transparent');
+            const checkIcon = document.getElementById(`check-${sportKey}`);
+            if (checkIcon) checkIcon.classList.remove('hidden');
+            tempSelectedSportKey = sportKey;
+        }
+    }
+    
+    // --- Logika Simpan Perubahan (AJAX) ---
+    async function saveProfileChanges(e) {
+        e.preventDefault(); 
+        
+        // Cek validasi
+        if (!tempSelectedSportKey || tempSelectedAvatarId === 'null') {
+            showToast('Silakan pilih Avatar dan Olahraga Favorit.', 'error');
+            return;
+        }
+    
+        const dataToSave = {
+            avatar_id: parseInt(tempSelectedAvatarId),
+            olahraga_favorit: tempSelectedSportKey
+        };
+
+        try {
+            const response = await fetch("{% url 'main:update_profile_ajax' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                body: JSON.stringify(dataToSave)
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                showToast(result.message, 'success');
+
+                // 1. Update Tampilan Avatar Utama (AJAX)
+                const selectedAvatarElement = document.querySelector(`[data-avatar-id="${tempSelectedAvatarId}"]`);
+                if(selectedAvatarElement) {
+                    mainAvatarImg.src = selectedAvatarElement.src;
+                }
+                
+                // 2. Update Ikon Olahraga (AJAX)
+                if (mainSportIcon && tempSelectedSportKey) {
+                    const newIconFile = sportIconMap[tempSelectedSportKey] || sportIconMap['lainnya'];
+                    mainSportIcon.src = `{% static 'icon-olahraga/' %}` + newIconFile;
+                }
+
+                // 3. Tutup Modal
+                document.getElementById('edit-profile-modal').classList.add('hidden');
+
+            } else {
+                showToast(result.message || 'Gagal memperbarui profil.', 'error');
+            }
+        } catch (error) {
+            console.error("Error saving profile:", error);
+            showToast('Terjadi kesalahan koneksi.', 'error');
+        }
+    }
+
+    // Tambahkan event listener untuk form submit
+    document.getElementById('edit-profile-form').addEventListener('submit', saveProfileChanges);
+
+</script>
+{% endblock content %}
