@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Daftar Akun - ASKMO</title>
+{% endblock meta %}
+
+{% block content %}
+
+<div class="w-full min-h-screen flex items-center justify-center p-4 font-['Plus_Jakarta_Sans']">
+
+  <div class="max-w-md w-full bg-[#353535] backdrop-blur-lg rounded-2xl p-8">
+
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-white mb-2">Daftar Akun</h1>
+      <p class="text-gray-300">Buat akun ASKMO Anda sekarang!</p>
+    </div>
+
+    <div id="register-errors" class="mb-4 space-y-2"></div>
+    
+    <form id="register-form" method="POST" class="space-y-5">
+      {% csrf_token %}
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+        <input id="username" name="username" type="text" required class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:border-2 focus:border-[#06005E] transition-colors" placeholder="Masukkan username Anda">
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Kata Sandi</label>
+        <input id="password" name="password1" type="password" required class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:border-2 focus:border-[#06005E] transition-colors" placeholder="Masukkan kata sandi Anda">
+      </div>
+      <div>
+        <label for="password2" class="block text-sm font-medium text-gray-300 mb-2">Konfirmasi Kata Sandi</label>
+        <input id="password2" name="password2" type="password" required class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:border-2 focus:border-[#06005E] transition-colors" placeholder="Konfirmasi kata sandi Anda">
+      </div>
+      
+      <button type="submit" class="w-full bg-gradient-to-r from-[#06005E] to-[#571E88] hover:from-[#1A107A] hover:to-[#7A3EAA] text-white font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+        Daftar
+      </button>
+    </form>
+
+    <div class="mt-6 text-center pt-6 border-t border-white/20">
+      <p class="text-gray-400 text-sm">
+        Sudah punya akun? 
+        <a href="{% url 'main:login' %}" class="text-[#A4E4FF] hover:text-[#939393] font-medium transition-colors underline">
+          Masuk disini!
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.getElementById('register-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const errorContainer = document.getElementById('register-errors');
+        errorContainer.innerHTML = '';
+
+        try {
+            const response = await fetch("{% url 'main:register_ajax' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                  "X-CSRFToken": getCookie('csrftoken')
+                }
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                showToast(result.message, 'success');
+                const successMsg = document.createElement('div');
+                successMsg.className = 'px-4 py-3 mb-4 rounded text-sm border bg-green-50 border-green-200 text-green-700';
+                successMsg.textContent = 'Akun berhasil dibuat!';
+                errorContainer.appendChild(successMsg);
+
+                setTimeout(() => {
+                    window.location.href = "{% url 'main:login' %}";
+                }, 1500);
+            } else {
+                showToast('Registrasi gagal. Silakan periksa formulir.', 'error');
+                for (const field in result.errors) {
+                    const errorMsg = result.errors[field];
+                    const errorElement = document.createElement('div');
+                    errorElement.className = 'px-4 py-3 rounded text-sm border bg-red-50 border-red-200 text-red-700';
+                    errorElement.textContent = errorMsg;
+                    errorContainer.appendChild(errorElement);
+                }
+            }
+        } catch (error) {
+            showToast('Terjadi kesalahan yang tidak terduga.', 'error');
+        }
+    });
+</script>
+{% endblock content %}
