@@ -1,47 +1,18 @@
-.form-style form input, form textarea, form select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 2px solid #bcbcbc;
-    border-radius: 0.375rem;
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
 }
-.form-style form input:focus, form textarea:focus, form select:focus {
-    outline: none;
-    border-color: #06005E;
-    box-shadow: 0 0 0 1.5px #06005E;
+html,
+body {
+  margin: 0px;
+  height: 100%;
 }
-
-.form-style input[type="checkbox"] {
-    width: 1.25rem;
-    height: 1.25rem;
-    padding: 0;
-    border: 2px solid #d1d5db;
-    border-radius: 0.375rem;
-    background-color: white;
-    cursor: pointer;
-    position: relative;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+/* a blue color as a generic focus style */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
 }
-
-.form-style input[type="checkbox"]:checked {
-    background-color: #06005E;
-    border-color: #06005E;
-}
-
-.form-style input[type="checkbox"]:checked::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-weight: bold;
-    font-size: 0.875rem;
-}
-
-.form-style input[type="checkbox"]:focus {
-    outline: none;
-    border-color: #06005E;
-    box-shadow: 0 0 0 1.5px #06005E;
+a {
+  text-decoration: none;
 }
