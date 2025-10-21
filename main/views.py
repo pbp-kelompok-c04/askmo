@@ -399,3 +399,109 @@ def create_collection_ajax(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Gagal membuat koleksi: {str(e)}'}, status=500)
     return HttpResponseForbidden()
+
+@login_required
+def get_user_collections_for_item_ajax(request, item_type, item_id):
+    collections = Collection.objects.filter(user=request.user).order_by('-created_at')
+    collections_data = []
+
+    try:
+        item = get_object_or_404(Lapangan, pk=item_id)
+    except Lapangan.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Item tidak ditemukan'}, status=404)
+
+
+    for collection in collections:
+        is_saved = collection.lapangan_set.filter(pk=item_id).exists()
+        collections_data.append({
+            'id': collection.id,
+            'name': collection.name,
+            'is_saved': is_saved,
+        })
+
+    return JsonResponse({'status': 'success', 'collections': collections_data})
+
+@login_required
+@require_POST
+@csrf_exempt
+def toggle_save_item_to_collection_ajax(request):
+    try:
+        data = json.loads(request.body)
+        collection_id = data.get('collection_id')
+        item_id = data.get('item_id')
+        item_type = data.get('item_type')
+        
+        collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
+
+        if item_type == 'lapangan':
+            ItemModel = Lapangan
+            related_manager = collection.lapangan_set
+
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Tipe item tidak valid.'}, status=400)
+
+        item = get_object_or_404(ItemModel, pk=item_id)
+
+        if related_manager.filter(pk=item_id).exists():
+            related_manager.remove(item)
+            action = 'removed'
+            message = f'Berhasil dihapus dari koleksi "{collection.name}"'
+        else:
+            related_manager.add(item)
+            action = 'added'
+            message = f'Berhasil ditambahkan ke koleksi "{collection.name}"'
+        
+        return JsonResponse({
+            'status': 'success', 
+            'action': action,
+            'message': message,
+            'collection_name': collection.name
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Gagal memproses permintaan: {str(e)}'}, status=500)
+    
+@login_required
+def show_collection_detail(request, collection_id):
+    collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
+    lapangan_list = collection.lapangan_set.all()
+    
+    context = {
+        'collection': collection,
+        'lapangan_list': lapangan_list, 
+    }
+    return render(request, 'wishlist/collection_detail.html', context)
+
+@login_required
+@require_POST
+@csrf_exempt
+def edit_collection_name_ajax(request):
+    try:
+        data = json.loads(request.body)
+        collection_id = data.get('collection_id')
+        new_name = data.get('new_name', '').strip()
+
+        if not new_name:
+            return JsonResponse({'status': 'error', 'message': 'Nama koleksi tidak boleh kosong.'}, status=400)
+        
+        collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
+        
+        if Collection.objects.filter(user=request.user, name=new_name).exclude(pk=collection_id).exists():
+            return JsonResponse({'status': 'error', 'message': f'Koleksi bernama "{new_name}" sudah ada.'}, status=400)
+
+        old_name = collection.name
+        collection.name = new_name
+        collection.save()
+
+        return JsonResponse({
+            'status': 'success', 
+            'message': f'Nama koleksi berhasil diubah dari "{old_name}" menjadi "{new_name}".',
+            'collection_name': new_name
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Gagal mengedit koleksi: {str(e)}'}, status=500)

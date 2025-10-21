@@ -29,4 +29,8 @@ urlpatterns = [
     path('api/wishlist/create/', views.create_collection_ajax, name='create_collection_ajax'),
     path('profile/', show_profile, name='show_profile'),
     path('profile/update/', update_profile_ajax, name='update_profile_ajax'),
+    path('api/collections/status/<str:item_type>/<uuid:item_id>/', views.get_user_collections_for_item_ajax, name='get_collections_status_ajax'),
+    path('api/wishlist/toggle-save/', views.toggle_save_item_to_collection_ajax, name='toggle_save_item_ajax'),
+    path('wishlist/<uuid:collection_id>/', views.show_collection_detail, name='show_collection_detail'),
+    path('api/wishlist/edit/', views.edit_collection_name_ajax, name='edit_collection_name_ajax'),
 ]
