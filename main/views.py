@@ -376,6 +376,7 @@ def show_user_collections(request):
         'is_coach_filter': is_coach_filter, 
     }
     return render(request, 'wishlist/collections_list.html', context)
+
 @login_required
 @require_POST
 def create_collection_ajax(request):
