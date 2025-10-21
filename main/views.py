@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from .models import UserProfile, Avatar, Collection
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core import serializers
 
@@ -306,6 +307,15 @@ def show_profile(request):
     avatars = Avatar.objects.all()
     olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
 
+
+
+@login_required(login_url='/login/')
+def show_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    avatars = Avatar.objects.all()
+    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
+
     context = {
         'profile': profile,
         'avatars': avatars,
@@ -388,3 +398,4 @@ def create_collection_ajax(request):
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Gagal membuat koleksi: {str(e)}'}, status=500)
+    return HttpResponseForbidden()
