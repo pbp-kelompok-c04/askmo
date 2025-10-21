@@ -11,6 +11,10 @@ from main.models import Lapangan, Coach, Event
 from django.db.models import Q
 
 from django.views.decorators.http import require_POST
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponseForbidden
+from .models import UserProfile, Avatar
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -20,7 +24,9 @@ import json
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.html import strip_tags
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags;
+from .models import UserProfile, Avatar 
 
 def show_main(request):
     
@@ -293,6 +299,23 @@ def show_lapangan_dashboard(request):
     }
     return render(request, 'lapangan/dashboard_lapangan.html', context)
 
+@login_required(login_url='/login/')
+def show_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    avatars = Avatar.objects.all()
+    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
+
+    context = {
+        'profile': profile,
+        'avatars': avatars,
+        'olahraga_choices': olahraga_choices,
+        'current_sport_key': profile.olahraga_favorit,
+    }
+    return render(request, 'profile.html', context) 
+
+@login_required(login_url='/login/')
+@csrf_exempt
 def update_profile_ajax(request):
     if request.method == 'POST':
         # *Logika update akan diisi di langkah implementasi Edit Profile*

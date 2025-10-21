@@ -27,4 +27,6 @@ urlpatterns = [
     path('lapangan/', show_lapangan_dashboard, name='show_lapangan_dashboard'),
     path('wishlist/', views.show_user_collections, name='show_user_collections'),
     path('api/wishlist/create/', views.create_collection_ajax, name='create_collection_ajax'),
+    path('profile/', show_profile, name='show_profile'),
+    path('profile/update/', update_profile_ajax, name='update_profile_ajax'),
 ]
