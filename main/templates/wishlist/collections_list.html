@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div id="create-collection-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+    <div class="bg-white p-6 rounded-xl w-full max-w-sm text-black" onclick="event.stopPropagation()">
+        
+        <div class="flex items-center justify-between mb-6">
+             <h2 class="text-xl font-bold">Create new collection</h2>
+             <button type="button" onclick="closeCreateCollectionModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+             </button>
+        </div>
+        
+        <form id="create-collection-form">
+            {% csrf_token %}
+            
+            <div class="mb-6">
+                <label for="collection-name" class="block text-lg font-semibold mb-1">Name</label>
+                <input 
+                    type="text" 
+                    id="collection-name" 
+                    placeholder="Enter collection name" 
+                    required
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#6C5CE7]"
+                >
+            </div>
+            
+            <button type="submit"
+                class="w-full bg-[#FFB6C1] hover:bg-[#F2A4B2] text-white font-semibold py-3 rounded-full transition duration-200">
+                Save
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openCreateCollectionModal() {
+        document.getElementById('create-collection-modal').classList.remove('hidden');
+    }
+
+    function closeCreateCollectionModal() {
+        document.getElementById('create-collection-modal').classList.add('hidden');
+        document.getElementById('create-collection-form').reset();
+    }
+    
+    document.getElementById('create-collection-modal').addEventListener('click', closeCreateCollectionModal);
+
+    document.addEventListener('DOMContentLoaded', () => {
+		const form = document.getElementById('create-collection-form');
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			
+			const nameInput = document.getElementById('collection-name').value;
+			const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+			
+			// Data yang dikirim hanya nama
+			const dataToSave = {
+				name: nameInput
+			};
+
+			try {
+				// Fetch ke endpoint AJAX
+				const response = await fetch("{% url 'main:create_collection_ajax' %}", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": csrfToken
+					},
+					body: JSON.stringify(dataToSave)
+				});
+				const result = await response.json();
+
+				if (result.status === 'success') {
+					// Tampilkan toast notifikasi "berhasil ditambahkan ke {nama collections}"
+					showToast(result.message, 'success');
+					closeCreateCollectionModal();
+					
+					// Reload halaman untuk menampilkan koleksi baru
+					window.location.reload(); 
+
+				} else {
+					showToast(result.message || 'Gagal membuat koleksi.', 'error');
+				}
+			} catch (error) {
+				console.error("Error creating collection:", error);
+				showToast('Terjadi kesalahan koneksi.', 'error');
+			}
+		});
+	});
+</script>
+{% endblock content %}

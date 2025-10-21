@@ -1,0 +1,171 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0px;
+  height: 100%;
+}
+/* a blue color as a generic focus style */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+
+.edit-profile-container {
+    background-color: #1a1a1a; /* Dark background */
+    color: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 900px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+h2 {
+    color: white;
+    margin-bottom: 30px;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.current-avatar img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #555; /* Placeholder color */
+    border: 3px solid #6c5ce7; /* Example border color */
+}
+
+.username-display {
+    font-size: 1.2em;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.section-group {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.section {
+    background-color: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 45%; /* Adjust as needed */
+    box-sizing: border-box;
+}
+
+h3 {
+    margin-bottom: 20px;
+    color: #a0a0a0;
+}
+
+.avatar-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 avatars per row */
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.avatar-item {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.avatar-item.selected {
+    border-color: #007bff; /* Highlight selected avatar */
+}
+
+.avatar-item:hover {
+    border-color: #6c5ce7;
+}
+
+.sport-selection-list {
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.sport-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background-color: #3a3a3a;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: 2px solid transparent; /* For selected state */
+}
+
+.sport-item:hover {
+    background-color: #4a4a4a;
+}
+
+.sport-item.selected {
+    border-color: #6c5ce7; /* Highlight selected sport */
+    background-color: #4c4c4c;
+}
+
+.sport-item i { /* For font-awesome icons */
+    margin-right: 15px;
+    font-size: 1.5em;
+    color: #a0a0a0;
+}
+
+.sport-item span {
+    flex-grow: 1;
+    font-size: 1.1em;
+}
+
+.sport-item .check-icon {
+    color: #6c5ce7; /* Purple checkmark */
+    font-size: 1.2em;
+    display: none; /* Hide by default */
+}
+
+.sport-item.selected .check-icon {
+    display: inline-block; /* Show when selected */
+}
+
+button {
+    background-color: #6c5ce7; /* Purple button */
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #5a4ac7;
+}
+
+.save-all-button {
+    margin-top: 30px;
+    width: 50%;
+    padding: 15px;
+    font-size: 1.1em;
+}
+
+a {
+  text-decoration: none;
+}
