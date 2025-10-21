@@ -83,17 +83,19 @@
 
         <div class="card-container">
             {% for coach in coaches %}
-            <div class="card">
-                {% if coach.photo %}
-                    <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/120" alt="Foto tidak tersedia">
-                {% endif %}
-                <h3>{{ coach.name }}</h3>
-                <p class="card-cabor">{{ coach.sport_branch }}</p>
-                <p><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> {{ coach.location }}</p>
-                <p><i class="fas fa-phone" style="margin-right: 5px;"></i> {{ coach.contact }}</p>
-            </div>
+            <a href="{% url 'coach:coach_detail' coach.pk %}" class="card-link">
+                <div class="card">
+                    {% if coach.photo %}
+                        <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/120" alt="Foto tidak tersedia">
+                    {% endif %}
+                    <h3>{{ coach.name }}</h3>
+                    <p class="card-cabor">{{ coach.sport_branch }}</p>
+                    <p><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> {{ coach.location }}</p>
+                    <p><i class="fas fa-phone" style="margin-right: 5px;"></i> {{ coach.contact }}</p>
+                </div>
+            </a>
             {% empty %}
                 <p class="no-coach-message">Belum ada data coach yang ditambahkan.</p>
             {% endfor %}
