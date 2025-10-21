@@ -4,13 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lapangan - ASKMO</title>
+    <title>Wishlist - Lapangan - ASKMO</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    
     <style>
+        /* Gaya dasar untuk konsistensi */
+        body { background-color: #000; color: #fff; font-family: 'Inter', sans-serif; }
+        header { padding: 15px 40px; }
+        main { padding: 20px 40px; max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 30px; text-align: center; }
+        .card-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background-color: #1A1A1A; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card h3 { font-size: 1.25rem; margin: 10px 0 5px; }
+        .card p { color: #ccc; font-size: 0.95rem; margin-bottom: 5px; }
+        .card-rating { color: #FFD700; }
+        .card-buttons { display: flex; justify-content: space-between; margin-top: 15px; }
+        .btn { padding: 10px 15px; border-radius: 8px; text-decoration: none; font-weight: 600; cursor: pointer; transition: background-color 0.2s; border: none; }
+        .btn-secondary { background-color: gray; color: white; }
+        .btn-primary { background-color: #571E88; color: white; }
+        .btn-primary:hover { background-color: #7A3EAA; }
+        .no-data-message { color: #888; font-size: 1.2em; text-align: center; width: 100%; margin-top: 50px; }
+
         #modal-overlay {
             display: none; 
             position: fixed;
@@ -134,16 +153,14 @@
         #modal-kontak-btn:hover {
             background: #7A3EAA;
         }
-        .is-saved {
-            color: #FFD700 !important;
-        }
     </style>
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="{% url 'main:show_lapangan_dashboard' %}" class="active">Lapangan</a></li>
+                <li><a href="{% url 'main:show_lapangan_dashboard' %}">Lapangan</a></li>
+                <li><a href="{% url 'coach:coach_list' %}">Coach</a></li>
                 <li><a href="#">Event</a></li>
                 <li><a href="{% url 'main:logout' %}" class="logout">Logout</a></li>
             </ul>
@@ -158,127 +175,46 @@
     </header>
 
     <main>
-        <h1>LAPANGAN</h1>
+        <h1>Wishlist - Lapangan</h1>
         
-        <form class="search-container" method="GET" action="{% url 'main:show_lapangan_dashboard' %}">
-            <div class="search-input">
-                <i class="fas fa-search"></i>
-                <input type="text" name="nama" placeholder="Cari nama lapangan" value="{{ search_values.nama }}">
-            </div>
-            <div class="search-input">
-                <i class="fas fa-map-marker-alt"></i>
-                <input type="text" name="kecamatan" placeholder="Pilih lokasi" value="{{ search_values.kecamatan }}">
-            </div>
-            <div class="search-input">
-                <i class="fas fa-futbol"></i>
-                
-                <select name="olahraga" required>
-                    <option value="" disabled {% if not search_values.olahraga %}selected{% endif %}>
-                        Pilih cabang olahraga
-                    </option>
-                    
-                    {% for value, display in olahraga_choices %}
-                        <option value="{{ value }}" {% if search_values.olahraga == value %}selected{% endif %}>
-                            {{ display }}
-                        </option>
-                    {% endfor %}
-                </select>
-
-            </div>
-            <button type="submit" class="search-button">Cari</button>
-        </form>
-
         <div class="card-container">
             {% for lapangan in lapangan_list %}
             <div class="card">
                 {% if lapangan.thumbnail %}
                     <img src="{{ lapangan.thumbnail }}" alt="Foto {{ lapangan.nama }}">
                 {% else %}
-                    <img src="https://via.placeholder.com/300x150.png?text=No+Image" alt="Foto tidak tersedia">
+                    <img src="https://via.placeholder.com/300x180.png?text=No+Image" alt="Foto tidak tersedia">
                 {% endif %}
 
-                <h3>{{ lapangan.nama }}</h3>
-                <p> {{lapangan.kecamatan}} </p>
-                <p class="card-rating">
-                    <i class="fas fa-star" style="margin-right: 5px;"></i> 
-                    {{ lapangan.rating|floatformat:1 }} / 5.0
-                </p>
+                <div class="card-body">
+                    <h3>{{ lapangan.nama }}</h3>
+                    <p> {{lapangan.kecamatan}} </p>
+                    <p class="card-rating">
+                        <i class="fas fa-star" style="margin-right: 5px;"></i> 
+                        {{ lapangan.rating|floatformat:1 }} / 5.0
+                    </p>
 
-                <div class="card-buttons">
-                    <button 
-                        type="button" 
-                        class="btn btn-wishlist" 
-                        data-item-id="{{ lapangan.id }}" 
-                        data-item-type="lapangan"
-                        onclick="openWishlistModal('lapangan', '{{ lapangan.id }}')">
+                    <div class="card-buttons">
+                        <a href="tel:{{ lapangan.kontak }}" class="btn btn-secondary">Hubungi</a>
                         
-                        <i id="bookmark-{{ lapangan.id }}" 
-                        class="fas fa-bookmark {% if lapangan.is_saved_to_wishlist %}is-saved{% endif %}" 
-                        style="background-color:gray; color: white">
-                        </i>
-                    </button>
-
-                    <a href="tel:{{ lapangan.kontak }}" class="btn btn-secondary">Hubungi</a>
-                    
-                    <button 
-                        type="button" 
-                        class="btn btn-primary" 
-                        onclick="showDetail('{{ lapangan.id }}')">
-                        Detail
-                    </button>
-                    
+                        <button 
+                            type="button" 
+                            class="btn btn-primary" 
+                            onclick="showDetail('{{ lapangan.id }}')">
+                            Detail
+                        </button>
+                    </div>
                 </div>
             </div>
             {% empty %}
-                <p class="no-data-message">Belum ada data lapangan yang ditambahkan.</p>
+                <p class="no-data-message">Tidak ada lapangan di wishlist Anda.</p>
             {% endfor %}
         </div>
     </main>
-
-
+    
     <div id="modal-overlay" onclick="checkCloseModal(event)">
-        <div id="modal-content">
-            <button id="modal-close-btn" onclick="hideDetail()">&times;</button>
-            
-            <img id="modal-image" src="https://via.placeholder.com/600x250.png?text=Loading..." alt="Foto Lapangan">
-            
-            <div class="modal-body">
-                <h2 id="modal-nama">Nama Lapangan</h2>
-                
-                <div class="modal-priority-info">
-                    <p><i class="fas fa-map-marker-alt"></i> <span id="modal-alamat">Alamat...</span></p>
-                    <p><i class="fas fa-location-arrow"></i> <span id="modal-kecamatan">Kecamatan...</span></p>
-                    <p><i class="fas fa-star"></i> <span id="modal-rating">Rating...</span></p>
-                    <p><i class="fas fa-futbol"></i> <span id="modal-olahraga">Olahraga...</span></p>
-                    <p><i class="fas fa-money-bill-wave"></i> <span id="modal-tarif">Tarif...</span></p>
-                    <p><i class="fas fa-undo"></i> <span id="modal-refund">Refund...</span></p>
-                </div>
-                
-                <a id="modal-kontak-btn" href="#" target="_blank">
-                    <i class="fas fa-phone"></i> Hubungi
-                </a>
-                
-                <hr class="modal-divider">
-                
-                <div class="modal-details">
-                    <h4>Deskripsi</h4>
-                    <p id="modal-deskripsi">Deskripsi...</p>
-                    
-                    <h4>Fasilitas</h4>
-                    <p id="modal-fasilitas">Fasilitas...</p>
-                    
-                    <h4>Peraturan</h4>
-                    <p id="modal-peraturan">Peraturan...</p>
-                    
-                    <h4>Review</h4>
-                    <p id="modal-review">Review...</p>
-                </div>
-
-            </div>
         </div>
-    </div>
-
-
+    
     <script>
         const modalOverlay = document.getElementById('modal-overlay');
         const modalNama = document.getElementById('modal-nama');
@@ -344,17 +280,7 @@
                 hideDetail();
             }
         }
-
-        function updateBookmarkIcon(itemId, action) {
-            const icon = document.getElementById(`bookmark-${itemId}`);
-            if (icon) {
-                if (action === 'added') {
-                    icon.classList.add('is-saved');
-                } else if (action === 'removed') {
-                    icon.classList.remove('is-saved');
-                }
-            }
-        }
     </script>
+
 </body>
 </html>

@@ -4,92 +4,50 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div id="create-collection-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-    <div class="bg-white p-6 rounded-xl w-full max-w-sm text-black" onclick="event.stopPropagation()">
+<div class="collection-detail-container">
+    <h1 class="text-3xl font-bold mb-4 flex items-center">
+        <i class="fas fa-folder mr-3 text-yellow-500"></i>
+        {{ collection.name }}
+        </h1>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-3 border-b pb-2 text-[#FFB6C1]">Lapangan ({{ lapangan_list|length }})</h2>
         
-        <div class="flex items-center justify-between mb-6">
-             <h2 class="text-xl font-bold">Create new collection</h2>
-             <button type="button" onclick="closeCreateCollectionModal()" class="text-gray-500 hover:text-gray-700">
-                <i class="fa-solid fa-xmark text-2xl"></i>
-             </button>
+        {% if lapangan_list %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for lapangan in lapangan_list %}
+                <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold">{{ lapangan.nama }}</h3>
+                    <p class="text-gray-400">{{ lapangan.kecamatan }}</p>
+                    <p class="text-yellow-500"><i class="fas fa-star mr-1"></i> {{ lapangan.rating|floatformat:1 }}</p>
+                    <a href="{% url 'main:show_lapangan_dashboard' %}?nama={{ lapangan.nama|urlencode }}" class="mt-3 inline-block text-[#FFB6C1] hover:text-[#F2A4B2] font-semibold">Lihat Lapangan &rarr;</a>
+                </div>
+            {% endfor %}
         </div>
-        
-        <form id="create-collection-form">
-            {% csrf_token %}
-            
-            <div class="mb-6">
-                <label for="collection-name" class="block text-lg font-semibold mb-1">Name</label>
-                <input 
-                    type="text" 
-                    id="collection-name" 
-                    placeholder="Enter collection name" 
-                    required
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#6C5CE7]"
-                >
-            </div>
-            
-            <button type="submit"
-                class="w-full bg-[#FFB6C1] hover:bg-[#F2A4B2] text-white font-semibold py-3 rounded-full transition duration-200">
-                Save
-            </button>
-        </form>
+        {% else %}
+        <p class="text-gray-400">Tidak ada lapangan yang disimpan di koleksi ini.</p>
+        {% endif %}
     </div>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-3 border-b pb-2 text-[#FFB6C1]">Coach ({{ coach_list|length }})</h2>
+        
+        {% if coach_list %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for coach in coach_list %}
+                <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold">{{ coach.nama }}</h3>
+                    <p class="text-gray-400">{{ coach.olahraga|capfirst }}</p>
+                    <p class="text-gray-400">Tarif: Rp {{ coach.tarif_per_jam|floatformat:0 }}</p>
+                    <a href="{% url 'coach:coach_detail' coach.pk %}" class="mt-3 inline-block text-[#FFB6C1] hover:text-[#F2A4B2] font-semibold">Lihat Detail Coach &rarr;</a>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-400">Tidak ada coach yang disimpan di koleksi ini.</p>
+        {% endif %}
+    </div>
+
 </div>
 
-<script>
-    function openCreateCollectionModal() {
-        document.getElementById('create-collection-modal').classList.remove('hidden');
-    }
-
-    function closeCreateCollectionModal() {
-        document.getElementById('create-collection-modal').classList.add('hidden');
-        document.getElementById('create-collection-form').reset();
-    }
-    
-    document.getElementById('create-collection-modal').addEventListener('click', closeCreateCollectionModal);
-
-    document.addEventListener('DOMContentLoaded', () => {
-		const form = document.getElementById('create-collection-form');
-
-		form.addEventListener('submit', async (e) => {
-			e.preventDefault();
-			
-			const nameInput = document.getElementById('collection-name').value;
-			const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-			
-			// Data yang dikirim hanya nama
-			const dataToSave = {
-				name: nameInput
-			};
-
-			try {
-				// Fetch ke endpoint AJAX
-				const response = await fetch("{% url 'main:create_collection_ajax' %}", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						"X-CSRFToken": csrfToken
-					},
-					body: JSON.stringify(dataToSave)
-				});
-				const result = await response.json();
-
-				if (result.status === 'success') {
-					// Tampilkan toast notifikasi "berhasil ditambahkan ke {nama collections}"
-					showToast(result.message, 'success');
-					closeCreateCollectionModal();
-					
-					// Reload halaman untuk menampilkan koleksi baru
-					window.location.reload(); 
-
-				} else {
-					showToast(result.message || 'Gagal membuat koleksi.', 'error');
-				}
-			} catch (error) {
-				console.error("Error creating collection:", error);
-				showToast('Terjadi kesalahan koneksi.', 'error');
-			}
-		});
-	});
-</script>
 {% endblock content %}

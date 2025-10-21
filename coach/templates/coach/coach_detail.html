@@ -180,7 +180,7 @@
 
             {% if not is_email and phone_number_cleaned and whatsapp_number %}
             <div class="action-buttons">
-                <a href="{% url 'coach:add_to_coach_list' coach.pk %}" class="action-btn save">
+                <a type="button" onclick="openWishlistModal('coach', '{{ coach.pk }}')" class="action-btn save">
                     <i class="fas fa-bookmark"></i> Tambahkan ke Wishlist
                 </a>
                 <a href="https://wa.me/{{ whatsapp_number }}" target="_blank" class="action-btn whatsapp">

@@ -363,12 +363,19 @@ def update_profile_ajax(request):
 @login_required
 def show_user_collections(request):
     user_collections = Collection.objects.filter(user=request.user).order_by('-created_at')
-    
+
+    is_coach_filter = 'wishlist/coach/' in request.path 
+
+    if is_coach_filter:
+        user_collections = user_collections.filter(coach__isnull=False).distinct()
+    else:
+        user_collections = user_collections.filter(lapangan__isnull=False).distinct()
+
     context = {
         'collections': user_collections,
+        'is_coach_filter': is_coach_filter, 
     }
     return render(request, 'wishlist/collections_list.html', context)
-
 @login_required
 @require_POST
 def create_collection_ajax(request):
@@ -405,14 +412,24 @@ def get_user_collections_for_item_ajax(request, item_type, item_id):
     collections = Collection.objects.filter(user=request.user).order_by('-created_at')
     collections_data = []
 
+    if item_type == 'lapangan':
+        ItemModel = Lapangan
+    elif item_type == 'coach':
+        ItemModel = Coach
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Tipe item tidak valid'}, status=400)
+    
     try:
-        item = get_object_or_404(Lapangan, pk=item_id)
-    except Lapangan.DoesNotExist:
+        item = get_object_or_404(ItemModel, pk=item_id)
+    except ItemModel.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Item tidak ditemukan'}, status=404)
 
-
     for collection in collections:
-        is_saved = collection.lapangan_set.filter(pk=item_id).exists()
+        if item_type == 'lapangan':
+            is_saved = collection.lapangan.filter(pk=item_id).exists() # Menggunakan ManyToManyField 'lapangan'
+        elif item_type == 'coach':
+            is_saved = collection.coach.filter(pk=item_id).exists() # <--- TAMBAH INI (Menggunakan ManyToManyField 'coach')
+
         collections_data.append({
             'id': collection.id,
             'name': collection.name,
@@ -436,7 +453,9 @@ def toggle_save_item_to_collection_ajax(request):
         if item_type == 'lapangan':
             ItemModel = Lapangan
             related_manager = collection.lapangan_set
-
+        elif item_type == 'coach': 
+            ItemModel = Coach
+            related_manager = collection.coach
         else:
             return JsonResponse({'status': 'error', 'message': 'Tipe item tidak valid.'}, status=400)
 
@@ -466,11 +485,13 @@ def toggle_save_item_to_collection_ajax(request):
 @login_required
 def show_collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
-    lapangan_list = collection.lapangan_set.all()
-    
+    lapangan_list = collection.lapangan.all()
+    coach_list = collection.coach.all()
+
     context = {
         'collection': collection,
         'lapangan_list': lapangan_list, 
+        'coach_list': coach_list, 
     }
     return render(request, 'wishlist/collection_detail.html', context)
 
@@ -505,3 +526,18 @@ def edit_collection_name_ajax(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Gagal mengedit koleksi: {str(e)}'}, status=500)
+    
+@login_required
+def add_to_coach_list(request, coach_id):
+    return redirect(reverse('main:show_user_collections'))
+
+@login_required
+def show_wishlist_lapangan(request):
+    user_collections = Collection.objects.filter(user=request.user)
+    
+    lapangan_list = Lapangan.objects.filter(collection__in=user_collections).distinct()
+    
+    context = {
+        'lapangan_list': lapangan_list,
+    }
+    return render(request, 'wishlist/wishlist_lapangan_list.html', context)
