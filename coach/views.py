@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Coach, CoachWishlist, Collection
+from .models import Coach, CoachWishlist
+from main.models import Collection
 from .forms import CoachForm
 from django.db import models
 
@@ -213,3 +214,12 @@ def coach_wishlist_list_view(request):
         'coaches': coaches_in_wishlist
     }
     return render(request, 'coach/coach_wishlist_list.html', context)
+
+@login_required
+def coach_wishlist_list_view(request):
+    wishlist_items = CoachWishlist.objects.filter(user=request.user)
+    coaches_in_wishlist = [item.coach for item in wishlist_items]
+    context = {
+        'coaches': coaches_in_wishlist
+    }
+    return render(request, 'wishlist_coach_list.html', context)
