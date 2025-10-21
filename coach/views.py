@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Coach, CoachWishlist
+from .models import Coach, CoachWishlist, Collection
 from .forms import CoachForm
 from django.db import models
 
@@ -44,43 +44,39 @@ def coach_list_view(request):
 
 
 def coach_detail_view(request, pk):
-    """
-    Menampilkan halaman detail untuk satu coach berdasarkan Primary Key (pk).
-    """
     coach = get_object_or_404(Coach, pk=pk)
     
-    # --- LOGIKA BARU UNTUK MEMPROSES KONTAK ---
+    is_saved_to_wishlist = False
+    if request.user.is_authenticated:
+        is_saved_to_wishlist = Collection.objects.filter(
+            user=request.user,
+            coach=coach
+        ).exists()
+
     contact_str = coach.contact
     phone_number_cleaned = None
     whatsapp_number = None
-    is_email = False
 
     if '@' in contact_str:
         is_email = True
     else:
-        # Asumsikan ini nomor telepon. Bersihkan dari karakter non-digit.
-        # Hapus spasi, tanda hubung, tanda kurung, dll.
         phone_number_cleaned = ''.join(c for c in contact_str if c.isdigit() or c == '+')
         
-        # Buat nomor WhatsApp (ganti 0 di depan dengan 62)
         if phone_number_cleaned.startswith('0'):
             whatsapp_number = '62' + phone_number_cleaned[1:]
         elif phone_number_cleaned.startswith('+'):
-            # Hapus '+' untuk link wa.me
             whatsapp_number = phone_number_cleaned[1:]
         elif phone_number_cleaned.startswith('62'):
             whatsapp_number = phone_number_cleaned
         else:
-            # Anggap sudah format benar tanpa 0 atau +
             whatsapp_number = phone_number_cleaned
-    # --- AKHIR LOGIKA BARU ---
 
     context = {
         'coach': coach,
         # Variabel baru untuk dikirim ke template
         'phone_number_cleaned': phone_number_cleaned,
         'whatsapp_number': whatsapp_number,
-        'is_email': is_email
+        'is_saved_to_wishlist': is_saved_to_wishlist
     }
     return render(request, 'coach/coach_detail.html', context)
 
