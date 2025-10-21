@@ -1,7 +1,8 @@
 import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
-from .models import UserProfile, Avatar, Collection
+from .models import UserProfile, Avatar
+from main.models import Collection
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
