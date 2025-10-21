@@ -1,6 +1,7 @@
+import uuid
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponseForbidden
-from .models import UserProfile, Avatar
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
+from .models import UserProfile, Avatar, Collection
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core import serializers
@@ -19,7 +20,7 @@ import json
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .models import UserProfile, Avatar 
+from django.utils.html import strip_tags
 
 def show_main(request):
     
@@ -326,3 +327,41 @@ def update_profile_ajax(request):
     
     return HttpResponseForbidden()
 
+@login_required
+def show_user_collections(request):
+    user_collections = Collection.objects.filter(user=request.user).order_by('-created_at')
+    
+    context = {
+        'collections': user_collections,
+    }
+    return render(request, 'wishlist/collections_list.html', context)
+
+@login_required
+@require_POST
+def create_collection_ajax(request):
+    try:
+        data = json.loads(request.body)
+        collection_name = data.get('name', '').strip()
+        
+        if not collection_name:
+            return JsonResponse({'status': 'error', 'message': 'Nama koleksi tidak boleh kosong.'}, status=400)
+        
+        if Collection.objects.filter(user=request.user, name=collection_name).exists():
+            return JsonResponse({'status': 'error', 'message': f'Koleksi bernama "{collection_name}" sudah ada.'}, status=400)
+
+        # Buat objek Collection baru (tanpa is_public/is_shared)
+        new_collection = Collection.objects.create(
+            user=request.user,
+            name=collection_name,
+            # is_public dan is_shared tidak dimasukkan
+        )
+        
+        return JsonResponse({
+            'status': 'success', 
+            'message': f'Koleksi "{collection_name}" berhasil dibuat!',
+            'collection_id': new_collection.id,
+            'collection_name': new_collection.name
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Gagal membuat koleksi: {str(e)}'}, status=500)
