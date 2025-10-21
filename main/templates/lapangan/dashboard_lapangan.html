@@ -203,8 +203,16 @@
                 </p>
 
                 <div class="card-buttons">
-                    <button style="background-color: gray" class="btn btn-wishlist">
-                        <i style="color: white" class="fas fa-bookmark"></i>
+                    <button 
+                        type="button" 
+                        class="btn btn-wishlist" 
+                        data-item-id="{{ lapangan.id }}" 
+                        data-item-type="lapangan"
+                        onclick="openWishlistModal('lapangan', '{{ lapangan.id }}')">
+                        
+                        <i id="bookmark-{{ lapangan.id }}" 
+                        class="fas fa-bookmark {% if lapangan.is_saved_to_wishlist %}is-saved{% endif %}" 
+                        style="color: white"> </i>
                     </button>
 
                     <a href="tel:{{ lapangan.kontak }}" class="btn btn-secondary">Hubungi</a>
