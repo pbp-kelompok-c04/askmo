@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Coach
+from .models import Coach, CoachWishlist
 from .forms import CoachForm
+from django.db import models
+
+User = get_user_model()
 
 # ==============================================================================
 # VIEW UNTUK HALAMAN PUBLIK
@@ -186,3 +189,31 @@ def coach_delete_view(request, pk):
         coach.delete()
         return redirect('coach:dashboard')
     return render(request, 'coach_admin/coach_confirm_delete.html', {'coach': coach})
+
+@login_required
+def add_to_wishlist_view(request, pk):
+    if request.method != 'GET': 
+        pass
+    coach = get_object_or_404(Coach, pk=pk)
+    user = request.user
+    try:
+        wishlist_item, created = CoachWishlist.objects.get_or_create(
+            user=user,
+            coach=coach
+        )
+        if created:
+            print(f"Coach {coach.name} ditambahkan ke wishlist.")
+        else:
+            print(f"Coach {coach.name} sudah ada di wishlist.")
+    except Exception as e:
+        print(f"Error: {e}")
+    return redirect('coach:coach_detail', pk=pk)
+
+@login_required
+def coach_wishlist_list_view(request):
+    wishlist_items = CoachWishlist.objects.filter(user=request.user)
+    coaches_in_wishlist = [item.coach for item in wishlist_items]
+    context = {
+        'coaches': coaches_in_wishlist
+    }
+    return render(request, 'coach/coach_wishlist_list.html', context)
