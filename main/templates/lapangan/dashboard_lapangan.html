@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lapangan - ASKMO</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        #modal-overlay {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8); 
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        #modal-content {
+            background: #1A1A1A; 
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            color: #fff;
+            position: relative;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        #modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        #modal-close-btn:hover {
+            color: #fff;
+        }
+        
+        #modal-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #modal-nama {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .modal-priority-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 1rem;
+            color: #CFCFCF;
+        }
+        
+        .modal-priority-info p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-priority-info i {
+            width: 20px; 
+            text-align: center;
+            color: #888;
+        }
+        
+        .modal-divider {
+            border: 0;
+            height: 1px;
+            background: #333;
+            margin: 10px 0;
+        }
+        
+        .modal-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .modal-details h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .modal-details p {
+            font-size: 0.95rem;
+            color: #CFCFCF;
+            line-height: 1.6;
+            white-space: pre-wrap; 
+        }
+        
+        #modal-kontak-btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 20px;
+            background: #571E88; 
+            color: #fff;
+            font-weight: 600;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        #modal-kontak-btn:hover {
+            background: #7A3EAA;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'main:show_lapangan_dashboard' %}" class="active">Lapangan</a></li>
+                <li><a href="#">Event</a></li>
+                <li><a href="{% url 'main:logout' %}" class="logout">Logout</a></li>
+            </ul>
+        </nav>
+        <div class="user-profile">
+            {% if user.is_authenticated %}
+                <span>{{ user.username }}</span>
+            {% else %}
+                <span>Guest</span>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <h1>LAPANGAN</h1>
+        
+        <form class="search-container" method="GET" action="{% url 'main:show_lapangan_dashboard' %}">
+            <div class="search-input">
+                <i class="fas fa-search"></i>
+                <input type="text" name="nama" placeholder="Cari nama lapangan" value="{{ search_values.nama }}">
+            </div>
+            <div class="search-input">
+                <i class="fas fa-map-marker-alt"></i>
+                <input type="text" name="kecamatan" placeholder="Pilih lokasi" value="{{ search_values.kecamatan }}">
+            </div>
+            <div class="search-input">
+                <i class="fas fa-futbol"></i>
+                
+                <select name="olahraga" required>
+                    <option value="" disabled {% if not search_values.olahraga %}selected{% endif %}>
+                        Pilih cabang olahraga
+                    </option>
+                    
+                    {% for value, display in olahraga_choices %}
+                        <option value="{{ value }}" {% if search_values.olahraga == value %}selected{% endif %}>
+                            {{ display }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <button type="submit" class="search-button">Cari</button>
+        </form>
+
+        <div class="card-container">
+            {% for lapangan in lapangan_list %}
+            <div class="card">
+                {% if lapangan.thumbnail %}
+                    <img src="{{ lapangan.thumbnail }}" alt="Foto {{ lapangan.nama }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x150.png?text=No+Image" alt="Foto tidak tersedia">
+                {% endif %}
+
+                <h3>{{ lapangan.nama }}</h3>
+                <p> {{lapangan.kecamatan}} </p>
+                <p class="card-rating">
+                    <i class="fas fa-star" style="margin-right: 5px;"></i> 
+                    {{ lapangan.rating|floatformat:1 }} / 5.0
+                </p>
+
+                <div class="card-buttons">
+                    <a href="tel:{{ lapangan.kontak }}" class="btn btn-secondary">Hubungi</a>
+                    
+                    <button 
+                        type="button" 
+                        class="btn btn-primary" 
+                        onclick="showDetail('{{ lapangan.id }}')">
+                        Detail
+                    </button>
+                    
+                </div>
+            </div>
+            {% empty %}
+                <p class="no-data-message">Belum ada data lapangan yang ditambahkan.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+
+    <div id="modal-overlay" onclick="checkCloseModal(event)">
+        <div id="modal-content">
+            <button id="modal-close-btn" onclick="hideDetail()">&times;</button>
+            
+            <img id="modal-image" src="https://via.placeholder.com/600x250.png?text=Loading..." alt="Foto Lapangan">
+            
+            <div class="modal-body">
+                <h2 id="modal-nama">Nama Lapangan</h2>
+                
+                <div class="modal-priority-info">
+                    <p><i class="fas fa-map-marker-alt"></i> <span id="modal-alamat">Alamat...</span></p>
+                    <p><i class="fas fa-location-arrow"></i> <span id="modal-kecamatan">Kecamatan...</span></p>
+                    <p><i class="fas fa-star"></i> <span id="modal-rating">Rating...</span></p>
+                    <p><i class="fas fa-futbol"></i> <span id="modal-olahraga">Olahraga...</span></p>
+                    <p><i class="fas fa-money-bill-wave"></i> <span id="modal-tarif">Tarif...</span></p>
+                    <p><i class="fas fa-undo"></i> <span id="modal-refund">Refund...</span></p>
+                </div>
+                
+                <a id="modal-kontak-btn" href="#" target="_blank">
+                    <i class="fas fa-phone"></i> Hubungi
+                </a>
+                
+                <hr class="modal-divider">
+                
+                <div class="modal-details">
+                    <h4>Deskripsi</h4>
+                    <p id="modal-deskripsi">Deskripsi...</p>
+                    
+                    <h4>Fasilitas</h4>
+                    <p id="modal-fasilitas">Fasilitas...</p>
+                    
+                    <h4>Peraturan</h4>
+                    <p id="modal-peraturan">Peraturan...</p>
+                    
+                    <h4>Review</h4>
+                    <p id="modal-review">Review...</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalNama = document.getElementById('modal-nama');
+        const modalAlamat = document.getElementById('modal-alamat');
+        const modalKecamatan = document.getElementById('modal-kecamatan');
+        const modalRating = document.getElementById('modal-rating');
+        const modalOlahraga = document.getElementById('modal-olahraga');
+        const modalTarif = document.getElementById('modal-tarif');
+        const modalRefund = document.getElementById('modal-refund');
+        const modalKontakBtn = document.getElementById('modal-kontak-btn');
+        const modalImage = document.getElementById('modal-image');
+        const modalDeskripsi = document.getElementById('modal-deskripsi');
+        const modalFasilitas = document.getElementById('modal-fasilitas');
+        const modalPeraturan = document.getElementById('modal-peraturan');
+        const modalReview = document.getElementById('modal-review');
+        
+        async function showDetail(lapanganId) {
+            try {
+                const response = await fetch(`/json/${lapanganId}/`); 
+                if (!response.ok) throw new Error('Data not found');
+                
+                const data = await response.json();
+                
+                modalNama.textContent = data.nama;
+                modalAlamat.textContent = data.alamat || 'Tidak ada info alamat.';
+                modalKecamatan.textContent = data.kecamatan || 'Tidak ada info kecamatan.';
+                modalRating.textContent = `${data.rating} / 5.0`;
+                modalOlahraga.textContent = data.olahraga;
+                
+                const tarif = parseFloat(data.tarif_per_sesi);
+                modalTarif.textContent = `Rp ${tarif.toLocaleString('id-ID') || 'N/A'}`;
+                
+                modalRefund.textContent = data.refund ? 'Bisa Refund' : 'Tidak Bisa Refund';
+                
+                if (data.kontak) {
+                    modalKontakBtn.href = `tel:${data.kontak}`;
+                    modalKontakBtn.style.display = 'inline-block';
+                } else {
+                    modalKontakBtn.style.display = 'none';
+                }
+                
+                modalImage.src = data.thumbnail || 'https://via.placeholder.com/600x250.png?text=No+Image';
+                
+                modalDeskripsi.textContent = data.deskripsi || 'Tidak ada deskripsi.';
+                modalFasilitas.textContent = data.fasilitas || 'Tidak ada info fasilitas.';
+                modalPeraturan.textContent = data.peraturan || 'Tidak ada info peraturan.';
+                modalReview.textContent = data.review || 'Belum ada review.';
+
+                modalOverlay.style.display = 'flex';
+
+            } catch (error) {
+                console.error("Error fetching detail:", error);
+                alert("Gagal memuat detail lapangan.");
+            }
+        }
+
+        function hideDetail() {
+            modalOverlay.style.display = 'none';
+        }
+        
+        function checkCloseModal(event) {
+            if (event.target === modalOverlay) {
+                hideDetail();
+            }
+        }
+
+    </script>
+
+</body>
+</html>
