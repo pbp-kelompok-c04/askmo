@@ -3,6 +3,7 @@ from main.views import show_main, login_user, register, logout_user
 from main.views import register_ajax, login_ajax, logout_ajax
 
 from main.views import show_xml, show_json, show_xml_by_id, show_json_by_id, show_lapangan_by_alamat_xml, show_lapangan_by_alamat_json,  show_lapangan_by_kecamatan_xml, show_lapangan_by_kecamatan_json, show_lapangan_dashboard
+from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax
 app_name = 'main'
 
 urlpatterns = [
@@ -22,4 +23,6 @@ urlpatterns = [
     path('xml/kecamatan/<str:kecamatan>/', show_lapangan_by_kecamatan_xml, name='show_lapangan_by_kecamatan_xml'),
     path('json/kecamatan/<str:kecamatan>/', show_lapangan_by_kecamatan_json, name='show_lapangan_by_kecamatan_json'),
     path('lapangan/', show_lapangan_dashboard, name='show_lapangan_dashboard'),
+    path('profile/', show_profile, name='show_profile'),
+    path('profile/update/', update_profile_ajax, name='update_profile_ajax'),
 ]
