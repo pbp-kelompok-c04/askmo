@@ -2,7 +2,7 @@ from django.urls import path
 from main.views import show_main, login_user, register, logout_user
 from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax
 
-from main.views import show_xml, show_json, show_xml_by_id, show_json_by_id, show_lapangan_by_alamat_xml, show_lapangan_by_alamat_json,  show_lapangan_by_kecamatan_xml, show_lapangan_by_kecamatan_json
+from main.views import show_xml, show_json, show_xml_by_id, show_json_by_id, show_lapangan_by_alamat_xml, show_lapangan_by_alamat_json,  show_lapangan_by_kecamatan_xml, show_lapangan_by_kecamatan_json, show_lapangan_dashboard
 app_name = 'main'
 
 urlpatterns = [
@@ -19,8 +19,9 @@ urlpatterns = [
     path('json/<uuid:lapangan_id>/', show_json_by_id, name='show_json_by_id'),
     path('xml/alamat/<str:alamat>/', show_lapangan_by_alamat_xml, name='show_lapangan_by_alamat_xml'),
     path('json/alamat/<str:alamat>/', show_lapangan_by_alamat_json, name='show_lapangan_by_alamat_json'),
-     path('xml/kecamatan/<str:kecamatan>/', show_lapangan_by_kecamatan_xml, name='show_lapangan_by_kecamatan_xml'),
+    path('xml/kecamatan/<str:kecamatan>/', show_lapangan_by_kecamatan_xml, name='show_lapangan_by_kecamatan_xml'),
     path('json/kecamatan/<str:kecamatan>/', show_lapangan_by_kecamatan_json, name='show_lapangan_by_kecamatan_json'),
     path('profile/', show_profile, name='show_profile'),
     path('profile/update/', update_profile_ajax, name='update_profile_ajax'),
+    path('lapangan/', show_lapangan_dashboard, name='show_lapangan_dashboard'),
 ]

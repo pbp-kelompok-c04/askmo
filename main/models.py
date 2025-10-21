@@ -17,15 +17,17 @@ class Lapangan(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     nama = models.CharField(max_length=255)
-    deskripsi = models.TextField()
+    deskripsi = models.TextField(blank=True, null=True)
     olahraga = models.CharField(max_length=20, choices=OLAHRAGA_CHOICES, default='update')
     thumbnail = models.URLField(blank=True, null=True)
     rating = models.FloatField(default=0.0)
     refund = models.BooleanField(default=False)
     tarif_per_sesi = models.DecimalField(max_digits=10, decimal_places=2)
-    kontak = models.CharField(max_length=100)
-    alamat = models.TextField()
+
+    alamat = models.TextField(blank=True, null=True)
     kecamatan = models.CharField(max_length=100, blank=True, null=True)
+    kontak = models.CharField(max_length=100, blank=True, null=True)
+    
     review = models.TextField(blank=True, null=True)
     peraturan = models.TextField(blank=True, null=True)
     fasilitas = models.TextField(blank=True, null=True)
