@@ -74,7 +74,6 @@ def coach_detail_view(request, pk):
 
     context = {
         'coach': coach,
-        # Variabel baru untuk dikirim ke template
         'phone_number_cleaned': phone_number_cleaned,
         'whatsapp_number': whatsapp_number,
         'is_saved_to_wishlist': is_saved_to_wishlist
@@ -213,7 +212,7 @@ def coach_wishlist_list_view(request):
     context = {
         'coaches': coaches_in_wishlist
     }
-    return render(request, 'coach/coach_wishlist_list.html', context)
+    return render(request, 'wishlist_coach_list.html', context)
 
 @login_required
 def coach_wishlist_list_view(request):

@@ -308,15 +308,6 @@ def show_profile(request):
     avatars = Avatar.objects.all()
     olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
 
-
-
-@login_required(login_url='/login/')
-def show_profile(request):
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
-    avatars = Avatar.objects.all()
-    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
-
     context = {
         'profile': profile,
         'avatars': avatars,
@@ -360,23 +351,6 @@ def update_profile_ajax(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
     
     return HttpResponseForbidden()
-
-@login_required
-def show_user_collections(request):
-    user_collections = Collection.objects.filter(user=request.user).order_by('-created_at')
-
-    is_coach_filter = 'wishlist/coach/' in request.path 
-
-    if is_coach_filter:
-        user_collections = user_collections.filter(coach__isnull=False).distinct()
-    else:
-        user_collections = user_collections.filter(lapangan__isnull=False).distinct()
-
-    context = {
-        'collections': user_collections,
-        'is_coach_filter': is_coach_filter, 
-    }
-    return render(request, 'wishlist/collections_list.html', context)
 
 @login_required
 @require_POST
@@ -454,7 +428,7 @@ def toggle_save_item_to_collection_ajax(request):
 
         if item_type == 'lapangan':
             ItemModel = Lapangan
-            related_manager = collection.lapangan_set
+            related_manager = collection.lapangan
         elif item_type == 'coach': 
             ItemModel = Coach
             related_manager = collection.coach
@@ -543,3 +517,14 @@ def show_wishlist_lapangan(request):
         'lapangan_list': lapangan_list,
     }
     return render(request, 'wishlist/wishlist_lapangan_list.html', context)
+
+@login_required
+def show_wishlist_coach(request):
+    user_collections = Collection.objects.filter(user=request.user)
+    
+    coach_list = Coach.objects.filter(collection__in=user_collections).distinct()
+    
+    context = {
+        'coach_list': coach_list,
+    }
+    return render(request, 'wishlist/wishlist_coach_list.html', context)
