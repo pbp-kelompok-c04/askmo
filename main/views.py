@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from .models import UserProfile, Avatar
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -143,3 +145,4 @@ def update_profile_ajax(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
     
     return HttpResponseForbidden()
+
