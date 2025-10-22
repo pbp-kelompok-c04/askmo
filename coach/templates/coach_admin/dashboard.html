@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coach Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            /* FONT DIGANTI */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 2em;
+            background-color: #000;
+            color: #fff;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px;
+            background-color: #1A1A1A;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td { 
+            border: 1px solid #333;
+            padding: 12px 15px;
+            text-align: left; 
+            border-width: 0 0 1px 0;
+        }
+        th { 
+            background-color: #2c2c2c;
+            font-weight: 600;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .actions a { 
+            margin-right: 10px; 
+            text-decoration: none; 
+            font-weight: 500;
+            color: #3498DB;
+        }
+        .actions a[style*="color:red"] {
+            color: #E53E3E !important;
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+
+        .add-btn { 
+            background-image: linear-gradient(to right, #06005E, #571E88);
+            color: white; 
+            padding: 10px 15px; 
+            text-decoration: none; 
+            border-radius: 8px;
+            font-weight: 500;
+            display: inline-block;
+            transition: background-image 0.3s ease-in-out;
+        }
+
+        .add-btn:hover {
+            background-image: linear-gradient(to right, #1A107A, #7A3EAA);
+        }
+
+        .logout-btn { 
+            color: #E53E3E;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .header span {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Coach Management</h1>
+        <div>
+            <span>Welcome, {{ request.user.first_name|default:request.user.username }}!</span> |
+            <a href="{% url 'coach:logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+    <a href="{% url 'coach:coach_create' %}" class="add-btn">Add New Coach</a>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sport Branch</th>
+                <th>Location</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coach in coaches %}
+            <tr>
+                <td>{{ coach.name }}</td>
+                <td>{{ coach.sport_branch }}</td>
+                <td>{{ coach.location }}</td>
+                <td>{{ coach.contact }}</td>
+                <td class="actions">
+                    <a href="{% url 'coach:coach_update' coach.pk %}">Edit</a>
+                    <a href="{% url 'coach:coach_delete' coach.pk %}" style="color:red;">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: #888;">No coaches found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
