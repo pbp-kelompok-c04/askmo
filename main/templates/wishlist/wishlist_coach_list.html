@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>List - Coach - ASKMO</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    .wishlist-container { 
+        padding: 20px 40px; 
+        max-width: 1200px; 
+        margin: 70px auto 0 auto; 
+    }
+
+    .card-container { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px; 
+    }
+
+    @media (min-width: 620px) {
+        .card-container {
+            grid-template-columns: repeat(auto-fit, 300px); 
+            justify-content: center; 
+        }
+    }
+    
+    .card-link { 
+        text-decoration: none; 
+        color: inherit; 
+        display: block; 
+        height: 100%; 
+    }
+
+    .card { 
+        padding: 20px; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
+        justify-content: flex-start; 
+        background-color: #1A1A1A; 
+        border-radius: 12px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        min-height: 280px; 
+        transition: transform 0.2s; 
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+    }
+    
+    .card img { 
+        width: 120px; 
+        height: 120px; 
+        border-radius: 50%; 
+        object-fit: cover; 
+        margin-bottom: 15px; 
+        border: 2px solid #571E88;
+    }
+    .card h3 { margin: 10px 0 5px; font-size: 1.25em; color: white;}
+    .card p { margin: 2px 0; color: #aaa; font-size: 0.9em; }
+    
+    .card p .fas { 
+        color: #571E88; 
+    }
+    .card-cabor { 
+        font-weight: bold; 
+        color: #ddd; 
+        margin-bottom: 15px;
+    }
+    .no-coach-message { 
+        color: #888; 
+        font-size: 1.2em; 
+        text-align: center; 
+        width: 100%; 
+        margin-top: 50px; 
+    }
+</style>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="fixed top-9 right-9 z-50 hidden md:block">
+  <a href="{% url 'main:show_profile' %}">
+    <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
+      <span>{{ user.username }}</span>
+    </div>
+  </a>
+</div>
+
+<div class="fixed top-9 left-9 z-50 hidden md:block">
+    <a href="{% url 'main:show_profile' %}" class="text-gray-300 hover:text-white font-medium transition-colors">
+    ← Kembali ke Profile
+    </a>
+</div>
+
+<div class="wishlist-container">
+    <h1 style="font-size: 40px; text-align: center;"><b>List - Coach</b></h1>
+    <main>
+        
+        
+        <div class="card-container">
+            {% for coach in coach_list %}
+            <a href="{% url 'coach:coach_detail' coach.pk %}" class="card-link">
+                <div class="card">
+                    {% if coach.photo.url %} 
+                        <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/120" alt="Foto tidak tersedia">
+                    {% endif %}
+                    
+                    <h3><b>{{ coach.name }}</b></h3> 
+                    <p class="card-cabor">{{ coach.sport_branch|capfirst }}</p> 
+                    <p>
+                        <i class="fas fa-money-bill-wave" style="margin-right: 5px;"></i> 
+                        {{ coach.service_fee }} 
+                    </p> 
+                    <p>
+                        <i class="fas fa-phone" style="margin-right: 5px;"></i> 
+                        {{ coach.contact }}
+                    </p>
+                </div>
+            </a>
+            {% empty %}
+                <p class="no-coach-message">Tidak ada coach yang tersedia saat ini.</p>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock content %}
