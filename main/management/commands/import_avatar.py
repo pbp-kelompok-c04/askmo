@@ -7,9 +7,9 @@ Avatar.objects.get_or_create(id=5, defaults={'name': 'Default User', 'image_url'
 print("Default avatar path confirmed.")
 
 Avatar.objects.get_or_create(id=1, defaults={'name': 'Avatar 1', 'image_url': staticfiles_storage.url('avatar/avatar1.png')})
-Avatar.objects.get_or_create(id=2, defaults={'name': 'Avatar 1', 'image_url': staticfiles_storage.url('avatar/avatar2.png')})
-Avatar.objects.get_or_create(id=3, defaults={'name': 'Avatar 1', 'image_url': staticfiles_storage.url('avatar/avatar3.png')})
-Avatar.objects.get_or_create(id=4, defaults={'name': 'Avatar 1', 'image_url': staticfiles_storage.url('avatar/avatar4.png')})
+Avatar.objects.get_or_create(id=2, defaults={'name': 'Avatar 2', 'image_url': staticfiles_storage.url('avatar/avatar2.png')})
+Avatar.objects.get_or_create(id=3, defaults={'name': 'Avatar 3', 'image_url': staticfiles_storage.url('avatar/avatar3.png')})
+Avatar.objects.get_or_create(id=4, defaults={'name': 'Avatar 4', 'image_url': staticfiles_storage.url('avatar/avatar4.png')})
 
 
 
