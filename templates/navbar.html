@@ -21,9 +21,8 @@
             {% else %}
                   <div class="flex items-center space-x-8 text-lg">
                       <a href="{% url 'main:show_main' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Beranda</a>
-                      <a href="#" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
-                      <a href="#" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Coach</a>
+                      <a href="{% url 'coach:coach_list' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Coach</a>
                       <a href="{% url 'main:show_event' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
                       <a href="{% url 'main:login' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Masuk</a>
                       <a></a>
@@ -50,7 +49,7 @@
                   {% if user.is_authenticated %}
                       <a href="{% url 'main:show_main' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Beranda</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
-                      <a href="#" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Coach</a>
+                      <a href="{% url 'coach:coach_list' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Coach</a>
                       <a href="{% url 'main:show_event' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Event</a>
                       <div class="w-full border-t border-gray-700 my-1"></div>
                       <a href="{% url 'main:show_profile' %}" class="block px-4 py-2 text-base text-gray-500 hover:text-white">{{ user.username }}</a>
