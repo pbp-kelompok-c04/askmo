@@ -28,7 +28,7 @@
             background: #1A1A1A; 
             border-radius: 20px;
             width: 100%;
-            max-width: 600px; 
+            max-width: 60px; 
             max-height: 90vh; 
             overflow-y: auto; 
             color: #fff;
@@ -187,17 +187,26 @@
             justify-content: center;
             align-items: center;    
         }
+
+        #modal-map {
+        width: 100%;           
+        aspect-ratio: 4 / 3;   
+        border-radius: 12px;  
+        border: none;        
+        }
     </style>
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
 <div class="fixed top-9 right-9 z-50 hidden md:block">
-    <a href="{% url 'main:show_profile' %}">
-        <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
-        <span>{{ user.username }}</span>
-        </div>
-    </a>
+  <a href="#">
+    <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
+      
+      <span class="[text-shadow:0_1px_3px_rgb(0_0_0_/_0.7)]">{{ user.username }}</span>
+
+    </div>
+  </a>
 </div>
     <main>
 
@@ -427,20 +436,20 @@
             
             <div class="modal-body">
                 <h2 id="modal-nama">Nama Lapangan</h2>
-                
-                <!-- <div class="container">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.183271344546!2d106.82447380886398!3d-6.370323693593243!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ec1ad14fb6cf%3A0xc94e4d829420fa15!2sFaculty%20of%20Computer%20Science%2C%20University%20of%20Indonesia!5e0!3m2!1sen!2sid!4v1761140126873!5m2!1sen!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div> -->
 
                 <div class="modal-priority-info">
                     <p><i class="fas fa-map-marker-alt"></i> <span id="modal-alamat">Alamat...</span></p>
                     <p><i class="fas fa-location-arrow"></i> <span id="modal-kecamatan">Kecamatan...</span></p>
+
+                    <div class="container">
+                        <iframe id="modal-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.183271344546!2d106.82447380886398!3d-6.370323693593243!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ec1ad14fb6cf%3A0xc94e4d829420fa15!2sFaculty%20of%20Computer%20Science%2C%20University%20of%20Indonesia!5e0!3m2!1sen!2sid!4v1761140126873!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
                     <p><i class="fas fa-star"></i> <span id="modal-rating">Rating...</span></p>
                     <p><i class="fas fa-futbol"></i> <span id="modal-olahraga">Olahraga...</span></p>
                     <p><i class="fas fa-money-bill-wave"></i> <span id="modal-tarif">Tarif...</span></p>
                     <p><i class="fas fa-undo"></i> <span id="modal-refund">Refund...</span></p>
                 </div>
-
+                
                 <a id="modal-kontak-btn" href="#" target="_blank">
                     <i class="fas fa-phone"></i> Hubungi
                 </a>
