@@ -15,4 +15,4 @@ class CoachForm(ModelForm):
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ["nama", "deskripsi", "olahraga", "tanggal", "lokasi", "kontak", "thumbnail", "jam"]
+        fields = ["nama", "deskripsi", "olahraga", "tanggal", "lokasi", "kontak", "thumbnail", "jam", "biaya"]
