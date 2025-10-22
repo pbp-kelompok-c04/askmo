@@ -9,10 +9,19 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="container mx-auto px-4 py-8 text-white font-['Plus_Jakarta_Sans'] " style="margin-top: 70px;">
-    <h1 class="text-4xl font-bold mb-8 text-center">PROFILE</h1>
+<div class="fixed top-9 right-9 z-50 hidden md:block">
+  <a href="{% url 'main:show_profile' %}">
+    <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
+      <span>{{ user.username }}</span>
+    </div>
+  </a>
+</div>
 
-    <div class="bg-[#1A1A1A] p-8 md:p-12 rounded-xl shadow-lg max-w-4xl mx-auto">
+
+<div class="container mx-auto px-4 py-8 text-white font-['Plus_Jakarta_Sans'] " style="margin-top: 45px; padding-top: 70px; padding-bottom: 12px;">
+    <h1 style="font-size: 40px" class="text-4xl font-bold mb-8 text-center">PROFILE</h1>
+
+    <div class="bg-[#1A1A1A] p-8 md:p-12 rounded-xl shadow-lg max-w-5xl mx-auto">
         
         <div class="flex flex-col md:flex-row items-center md:items-center space-y-6 md:space-y-0 md:space-x-10">
             
