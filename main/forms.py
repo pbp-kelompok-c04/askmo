@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django import forms
-from main.models import Lapangan, Coach, Event, Review
+from main.models import Lapangan, Coach, Event
+from review.models import Review
 
 
 class LapanganForm(ModelForm):
