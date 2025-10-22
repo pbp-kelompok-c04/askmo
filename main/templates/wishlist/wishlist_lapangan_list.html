@@ -203,7 +203,7 @@
                      <p> {{lapangan.kecamatan}} </p>
                     <p class="card-rating">
                         <i class="fas fa-star" style="margin-right: 5px;"></i> 
-                        {{ lapangan.rating|floatformat:1 }} / 5.0
+                        {{ lapangan.rating|floatformat:1 }}
                     </p>
 
                     <div class="card-buttons">
@@ -247,7 +247,7 @@
 
             <div class="modal-priority-info">
                 <p><i class="fas fa-map-marker-alt"></i> <span id="modal-kecamatan">Kecamatan</span></p>
-                <p><i class="fas fa-star"></i> <span id="modal-rating">5.0 / 5.0</span></p>
+                <p><i class="fas fa-star"></i> <span id="modal-rating">5.0</span></p>
                 <p><i class="fas fa-running"></i> <span id="modal-olahraga">Jenis Olahraga</span></p>
                 <p><i class="fas fa-tag"></i> <span id="modal-tarif">Rp 00.000</span></p>
                 <p><i class="fas fa-undo-alt"></i> <span id="modal-refund">Status Refund</span></p>
@@ -359,7 +359,7 @@
             modalNama.textContent = data.nama;
             modalAlamat.textContent = data.alamat || 'Tidak ada info alamat.';
             modalKecamatan.textContent = data.kecamatan || 'Tidak ada info kecamatan.';
-            modalRating.textContent = `${parseFloat(data.rating).toFixed(1)} / 5.0`;
+            modalRating.textContent = `${parseFloat(data.rating).toFixed(1)}`;
              modalOlahraga.textContent = data.olahraga;
 
             const tarif = parseFloat(data.tarif_per_sesi);
