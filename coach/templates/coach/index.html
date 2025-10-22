@@ -58,21 +58,176 @@
     <main>
         <h1 style="margin-top: 70px; font-size: 40px; margin-bottom: 15px;"><b>COACH</b></h1>
         
-        <form class="search-container" method="GET" action="{% url 'coach:coach_list' %}">
-            <div class="search-input">
-                <i class="fas fa-search"></i>
-                <input type="text" name="name" placeholder="Cari nama pelatih" value="{{ search_values.name }}">
-            </div>
-            <div class="search-input">
-                <i class="fas fa-map-marker-alt"></i>
-                <input type="text" name="location" placeholder="Pilih lokasi" value="{{ search_values.location }}">
-            </div>
-            <div class="search-input">
-                <i class="fas fa-futbol"></i>
-                <input type="text" name="sport_branch" placeholder="Pilih cabang olahraga" value="{{ search_values.sport_branch }}">
-            </div>
-            <button type="submit" class="search-button">Cari</button>
-        </form>
+        <div class="bg-[#353535] rounded-xl p-4 mb-8">
+            <form class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center" method="GET" action="{% url 'coach:coach_list' %}">
+                
+                <div class="relative md:col-span-2">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-search w-5 h-5 text-white opacity-75"></i>
+                    </div>
+                    <input type="text" name="name" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white placeholder:text-white focus:outline-none focus:border-[#06005E] focus:border-[2px]" placeholder="Cari nama coach" value="{{ search_values.name }}">
+                </div>
+
+                <div class="relative md:col-span-2">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-map-marker-alt w-5 h-5 text-white opacity-75"></i>
+                    </div>
+                    <select name="location" 
+                            class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none" 
+                            style="color-scheme: dark;">
+                        <option value="">Pilih lokasi</option>
+                        <optgroup label="Jakarta Pusat">
+                            <option value="Cempaka Putih" {% if search_values.location == 'Cempaka Putih' %}selected{% endif %}>Cempaka Putih</option>
+                            <option value="Gambir" {% if search_values.location == 'Gambir' %}selected{% endif %}>Gambir</option>
+                            <option value="Johar Baru" {% if search_values.location == 'Johar Baru' %}selected{% endif %}>Johar Baru</option>
+                            <option value="Kemayoran" {% if search_values.location == 'Kemayoran' %}selected{% endif %}>Kemayoran</option>
+                            <option value="Menteng" {% if search_values.location == 'Menteng' %}selected{% endif %}>Menteng</option>
+                            <option value="Sawah Besar" {% if search_values.location == 'Sawah Besar' %}selected{% endif %}>Sawah Besar</option>
+                            <option value="Senen" {% if search_values.location == 'Senen' %}selected{% endif %}>Senen</option>
+                            <option value="Tanah Abang" {% if search_values.location == 'Tanah Abang' %}selected{% endif %}>Tanah Abang</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Utara">
+                            <option value="Cilincing" {% if search_values.location == 'Cilincing' %}selected{% endif %}>Cilincing</option>
+                            <option value="Kelapa Gading" {% if search_values.location == 'Kelapa Gading' %}selected{% endif %}>Kelapa Gading</option>
+                            <option value="Koja" {% if search_values.location == 'Koja' %}selected{% endif %}>Koja</option>
+                            <option value="Pademangan" {% if search_values.location == 'Pademangan' %}selected{% endif %}>Pademangan</option>
+                            <option value="Penjaringan" {% if search_values.location == 'Penjaringan' %}selected{% endif %}>Penjaringan</option>
+                            <option value="Tanjung Priok" {% if search_values.location == 'Tanjung Priok' %}selected{% endif %}>Tanjung Priok</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Timur">
+                            <option value="Cakung" {% if search_values.location == 'Cakung' %}selected{% endif %}>Cakung</option>
+                            <option value="Cipayung" {% if search_values.location == 'Cipayung' %}selected{% endif %}>Cipayung</option>
+                            <option value="Ciracas" {% if search_values.location == 'Ciracas' %}selected{% endif %}>Ciracas</option>
+                            <option value="Duren Sawit" {% if search_values.location == 'Duren Sawit' %}selected{% endif %}>Duren Sawit</option>
+                            <option value="Jatinegara" {% if search_values.location == 'Jatinegara' %}selected{% endif %}>Jatinegara</option>
+                            <option value="Kramat Jati" {% if search_values.location == 'Kramat Jati' %}selected{% endif %}>Kramat Jati</option>
+                            <option value="Makasar" {% if search_values.location == 'Makasar' %}selected{% endif %}>Makasar</option>
+                            <option value="Matraman" {% if search_values.location == 'Matraman' %}selected{% endif %}>Matraman</option>
+                            <option value="Pasar Rebo" {% if search_values.location == 'Pasar Rebo' %}selected{% endif %}>Pasar Rebo</option>
+                            <option value="Pulo Gadung" {% if search_values.location == 'Pulo Gadung' %}selected{% endif %}>Pulo Gadung</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Selatan">
+                            <option value="Cilandak" {% if search_values.location == 'Cilandak' %}selected{% endif %}>Cilandak</option>
+                            <option value="Jagakarsa" {% if search_values.location == 'Jagakarsa' %}selected{% endif %}>Jagakarsa</option>
+                            <option value="Kebayoran Baru" {% if search_values.location == 'Kebayoran Baru' %}selected{% endif %}>Kebayoran Baru</option>
+                            <option value="Kebayoran Lama" {% if search_values.location == 'Kebayoran Lama' %}selected{% endif %}>Kebayoran Lama</option>
+                            <option value="Mampang Prapatan" {% if search_values.location == 'Mampang Prapatan' %}selected{% endif %}>Mampang Prapatan</option>
+                            <option value="Pancoran" {% if search_values.location == 'Pancoran' %}selected{% endif %}>Pancoran</option>
+                            <option value="Pasar Minggu" {% if search_values.location == 'Pasar Minggu' %}selected{% endif %}>Pasar Minggu</option>
+                            <option value="Pesanggrahan" {% if search_values.location == 'Pesanggrahan' %}selected{% endif %}>Pesanggrahan</option>
+                            <option value="Setiabudi" {% if search_values.location == 'Setiabudi' %}selected{% endif %}>Setiabudi</option>
+                            <option value="Tebet" {% if search_values.location == 'Tebet' %}selected{% endif %}>Tebet</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Barat">
+                            <option value="Cengkareng" {% if search_values.location == 'Cengkareng' %}selected{% endif %}>Cengkareng</option>
+                            <option value="Grogol Petamburan" {% if search_values.location == 'Grogol Petamburan' %}selected{% endif %}>Grogol Petamburan</option>
+                            <option value="Taman Sari" {% if search_values.location == 'Taman Sari' %}selected{% endif %}>Taman Sari</option>
+                            <option value="Tambora" {% if search_values.location == 'Tambora' %}selected{% endif %}>Tambora</option>
+                            <option value="Kebon Jeruk" {% if search_values.location == 'Kebon Jeruk' %}selected{% endif %}>Kebon Jeruk</option>
+                            <option value="Kalideres" {% if search_values.location == 'Kalideres' %}selected{% endif %}>Kalideres</option>
+                            <option value="Palmerah" {% if search_values.location == 'Palmerah' %}selected{% endif %}>Palmerah</option>
+                            <option value="Kembangan" {% if search_values.location == 'Kembangan' %}selected{% endif %}>Kembangan</option>
+                        </optgroup>
+                        <optgroup label="Kepulauan Seribu">
+                            <option value="Kepulauan Seribu Utara" {% if search_values.location == 'Kepulauan Seribu Utara' %}selected{% endif %}>Kepulauan Seribu Utara</option>
+                            <option value="Kepulauan Seribu Selatan" {% if search_values.location == 'Kepulauan Seribu Selatan' %}selected{% endif %}>Kepulauan Seribu Selatan</option>
+                        </optgroup>
+                        <optgroup label="Tangerang Kota">
+                            <option value="Batuceper" {% if search_values.location == 'Batuceper' %}selected{% endif %}>Batuceper</option>
+                            <option value="Benda" {% if search_values.location == 'Benda' %}selected{% endif %}>Benda</option>
+                            <option value="Cibodas" {% if search_values.location == 'Cibodas' %}selected{% endif %}>Cibodas</option>
+                            <option value="Ciledug" {% if search_values.location == 'Ciledug' %}selected{% endif %}>Ciledug</option>
+                            <option value="Cipondoh" {% if search_values.location == 'Cipondoh' %}selected{% endif %}>Cipondoh</option>
+                            <option value="Jatiuwung" {% if search_values.location == 'Jatiuwung' %}selected{% endif %}>Jatiuwung</option>
+                            <option value="Karangtengah" {% if search_values.location == 'Karangtengah' %}selected{% endif %}>Karangtengah</option>
+                            <option value="Karawaci" {% if search_values.location == 'Karawaci' %}selected{% endif %}>Karawaci</option>
+                            <option value="Larangan" {% if search_values.location == 'Larangan' %}selected{% endif %}>Larangan</option>
+                            <option value="Neglasari" {% if search_values.location == 'Neglasari' %}selected{% endif %}>Neglasari</option>
+                            <option value="Periuk" {% if search_values.location == 'Periuk' %}selected{% endif %}>Periuk</option>
+                            <option value="Pinang" {% if search_values.location == 'Pinang' %}selected{% endif %}>Pinang</option>
+                            <option value="Tangerang" {% if search_values.location == 'Tangerang' %}selected{% endif %}>Tangerang</option>
+                        </optgroup>
+                        <optgroup label="Tangerang Selatan">
+                            <option value="Ciputat" {% if search_values.location == 'Ciputat' %}selected{% endif %}>Ciputat</option>
+                            <option value="Ciputat Timur" {% if search_values.location == 'Ciputat Timur' %}selected{% endif %}>Ciputat Timur</option>
+                            <option value="Pamulang" {% if search_values.location == 'Pamulang' %}selected{% endif %}>Pamulang</option>
+                            <option value="Pondok Aren" {% if search_values.location == 'Pondok Aren' %}selected{% endif %}>Pondok Aren</option>
+                            <option value="Serpong" {% if search_values.location == 'Serpong' %}selected{% endif %}>Serpong</option>
+                            <option value="Serpong Utara" {% if search_values.location == 'Serpong Utara' %}selected{% endif %}>Serpong Utara</option>
+                            <option value="Setu" {% if search_values.location == 'Setu' %}selected{% endif %}>Setu</option>
+                        </optgroup>
+                        <optgroup label="Bekasi">
+                            <option value="Bantargebang" {% if search_values.location == 'Bantargebang' %}selected{% endif %}>Bantargebang</option>
+                            <option value="Bekasi Barat" {% if search_values.location == 'Bekasi Barat' %}selected{% endif %}>Bekasi Barat</option>
+                            <option value="Bekasi Selatan" {% if search_values.location == 'Bekasi Selatan' %}selected{% endif %}>Bekasi Selatan</option>
+                            <option value="Bekasi Timur" {% if search_values.location == 'Bekasi Timur' %}selected{% endif %}>Bekasi Timur</option>
+                            <option value="Bekasi Utara" {% if search_values.location == 'Bekasi Utara' %}selected{% endif %}>Bekasi Utara</option>
+                            <option value="Jatiasih" {% if search_values.location == 'Jatiasih' %}selected{% endif %}>Jatiasih</option>
+                            <option value="Jatisampurna" {% if search_values.location == 'Jatisampurna' %}selected{% endif %}>Jatisampurna</option>
+                            <option value="Medansatria" {% if search_values.location == 'Medansatria' %}selected{% endif %}>Medansatria</option>
+                            <option value="Mustikajaya" {% if search_values.location == 'Mustikajaya' %}selected{% endif %}>Mustikajaya</option>
+                            <option value="Pondok Gede" {% if search_values.location == 'Pondok Gede' %}selected{% endif %}>Pondok Gede</option>
+                            <option value="Pondokmelati" {% if search_values.location == 'Pondokmelati' %}selected{% endif %}>Pondokmelati</option>
+                            <option value="Rawalumbu" {% if search_values.location == 'Rawalumbu' %}selected{% endif %}>Rawalumbu</option>
+                        </optgroup>
+                        <optgroup label="Bogor">
+                            <option value="Bogor Barat" {% if search_values.location == 'Bogor Barat' %}selected{% endif %}>Bogor Barat</option>
+                            <option value="Bogor Selatan" {% if search_values.location == 'Bogor Selatan' %}selected{% endif %}>Bogor Selatan</option>
+                            <option value="Bogor Tengah" {% if search_values.location == 'Bogor Tengah' %}selected{% endif %}>Bogor Tengah</option>
+                            <option value="Bogor Timur" {% if search_values.location == 'Bogor Timur' %}selected{% endif %}>Bogor Timur</option>
+                            <option value="Bogor Utara" {% if search_values.location == 'Bogor Utara' %}selected{% endif %}>Bogor Utara</option>
+                            <option value="Bojonggede" {% if search_values.location == 'Bojonggede' %}selected{% endif %}>Bojonggede</option>
+                            <option value="Caringin" {% if search_values.location == 'Caringin' %}selected{% endif %}>Caringin</option>
+                            <option value="Ciampea" {% if search_values.location == 'Ciampea' %}selected{% endif %}>Ciampea</option>
+                            <option value="Ciawi" {% if search_values.location == 'Ciawi' %}selected{% endif %}>Ciawi</option>
+                            <option value="Cisarua" {% if search_values.location == 'Cisarua' %}selected{% endif %}>Cisarua</option>
+                            <option value="Gunung Putri" {% if search_values.location == 'Gunung Putri' %}selected{% endif %}>Gunung Putri</option>
+                            <option value="Jonggol" {% if search_values.location == 'Jonggol' %}selected{% endif %}>Jonggol</option>
+                            <option value="Parung" {% if search_values.location == 'Parung' %}selected{% endif %}>Parung</option>
+                        </optgroup>
+                        <optgroup label="Depok">
+                            <option value="Beji" {% if search_values.location == 'Beji' %}selected{% endif %}>Beji</option>
+                            <option value="Bojongsari" {% if search_values.location == 'Bojongsari' %}selected{% endif %}>Bojongsari</option>
+                            <option value="Cilodong" {% if search_values.location == 'Cilodong' %}selected{% endif %}>Cilodong</option>
+                            <option value="Cimanggis" {% if search_values.location == 'Cimanggis' %}selected{% endif %}>Cimanggis</option>
+                            <option value="Cinere" {% if search_values.location == 'Cinere' %}selected{% endif %}>Cinere</option>
+                            <option value="Cipayung" {% if search_values.location == 'Cipayung' %}selected{% endif %}>Cipayung</option>
+                            <option value="Limo" {% if search_values.location == 'Limo' %}selected{% endif %}>Limo</option>
+                            <option value="Sawangan" {% if search_values.location == 'Sawangan' %}selected{% endif %}>Sawangan</option>
+                            <option value="Sukmajaya" {% if search_values.location == 'Sukmajaya' %}selected{% endif %}>Sukmajaya</option>
+                            <option value="Tapos" {% if search_values.location == 'Tapos' %}selected{% endif %}>Tapos</option>
+                        </optgroup>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>
+
+                <div class="relative md:col-span-2">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-futbol w-5 h-5 text-white opacity-75"></i>
+                    </div>
+                    <select id="search-sport" name="sport_branch" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none">
+                        <option value="" {% if not search_values.sport_branch %}selected{% endif %}>Pilih cabang olahraga</option>
+                        <option value="sepakbola" {% if search_values.sport_branch == 'sepakbola' %}selected{% endif %}>Sepak Bola</option>
+                        <option value="basket" {% if search_values.sport_branch == 'basket' %}selected{% endif %}>Basket</option>
+                        <option value="voli" {% if search_values.sport_branch == 'voli' %}selected{% endif %}>Voli</option>
+                        <option value="badminton" {% if search_values.sport_branch == 'badminton' %}selected{% endif %}>Badminton</option>
+                        <option value="tenis" {% if search_values.sport_branch == 'tenis' %}selected{% endif %}>Tenis</option>
+                        <option value="futsal" {% if search_values.sport_branch == 'futsal' %}selected{% endif %}>Futsal</option>
+                        <option value="padel" {% if search_values.sport_branch == 'padel' %}selected{% endif %}>Padel</option>
+                        <option value="golf" {% if search_values.sport_branch == 'golf' %}selected{% endif %}>Golf</option>
+                        <option value="lainnya" {% if search_values.sport_branch == 'lainnya' %}selected{% endif %}>Lainnya</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>
+                <button type="submit" class="md:col-span-1 w-full bg-[#06005E] hover:bg-[#1A107A] text-white font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+                    Cari
+                </button>
+            </form>
+        </div>
 
         <div class="card-container">
             {% for coach in coaches %}
