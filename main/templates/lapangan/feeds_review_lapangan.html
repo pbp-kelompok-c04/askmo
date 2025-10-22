@@ -8,44 +8,154 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
     <style>
-        /* CSS Styling untuk Review Lapangan (HANYA feeds) */
-        body { background: #121212; color: #E0E0E0; font-family: 'Inter', sans-serif; padding: 20px; }
-        .review-container { max-width: 900px; margin: 50px auto; padding: 20px 30px; background: #1A1A1A; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .header-review { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .header-review h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-top: 10px; margin-bottom: 0; }
-        .header-review .rating-summary { font-size: 1.2rem; color: #FFD700; font-weight: 600; }
-        .back-link { text-decoration: none; color: #CFCFCF; transition: color 0.3s; margin-right: 20px; }
-        .back-link:hover { color: #571E88; }
+        body { 
+            background: #121212; 
+            color: #E0E0E0; 
+            font-family: 'Inter', sans-serif; 
+            padding: 20px; 
+        }
+        .review-container { 
+            max-width: 900px; 
+            margin: 50px auto; 
+            padding: 20px 30px; 
+            background: #1A1A1A; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+        }
+        .header-review { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 2px solid #333; 
+            padding-bottom: 15px; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap; 
+        }
+        .header-review h1 { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            color: #fff; 
+            margin-top: 10px; 
+            margin-bottom: 0; 
+        }
+        .header-review .rating-summary { 
+            font-size: 1.2rem; 
+            color: #FFD700; 
+            font-weight: 600; 
+        }
+        .back-link { 
+            text-decoration: none; 
+            color: #CFCFCF; 
+            transition: color 0.3s; 
+            margin-right: 20px; 
+        }
+        .back-link:hover { 
+            color: #571E88; 
+        }
         
-        /* Tombol yang sekarang berupa link */
         .btn-add-review-link { 
             background: #571E88; 
             color: white; 
-            padding: 10px 20px; 
+            padding: 12px 24px; 
             border: none; 
             border-radius: 8px; 
             cursor: pointer; 
             transition: background 0.3s; 
             font-weight: 500; 
             margin-bottom: 20px;
-            text-decoration: none; 
+            text-decoration: none;
             display: inline-block;
+            font-size: 1rem;
         }
-        .btn-add-review-link:hover { background: #7A3EAA; }
+        .btn-add-review-link:hover { 
+            background: #7A3EAA; 
+        }
         
-        .review-list { display: flex; flex-direction: column; gap: 25px; }
-        .review-card { background: #222; padding: 20px; border-radius: 10px; border-left: 5px solid #571E88; }
-        .review-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; }
-        .reviewer-info { display: flex; flex-direction: column; }
-        .reviewer-info strong { color: #fff; font-size: 1.1rem; font-weight: 600; }
-        .review-meta span { color: #aaa; font-size: 0.9em; margin-top: 5px; }
-        .review-card p { margin-top: 10px; line-height: 1.5; color: #CFCFCF; white-space: pre-wrap; }
-        .review-rating { color: #FFD700; font-size: 1.1rem; margin-bottom: 5px; }
-        .btn-delete { background: #b91c1c; color: white; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background 0.3s; font-size: 0.85em; }
-        .btn-delete:hover { background: #dc2626; }
+        .review-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 25px; 
+        }
+        .review-card { 
+            background: #222; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border-left: 5px solid #571E88; 
+        }
+        .review-meta { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 10px; 
+            flex-wrap: wrap; 
+        }
+        .reviewer-info { 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .reviewer-info strong { 
+            color: #fff; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+        }
+        .review-meta span { 
+            color: #aaa; 
+            font-size: 0.9em; 
+            margin-top: 5px; 
+        }
+        .review-card p { 
+            margin-top: 10px; 
+            line-height: 1.5; 
+            color: #CFCFCF; 
+            white-space: pre-wrap; 
+        }
+        .review-rating { 
+            color: #FFD700; 
+            font-size: 1.1rem; 
+            margin-bottom: 5px; 
+        }
+        
+        /* Tombol Action */
+        .review-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-edit { 
+            background: #571E88; 
+            color: white; 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-edit:hover { 
+            background: #7A3EAA; 
+        }
+        .btn-delete { 
+            background: #b91c1c; 
+            color: white; 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-delete:hover { 
+            background: #dc2626; 
+        }
     </style>
 </head>
 <body>
@@ -63,11 +173,15 @@
         <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
             <i class="fas fa-edit"></i> Beri Review & Rating
         </a>
+        
         <h2 style="margin-top: 30px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px;">Semua Review</h2>
         
         <div class="review-list" id="review-list-container">
-            </div>
-        <p id="no-review-message" style="color: #999; margin-top: 20px; text-align: center; display: none;">Belum ada review untuk lapangan ini. Jadilah yang pertama!</p>
+            <!-- Reviews akan dimuat via JavaScript -->
+        </div>
+        <p id="no-review-message" style="color: #999; margin-top: 20px; text-align: center; display: none;">
+            Belum ada review untuk lapangan ini. Jadilah yang pertama!
+        </p>
 
     </div>
 
@@ -76,7 +190,7 @@
         const noReviewMessage = document.getElementById('no-review-message');
 
         async function fetchReviews() {
-            reviewListContainer.innerHTML = 'Memuat review...';
+            reviewListContainer.innerHTML = '<div style="text-align: center; color: #999;">Memuat review...</div>';
             try {
                 const url = `{% url 'main:get_reviews_json' lapangan.id %}`;
                 const response = await fetch(url);
@@ -94,9 +208,22 @@
                     const reviewCard = document.createElement('div');
                     reviewCard.className = 'review-card';
                     
-                    let deleteButton = '';
-                    if (review.can_delete) {
-                        deleteButton = `<button class="btn-delete" onclick="deleteReview(${review.id})"><i class="fas fa-trash"></i> Hapus</button>`;
+                    let actionButtons = '';
+                    if (review.can_edit || review.can_delete) {
+                        actionButtons = `
+                            <div class="review-actions">
+                                ${review.can_edit ? `
+                                    <a href="/lapangan/review/edit/${review.id}/" class="btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                ` : ''}
+                                ${review.can_delete ? `
+                                    <button class="btn-delete" onclick="deleteReview(${review.id})">
+                                        <i class="fas fa-trash"></i> Hapus
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
                     }
 
                     reviewCard.innerHTML = `
@@ -107,11 +234,11 @@
                             </div>
                             <div>
                                 <span>${review.tanggal_dibuat}</span>
-                                ${deleteButton}
                             </div>
                         </div>
                         <p>${review.review_text}</p>
                         ${review.gambar ? `<img src="${review.gambar}" alt="Gambar Review" style="max-width: 100%; height: auto; border-radius: 5px; margin-top: 15px;">` : ''}
+                        ${actionButtons}
                     `;
                     reviewListContainer.appendChild(reviewCard);
                 });
@@ -121,8 +248,9 @@
             }
         }
 
+        // Fungsi Delete Review
         async function deleteReview(reviewId) {
-            if (!confirm("Hanya Admin/Staff yang dapat menghapus. Apakah Anda yakin ingin menghapus review ini?")) {
+            if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) {
                 return;
             }
 
@@ -131,7 +259,7 @@
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        'X-CSRFToken': '{{ csrf_token }}',
                     }
                 });
 

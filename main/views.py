@@ -278,6 +278,10 @@ def show_lapangan_dashboard(request):
     }
     return render(request, 'lapangan/dashboard_lapangan.html', context)
 
+#==========================================================
+# Semua fungsi buat review hehe
+#==========================================================
+
 def show_review_lapangan(request, lapangan_id):
     try:
         lapangan = Lapangan.objects.get(pk=lapangan_id)
@@ -319,7 +323,6 @@ def show_form_review_lapangan(request, lapangan_id):
             new_review.lapangan = lapangan
             new_review.save()
             
-            # ini update ratingnya
             average_rating = Review.objects.filter(lapangan=lapangan).aggregate(Avg('rating'))['rating__avg'] or 0.0
             lapangan.rating = round(average_rating, 1)
             lapangan.save()
@@ -361,41 +364,39 @@ def add_review_lapangan(request, lapangan_id):
     
     return JsonResponse({'status': 'error', 'message': 'Metode permintaan tidak valid.'}, status=405)
 
-
-def get_reviews_json(request, lapangan_id):
-    try:
-        lapangan = Lapangan.objects.get(pk=lapangan_id)
-    except Lapangan.DoesNotExist:
-        return JsonResponse({'detail': 'Lapangan not found'}, status=404)
-        
-    reviews = Review.objects.filter(lapangan=lapangan).order_by('-tanggal_dibuat')
     
-    can_delete_review = request.user.is_authenticated and (request.user.is_superuser or request.user.is_staff)
-
-    data = [
-        {
-            'id': review.id,
-            'reviewer_name': review.reviewer_name,  
-            'rating': float(review.rating),
-            'review_text': review.review_text,
-            'tanggal_dibuat': review.tanggal_dibuat.strftime("%Y-%m-%d %H:%M"),
-            'gambar': review.gambar,
-            'can_delete': can_delete_review 
-        }
-        for review in reviews
-    ]
-    return JsonResponse(data, safe=False)
-
+@csrf_exempt
+def update_review(request, review_id):
+    try:
+        review = Review.objects.get(pk=review_id)
+        if review.session_key != request.session.session_key:
+            return JsonResponse({'status': 'error', 'message': 'Anda tidak memiliki izin untuk mengedit review ini.'}, status=403)
+            
+        if request.method == 'POST':
+            form = ReviewForm(request.POST, instance=review)
+            if form.is_valid():
+                form.save()
+                
+                lapangan = review.lapangan
+                average_rating = Review.objects.filter(lapangan=lapangan).aggregate(Avg('rating'))['rating__avg'] or 0.0
+                lapangan.rating = round(average_rating, 1)
+                lapangan.save()
+                
+                return JsonResponse({'status': 'success', 'message': 'Review berhasil diupdate!'})
+            else:
+                errors = dict(form.errors.items())
+                return JsonResponse({'status': 'error', 'errors': errors}, status=400)
+                
+    except Review.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Review tidak ditemukan.'}, status=404)
 
 @csrf_exempt
 @require_POST
 def delete_review(request, review_id):
-    if not request.user.is_authenticated or not (request.user.is_superuser or request.user.is_staff):
-        return JsonResponse({'status': 'error', 'message': 'Anda tidak memiliki izin untuk menghapus review.'}, status=403)
-        
     try:
         review = Review.objects.get(pk=review_id)
         lapangan = review.lapangan
+        
         review.delete()
         
         average_rating = Review.objects.filter(lapangan=lapangan).aggregate(Avg('rating'))['rating__avg'] or 0.0
@@ -405,5 +406,72 @@ def delete_review(request, review_id):
         return JsonResponse({'status': 'success', 'message': 'Review berhasil dihapus.'}, status=200)
     except Review.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Review tidak ditemukan.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+
+def get_reviews_json(request, lapangan_id):
+    try:
+        lapangan = Lapangan.objects.get(pk=lapangan_id)
+    except Lapangan.DoesNotExist:
+        return JsonResponse({'detail': 'Lapangan not found'}, status=404)
+        
+    reviews = Review.objects.filter(lapangan=lapangan).order_by('-tanggal_dibuat')
+    
+    # Untuk sementara, set semua bisa edit/hapus (nanti ganti dengan session logic)
+    current_session = request.session.session_key
+    can_delete_review = True  # Ganti dengan logic session nanti
+
+    data = [
+        {
+            'id': review.id,
+            'reviewer_name': review.reviewer_name,
+            'rating': float(review.rating),
+            'review_text': review.review_text,
+            'tanggal_dibuat': review.tanggal_dibuat.strftime("%Y-%m-%d %H:%M"),
+            'gambar': review.gambar,
+            'can_edit': True, 
+            'can_delete': True  
+        }
+        for review in reviews
+    ]
+    return JsonResponse(data, safe=False)
+
+def get_single_review_json(request, review_id):
+    try:
+        review = Review.objects.get(pk=review_id)
+        data = {
+            'id': review.id,
+            'reviewer_name': review.reviewer_name,
+            'rating': float(review.rating),
+            'review_text': review.review_text,
+            'gambar': review.gambar,
+        }
+        return JsonResponse(data)
+    except Review.DoesNotExist:
+        return JsonResponse({'detail': 'Review not found'}, status=404)
+
+def show_edit_review_lapangan(request, review_id):
+    try:
+        review = Review.objects.get(pk=review_id)
+            
+        if request.method == 'POST':
+            form = ReviewForm(request.POST, instance=review)
+            if form.is_valid():
+                form.save()
+                
+                lapangan = review.lapangan
+                average_rating = Review.objects.filter(lapangan=lapangan).aggregate(Avg('rating'))['rating__avg'] or 0.0
+                lapangan.rating = round(average_rating, 1)
+                lapangan.save()
+                
+                return redirect('main:show_feeds_review_lapangan', lapangan_id=review.lapangan.id)
+        else:
+            form = ReviewForm(instance=review)
+
+        context = {
+            'review': review,
+            'review_form': form,
+        }
+        return render(request, 'lapangan/edit_review_lapangan.html', context)
+        
+    except Review.DoesNotExist:
+        return HttpResponse("Review tidak ditemukan.", status=404)

@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views import add_review_lapangan, delete_review, get_reviews_json, show_feeds_review_lapangan, show_form_review_lapangan, show_main, login_user, register, logout_user, show_review_lapangan
+from main.views import add_review_lapangan, delete_review, get_reviews_json, get_single_review_json, show_edit_review_lapangan, show_feeds_review_lapangan, show_form_review_lapangan, show_main, login_user, register, logout_user, show_review_lapangan, update_review
 from main.views import register_ajax, login_ajax, logout_ajax
 
 from main.views import show_xml, show_json, show_xml_by_id, show_json_by_id, show_lapangan_by_alamat_xml, show_lapangan_by_alamat_json,  show_lapangan_by_kecamatan_xml, show_lapangan_by_kecamatan_json, show_lapangan_dashboard
@@ -25,15 +25,12 @@ urlpatterns = [
     path('lapangan/review/<uuid:lapangan_id>/', show_review_lapangan, name='show_review_lapangan'),
     path('lapangan/review/add-ajax/<uuid:lapangan_id>/', add_review_lapangan, name='add_review_lapangan'),
     path('lapangan/review/json/<uuid:lapangan_id>/', get_reviews_json, name='get_reviews_json'),
-    # review_id adalah integer karena pk model Review defaultnya adalah integer
     path('lapangan/review/delete-ajax/<int:review_id>/', delete_review, name='delete_review'),
-    # URL untuk Feeds (Daftar Review)
     path('lapangan/review/feeds/<uuid:lapangan_id>/', show_feeds_review_lapangan, name='show_feeds_review_lapangan'),
-    
-    # URL untuk Form (Input Review)
     path('lapangan/review/form/<uuid:lapangan_id>/', show_form_review_lapangan, name='show_form_review_lapangan'),
-    
-    # URL untuk AJAX/API (Digunakan oleh form halaman penuh jika kita ingin menggunakan AJAX)
     path('lapangan/review/add-ajax/<uuid:lapangan_id>/', add_review_lapangan, name='add_review_lapangan'),
-    path('lapangan/review/feeds/<uuid:lapangan_id>/', show_feeds_review_lapangan, name='show_feeds_review_lapangan')
+    path('lapangan/review/feeds/<uuid:lapangan_id>/', show_feeds_review_lapangan, name='show_feeds_review_lapangan'),
+    path('lapangan/review/update-ajax/<int:review_id>/', update_review, name='update_review'),
+    path('json/review/<int:review_id>/', get_single_review_json, name='get_single_review_json'),
+    path('lapangan/review/edit/<int:review_id>/', show_edit_review_lapangan, name='show_edit_review_lapangan'),
 ]
