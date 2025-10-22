@@ -147,11 +147,11 @@
             background-color: gray; /* Warna abu */
         }
         .action-btn.save i {
-            color: white; /* Default color */
+            color: rgb(255, 255, 255); /* Default color */
             transition: color 0.2s;
         }
         .action-btn.save.is-saved i {
-            color: #FFD700; /* Warna Kuning saat sudah disimpan */
+            color: #FFD700 !important; /* Warna Kuning saat sudah disimpan */
         }
         .action-btn.phone {
             background-color: #3498DB; /* Warna biru telepon */
@@ -187,18 +187,18 @@
 
             {% if not is_email and phone_number_cleaned and whatsapp_number %}
             <div class="action-buttons">
-<<<<<<< HEAD
                 <a 
-                    type="button" 
-                    id="wishlist-btn-coach-{{ coach.pk }}" 
-                    onclick="openWishlistModal('coach', '{{ coach.pk }}')" 
+                    href="{% url 'coach:add_to_coach_list' coach.pk %}" 
                     class="action-btn save {% if is_saved_to_wishlist %}is-saved{% endif %}" 
                     style="cursor: pointer;"> 
                     
-=======
-                <a type="button" onclick="openWishlistModal('coach', '{{ coach.pk }}')" class="action-btn save">
->>>>>>> feat/coach
-                    <i class="fas fa-bookmark"></i> Tambahkan ke Wishlist
+                    <i class="fas fa-bookmark"></i> 
+                    
+                    {% if is_saved_to_wishlist %}
+                        Hapus dari Wishlist 
+                    {% else %}
+                        Tambahkan ke Wishlist
+                    {% endif %}
                 </a>
                 <a href="https://wa.me/{{ whatsapp_number }}" target="_blank" class="action-btn whatsapp">
                     <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp

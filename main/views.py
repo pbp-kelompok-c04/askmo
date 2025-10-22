@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core import serializers
-
+from coach.models import CoachWishlist
 from main.forms import LapanganForm, CoachForm, EventForm
 from main.models import Lapangan, Coach, Event
 from django.db.models import Q
@@ -116,12 +116,13 @@ def show_profile(request):
     
     avatars = Avatar.objects.all()
     olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
-
+    wishlist_coaches = CoachWishlist.objects.filter(user=request.user).select_related('coach')
     context = {
         'profile': profile,
         'avatars': avatars,
         'olahraga_choices': olahraga_choices,
         'current_sport_key': profile.olahraga_favorit,
+        'coach_wishlist': wishlist_coaches,
     }
     return render(request, 'profile.html', context) 
 
@@ -287,6 +288,15 @@ def show_lapangan_dashboard(request):
 
     lapangan_list = Lapangan.objects.all()
 
+    wishlist_collection, created = Collection.objects.get_or_create(
+        user=request.user, 
+        defaults={'name': 'Wishlist Default'}
+    )
+
+    wishlist_lapangan_ids = wishlist_collection.lapangan.values_list('pk', flat=True)
+    for lapangan in lapangan_list:
+        lapangan.is_saved_to_wishlist = lapangan.pk in wishlist_lapangan_ids
+
     if search_nama :
         lapangan_list = lapangan_list.filter(nama__icontains=search_nama)
     if search_kecamatan :
@@ -300,21 +310,6 @@ def show_lapangan_dashboard(request):
         'olahraga_choices' : Lapangan.OLAHRAGA_CHOICES,
     }
     return render(request, 'lapangan/dashboard_lapangan.html', context)
-
-@login_required(login_url='/login/')
-def show_profile(request):
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
-    avatars = Avatar.objects.all()
-    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
-
-    context = {
-        'profile': profile,
-        'avatars': avatars,
-        'olahraga_choices': olahraga_choices,
-        'current_sport_key': profile.olahraga_favorit,
-    }
-    return render(request, 'profile.html', context) 
 
 @login_required(login_url='/login/')
 @csrf_exempt
@@ -458,6 +453,39 @@ def toggle_save_item_to_collection_ajax(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Gagal memproses permintaan: {str(e)}'}, status=500)
     
+# main/views.py (sekitar baris 417)
+@login_required
+@require_POST
+def toggle_wishlist(request):
+    try:
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        item_type = data.get('item_type')
+        user = request.user
+        
+        collection, created = Collection.objects.get_or_create(
+            user=user, 
+            defaults={'name': 'Wishlist Default'}
+        )
+
+        if item_type == 'lapangan':
+            lapangan = Lapangan.objects.get(id=item_id)
+            
+            if collection.lapangan.filter(pk=item_id).exists():
+                collection.lapangan.remove(lapangan)
+                return JsonResponse({'status': 'removed', 'message': 'Berhasil dihapus dari wishlist'})
+            else:
+                collection.lapangan.add(lapangan)
+                return JsonResponse({'status': 'added', 'message': 'Berhasil ditambahkan ke wishlist'})
+        
+        # ... (Anda bisa menambahkan logika coach di sini jika ingin menggunakan URL yang sama)
+
+        return JsonResponse({'status': 'error', 'message': 'Invalid item type'}, status=400)
+    except Lapangan.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Lapangan not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
 @login_required
 def show_collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
@@ -512,7 +540,8 @@ def show_wishlist_lapangan(request):
     user_collections = Collection.objects.filter(user=request.user)
     
     lapangan_list = Lapangan.objects.filter(collection__in=user_collections).distinct()
-    
+    for lapangan in lapangan_list:
+        lapangan.is_saved_to_wishlist = True
     context = {
         'lapangan_list': lapangan_list,
     }
@@ -520,9 +549,8 @@ def show_wishlist_lapangan(request):
 
 @login_required
 def show_wishlist_coach(request):
-    user_collections = Collection.objects.filter(user=request.user)
-    
-    coach_list = Coach.objects.filter(collection__in=user_collections).distinct()
+    wishlist_items = CoachWishlist.objects.filter(user=request.user).select_related('coach')    
+    coach_list = [item.coach for item in wishlist_items]
     
     context = {
         'coach_list': coach_list,

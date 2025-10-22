@@ -14,10 +14,6 @@ User = get_user_model()
 # ==============================================================================
 
 def coach_list_view(request):
-    """
-    Menampilkan daftar coach untuk semua pengguna dan menangani fungsionalitas pencarian.
-    """
-    # Mengambil semua objek Coach dari database sebagai daftar awal, diurutkan berdasarkan nama
     coaches_list = Coach.objects.all().order_by('name')
 
     # Ambil nilai dari parameter GET di URL untuk filter
@@ -45,16 +41,14 @@ def coach_list_view(request):
 
 
 def coach_detail_view(request, pk):
-    coach = get_object_or_404(Coach, pk=pk)
+    coach_instance = get_object_or_404(Coach, pk=pk)
     
-    is_saved_to_wishlist = False
-    if request.user.is_authenticated:
-        is_saved_to_wishlist = Collection.objects.filter(
-            user=request.user,
-            coach=coach
-        ).exists()
+    is_saved_to_wishlist = CoachWishlist.objects.filter(
+        coach=coach_instance, 
+        user=request.user
+    ).exists()
 
-    contact_str = coach.contact
+    contact_str = coach_instance.contact
     phone_number_cleaned = None
     whatsapp_number = None
 
@@ -73,7 +67,7 @@ def coach_detail_view(request, pk):
             whatsapp_number = phone_number_cleaned
 
     context = {
-        'coach': coach,
+        'coach': coach_instance,
         'phone_number_cleaned': phone_number_cleaned,
         'whatsapp_number': whatsapp_number,
         'is_saved_to_wishlist': is_saved_to_wishlist
@@ -188,21 +182,15 @@ def coach_delete_view(request, pk):
 
 @login_required
 def add_to_wishlist_view(request, pk):
-    if request.method != 'GET': 
-        pass
     coach = get_object_or_404(Coach, pk=pk)
     user = request.user
-    try:
-        wishlist_item, created = CoachWishlist.objects.get_or_create(
-            user=user,
-            coach=coach
-        )
-        if created:
-            print(f"Coach {coach.name} ditambahkan ke wishlist.")
-        else:
-            print(f"Coach {coach.name} sudah ada di wishlist.")
-    except Exception as e:
-        print(f"Error: {e}")
+    
+    wishlist_item = CoachWishlist.objects.filter(user=user, coach=coach)
+    
+    if wishlist_item.exists():
+        wishlist_item.delete()
+    else:
+        CoachWishlist.objects.create(user=user, coach=coach)        
     return redirect('coach:coach_detail', pk=pk)
 
 @login_required
@@ -219,6 +207,6 @@ def coach_wishlist_list_view(request):
     wishlist_items = CoachWishlist.objects.filter(user=request.user)
     coaches_in_wishlist = [item.coach for item in wishlist_items]
     context = {
-        'coaches': coaches_in_wishlist
+        'coach_list': coaches_in_wishlist
     }
-    return render(request, 'wishlist_coach_list.html', context)
+    return render(request, 'wishlist/wishlist_coach_list.html', context)

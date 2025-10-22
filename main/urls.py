@@ -43,6 +43,7 @@ urlpatterns = [
     path('api/wishlist/toggle-save/', views.toggle_save_item_to_collection_ajax, name='toggle_save_item_ajax'),
     path('wishlist/<uuid:collection_id>/', views.show_collection_detail, name='show_collection_detail'),
     path('api/wishlist/edit/', views.edit_collection_name_ajax, name='edit_collection_name_ajax'),
+    path('wishlist/toggle/', views.toggle_wishlist, name='toggle_wishlist'),
     
     # Coach Add (Mengarahkan ke modal/collections)
     path('coach/add_to_wishlist/<uuid:coach_id>/', views.add_to_coach_list, name='add_to_coach_list'),
