@@ -35,6 +35,11 @@
             position: relative;
             border: 1px solid #333;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            scrollbar-width: none;
+        }
+
+        #modal-content::-webkit-scrollbar {
+        display: none;
         }
 
         #modal-close-btn {
@@ -137,12 +142,18 @@
         }
         .search-container {
             display: flex; 
-        gap: 15px; /* Space between elements */
-        align-items: center;
+            gap: 15px; 
+            align-items: center;
             max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
             padding: 0 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;    
         }
     </style>
 {% endblock meta %}
@@ -386,6 +397,10 @@
             <div class="modal-body">
                 <h2 id="modal-nama">Nama Lapangan</h2>
                 
+                <!-- <div class="container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.183271344546!2d106.82447380886398!3d-6.370323693593243!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ec1ad14fb6cf%3A0xc94e4d829420fa15!2sFaculty%20of%20Computer%20Science%2C%20University%20of%20Indonesia!5e0!3m2!1sen!2sid!4v1761140126873!5m2!1sen!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div> -->
+
                 <div class="modal-priority-info">
                     <p><i class="fas fa-map-marker-alt"></i> <span id="modal-alamat">Alamat...</span></p>
                     <p><i class="fas fa-location-arrow"></i> <span id="modal-kecamatan">Kecamatan...</span></p>
@@ -394,11 +409,11 @@
                     <p><i class="fas fa-money-bill-wave"></i> <span id="modal-tarif">Tarif...</span></p>
                     <p><i class="fas fa-undo"></i> <span id="modal-refund">Refund...</span></p>
                 </div>
-                
+
                 <a id="modal-kontak-btn" href="#" target="_blank">
                     <i class="fas fa-phone"></i> Hubungi
                 </a>
-                
+
                 <hr class="modal-divider">
                 
                 <div class="modal-details">
@@ -490,7 +505,6 @@
                 const cookies = document.cookie.split(';');
                 for (let i = 0; i < cookies.length; i++) {
                     const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
                     if (cookie.startsWith(name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -504,7 +518,7 @@
 
         async function toggleWishlist(itemId, itemType) {
             try {
-                const response = await fetch('/wishlist/toggle/', { // <--- Sesuaikan URL ini dengan URL Django Anda
+                const response = await fetch('/wishlist/toggle/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -534,7 +548,7 @@
 
             } catch (error) {
                 console.error("Error toggling wishlist:", error);
-                alert("Gagal menghubungi server. Pastikan Anda sudah login."); // Tambahkan pesan ini jika login diperlukan
+                alert("Gagal menghubungi server. Pastikan Anda sudah login.");
             }
         }
         function updateBookmarkIcon(itemId, action) {
