@@ -81,6 +81,22 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Event',
+            fields=[
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('nama', models.CharField(max_length=255)),
+                ('olahraga', models.CharField(choices=[('sepakbola', 'Sepak Bola'), ('basket', 'Basket'), ('voli', 'Voli'), ('badminton', 'Badminton'), ('tenis', 'Tenis'), ('futsal', 'Futsal'), ('padel', 'Padel'), ('golf', 'Golf'), ('lainnya', 'Lainnya')], default='lainnya', max_length=20)),
+                ('deskripsi', models.TextField()),
+                ('tanggal', models.DateField()),
+                ('lokasi', models.CharField(max_length=255)),
+                ('kontak', models.CharField(max_length=100)),
+                ('biaya', models.IntegerField(default=0)),
+                ('thumbnail', models.URLField(blank=True, null=True)),
+                ('jam', models.TimeField(blank=True, null=True)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
             name='UserProfile',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

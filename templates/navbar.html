@@ -6,9 +6,10 @@
             <!-- Sudah Login -->
             {% if user.is_authenticated %} 
                   <div class="flex items-center space-x-8 text-lg">
+                      <a href="{% url 'main:show_main' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Beranda</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
                       <a href="#" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Coach</a>
-                      <a href="#" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
+                      <a href="{% url 'main:show_event' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
                       <a></a>
                   </div>
                   <div class="flex items-center space-x-4 text-lg">
@@ -19,9 +20,11 @@
             <!-- Belum Login -->
             {% else %}
                   <div class="flex items-center space-x-8 text-lg">
+                      <a href="{% url 'main:show_main' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Beranda</a>
+                      <a href="#" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
                       <a href="#" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Coach</a>
-                      <a href="#" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
+                      <a href="{% url 'main:show_event' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
                       <a href="{% url 'main:login' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Masuk</a>
                       <a></a>
                   </div>
@@ -45,16 +48,18 @@
           <div id="mobile-menu" class="hidden absolute top-full right-0 mt-2 w-auto">
               <div class="flex flex-col items-end space-y-2">
                   {% if user.is_authenticated %}
+                      <a href="{% url 'main:show_main' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Beranda</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
                       <a href="#" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Coach</a>
-                      <a href="#" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Event</a>
+                      <a href="{% url 'main:show_event' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Event</a>
                       <div class="w-full border-t border-gray-700 my-1"></div>
                       <a href="{% url 'main:show_profile' %}" class="block px-4 py-2 text-base text-gray-500 hover:text-white">{{ user.username }}</a>
                       <a href="{% url 'main:logout' %}" class="block px-4 py-2 text-base font-semibold text-[#FF5555] hover:text-red-400">Logout</a>
                   {% else %}
-                      <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
+                      <a href="{% url 'main:show_main' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Beranda</a>
+                      <a href="#" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Lapangan</a>
                       <a href="#" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Coach</a>
-                      <a href="#" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Event</a>
+                      <a href="{% url 'main:show_event' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
                       <div class="w-full border-t border-gray-700 my-1"></div>
                       <a href="{% url 'main:login' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Masuk</a>
                       <a href="{% url 'main:register' %}" class="block text-center mt-2 w-full bg-[#06005E] text-white font-semibold px-5 py-1.5 rounded-full hover:bg-[#717171]">Daftar</a>
