@@ -1,0 +1,161 @@
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between; /* Untuk menempatkan nav dan user-profile di ujung */
+    align-items: center;
+    padding: 20px 50px;
+    position: relative; /* Penting untuk penempatan absolut nav */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 20px;
+    border: 1px solid #333;
+    border-radius: 50px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; 
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-weight: 500;
+}
+
+nav ul li a.active {
+    font-weight: 700;
+}
+
+nav ul li a.logout {
+    color: #E53E3E;
+    position: relative;
+    margin-left: 10px;
+}
+
+nav ul li a.logout::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 1px;
+    background-color: #333;
+}
+
+.user-profile span {
+    font-size: 1em;
+    font-weight: 500;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 50px;
+}
+
+h1 {
+    font-size: 4em;
+    margin-bottom: 40px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.search-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 50px;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center;
+    flex-wrap: wrap; /* Agar responsif */
+}
+
+.search-input {
+    background-color: #1A1A1A;
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    min-width: 200px; /* Lebar minimum untuk input */
+}
+
+.search-input i {
+    color: #888;
+    margin-right: 15px;
+}
+
+.search-input input {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1em;
+    width: 100%;
+}
+
+.search-input input::placeholder {
+    color: #888;
+}
+
+.search-input input:focus {
+    outline: none;
+}
+
+.search-button {
+    background-color: #06005E; 
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 40px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.card-container {
+    display: flex;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center;
+    flex-wrap: wrap; /* Menambahkan wrap agar rapi */
+}
+
+.card {
+    background-color: #1A1A1A;
+    border-radius: 20px;
+    width: 300px;
+    height: 400px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transisi untuk hover */
+}
+
+/* !!! CSS BARU DITAMBAHKAN DI SINI !!! */
+
+/* Menghilangkan dekorasi link pada kartu */
+.card-link {
+    text-decoration: none; /* Menghilangkan garis bawah link */
+    color: inherit; /* Mewarisi warna teks (putih) */
+    display: block; /* Membuat link berperilaku sebagai block */
+}
+
+/* Efek hover opsional agar lebih interaktif */
+.card-link:hover .card {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(6, 0, 94, 0.3);
+}

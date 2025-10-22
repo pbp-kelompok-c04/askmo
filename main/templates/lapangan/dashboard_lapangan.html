@@ -1,9 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends 'base.html' %}  {% load static %}
+
+{% block meta %}
     <title>Lapangan - ASKMO</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -136,27 +133,11 @@
         }
 
     </style>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="{% url 'main:show_lapangan_dashboard' %}" class="active">Lapangan</a></li>
-                <li><a href="#">Event</a></li>
-                <li><a href="{% url 'main:logout' %}" class="logout">Logout</a></li>
-            </ul>
-        </nav>
-        <div class="user-profile">
-            {% if user.is_authenticated %}
-                <span>{{ user.username }}</span>
-            {% else %}
-                <span>Guest</span>
-            {% endif %}
-        </div>
-    </header>
-
-    <main>
-        <h1>LAPANGAN</h1>
+    {% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
+    <main class="pt-24">
+        <h1 class="text-6xl font-bold text-white text-center mb-6">LAPANGAN</h1>
         
         <form class="search-container" method="GET" action="{% url 'main:show_lapangan_dashboard' %}">
             <div class="search-input">
@@ -262,8 +243,6 @@
             </div>
         </div>
     </div>
-
-
     <script>
         const modalOverlay = document.getElementById('modal-overlay');
         const modalNama = document.getElementById('modal-nama');
@@ -331,6 +310,4 @@
         }
 
     </script>
-
-</body>
-</html>
+{% endblock content %}
