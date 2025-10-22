@@ -170,6 +170,15 @@
 
 {% block content %}
 {% include 'navbar.html' %}
+
+<div class="fixed top-9 right-9 z-50 hidden md:block">
+  <a href="{% url 'main:show_profile' %}">
+    <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
+      <span>{{ user.username }}</span>
+    </div>
+  </a>
+</div>
+
 <div class="main-content-container"> 
     <main>
         <h1 style="font-size: 40px; margin-bottom: 30px;"><b>Wishlist - Lapangan</b></h1>
