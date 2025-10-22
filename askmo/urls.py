@@ -25,9 +25,7 @@ urlpatterns = [
     # URL default untuk panel admin bawaan Django (tidak kita gunakan, tapi baik untuk ada)
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
-
     path('coach/', include('coach.urls', namespace='coach')),
-
 ]
 
 # Konfigurasi ini PENTING untuk menampilkan gambar yang di-upload (seperti foto coach)
