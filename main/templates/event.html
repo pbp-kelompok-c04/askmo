@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block meta %}
+<title>Event - ASKMO</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="fixed top-9 right-9 z-50 hidden md:block">
+    <a href="{% url 'main:show_profile' %}">
+        <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
+        <span>{{ user.username }}</span>
+        </div>
+    </a>
+</div>
+
+<main>
+    <h1 class="text-white" style="margin-top: 70px; margin-bottom: 15px; font-size: 40px; text-align: center;"><b>EVENT</b></h1>
+    
+    <div class="bg-[#353535] rounded-xl p-4 mb-8">
+        <form id="search-form" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center">
+            <div class="relative md:col-span-2">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <i class="fas fa-search w-5 h-5 text-white opacity-75"></i>
+                </div>
+                <input type="text" id="search-name" name="search_name" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white placeholder:text-white focus:outline-none focus:border-[#06005E] focus:border-[2px]" placeholder="Cari nama event">
+            </div>
+
+            <div class="relative md:col-span-2">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <i class="fas fa-map-marker-alt w-5 h-5 text-white opacity-75"></i>
+                </div>
+                <select id="search-location" name="search_location" 
+                        class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none" 
+                        style="color-scheme: dark;">
+                    <option value="">Pilih lokasi</option>
+                    <optgroup label="Jakarta Pusat">
+                        <option value="Cempaka Putih">Cempaka Putih</option>
+                        <option value="Gambir">Gambir</option>
+                        <option value="Johar Baru">Johar Baru</option>
+                        <option value="Kemayoran">Kemayoran</option>
+                        <option value="Menteng">Menteng</option>
+                        <option value="Sawah Besar">Sawah Besar</option>
+                        <option value="Senen">Senen</option>
+                        <option value="Tanah Abang">Tanah Abang</option>
+                    </optgroup>
+                    <optgroup label="Jakarta Utara">
+                        <option value="Cilincing">Cilincing</option>
+                        <option value="Kelapa Gading">Kelapa Gading</option>
+                        <option value="Koja">Koja</option>
+                        <option value="Pademangan">Pademangan</option>
+                        <option value="Penjaringan">Penjaringan</option>
+                        <option value="Tanjung Priok">Tanjung Priok</option>
+                    </optgroup>
+                    <optgroup label="Jakarta Timur">
+                        <option value="Cakung">Cakung</option>
+                        <option value="Cipayung">Cipayung</option>
+                        <option value="Ciracas">Ciracas</option>
+                        <option value="Duren Sawit">Duren Sawit</option>
+                        <option value="Jatinegara">Jatinegara</option>
+                        <option value="Kramat Jati">Kramat Jati</option>
+                        <option value="Makasar">Makasar</option>
+                        <option value="Matraman">Matraman</option>
+                        <option value="Pasar Rebo">Pasar Rebo</option>
+                        <option value="Pulo Gadung">Pulo Gadung</option>
+                    </optgroup>
+                    <optgroup label="Jakarta Selatan">
+                        <option value="Cilandak">Cilandak</option>
+                        <option value="Jagakarsa">Jagakarsa</option>
+                        <option value="Kebayoran Baru">Kebayoran Baru</option>
+                        <option value="Kebayoran Lama">Kebayoran Lama</option>
+                        <option value="Mampang Prapatan">Mampang Prapatan</option>
+                        <option value="Pancoran">Pancoran</option>
+                        <option value="Pasar Minggu">Pasar Minggu</option>
+                        <option value="Pesanggrahan">Pesanggrahan</option>
+                        <option value="Setiabudi">Setiabudi</option>
+                        <option value="Tebet">Tebet</option>
+                    </optgroup>
+                    <optgroup label="Jakarta Barat">
+                        <option value="Cengkareng">Cengkareng</option>
+                        <option value="Grogol Petamburan">Grogol Petamburan</option>
+                        <option value="Taman Sari">Taman Sari</option>
+                        <option value="Tambora">Tambora</option>
+                        <option value="Kebon Jeruk">Kebon Jeruk</option>
+                        <option value="Kalideres">Kalideres</option>
+                        <option value="Palmerah">Palmerah</option>
+                        <option value="Kembangan">Kembangan</option>
+                    </optgroup>
+                    <optgroup label="Kepulauan Seribu">
+                        <option value="Kepulauan Seribu Utara">Kepulauan Seribu Utara</option>
+                        <option value="Kepulauan Seribu Selatan">Kepulauan Seribu Selatan</option>
+                    </optgroup>
+                    <optgroup label="Tangerang Kota">
+                        <option value="Batuceper">Batuceper</option>
+                        <option value="Benda">Benda</option>
+                        <option value="Cibodas">Cibodas</option>
+                        <option value="Ciledug">Ciledug</option>
+                        <option value="Cipondoh">Cipondoh</option>
+                        <option value="Jatiuwung">Jatiuwung</option>
+                        <option value="Karangtengah">Karangtengah</option>
+                        <option value="Karawaci">Karawaci</option>
+                        <option value="Larangan">Larangan</option>
+                        <option value="Neglasari">Neglasari</option>
+                        <option value="Periuk">Periuk</option>
+                        <option value="Pinang">Pinang</option>
+                        <option value="Tangerang">Tangerang</option>
+                    </optgroup>
+                    <optgroup label="Tangerang Selatan">
+                        <option value="Ciputat">Ciputat</option>
+                        <option value="Ciputat Timur">Ciputat Timur</option>
+                        <option value="Pamulang">Pamulang</option>
+                        <option value="Pondok Aren">Pondok Aren</option>
+                        <option value="Serpong">Serpong</option>
+                        <option value="Serpong Utara">Serpong Utara</option>
+                        <option value="Setu">Setu</option>
+                    </optgroup>
+                    <optgroup label="Bekasi">
+                        <option value="Bantargebang">Bantargebang</option>
+                        <option value="Bekasi Barat">Bekasi Barat</option>
+                        <option value="Bekasi Selatan">Bekasi Selatan</option>
+                        <option value="Bekasi Timur">Bekasi Timur</option>
+                        <option value="Bekasi Utara">Bekasi Utara</option>
+                        <option value="Jatiasih">Jatiasih</option>
+                        <option value="Jatisampurna">Jatisampurna</option>
+                        <option value="Medansatria">Medansatria</option>
+                        <option value="Mustikajaya">Mustikajaya</option>
+                        <option value="Pondok Gede">Pondok Gede</option>
+                        <option value="Pondokmelati">Pondokmelati</option>
+                        <option value="Rawalumbu">Rawalumbu</option>
+                    </optgroup>
+                    <optgroup label="Bogor">
+                        <option value="Bogor Barat">Bogor Barat</option>
+                        <option value="Bogor Selatan">Bogor Selatan</option>
+                        <option value="Bogor Tengah">Bogor Tengah</option>
+                        <option value="Bogor Timur">Bogor Timur</option>
+                        <option value="Bogor Utara">Bogor Utara</option>
+                        <option value="Bojonggede">Bojonggede</option>
+                        <option value="Caringin">Caringin</option>
+                        <option value="Ciampea">Ciampea</option>
+                        <option value="Ciawi">Ciawi</option>
+                        <option value="Cisarua">Cisarua</option>
+                        <option value="Gunung Putri">Gunung Putri</option>
+                        <option value="Jonggol">Jonggol</option>
+                        <option value="Parung">Parung</option>
+                    </optgroup>
+                    <optgroup label="Depok">
+                        <option value="Beji">Beji</option>
+                        <option value="Bojongsari">Bojongsari</option>
+                        <option value="Cilodong">Cilodong</option>
+                        <option value="Cimanggis">Cimanggis</option>
+                        <option value="Cinere">Cinere</option>
+                        <option value="Cipayung">Cipayung</option>
+                        <option value="Limo">Limo</option>
+                        <option value="Sawangan">Sawangan</option>
+                        <option value="Sukmajaya">Sukmajaya</option>
+                        <option value="Tapos">Tapos</option>
+                    </optgroup>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
+
+            <div class="relative md:col-span-2">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <i class="fas fa-futbol w-5 h-5 text-white opacity-75"></i>
+                </div>
+                <select id="search-sport" name="search_sport" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none">
+                    <option value="">Pilih cabang olahraga</option>
+                    <option value="sepakbola">Sepak Bola</option>
+                    <option value="basket">Basket</option>
+                    <option value="voli">Voli</option>
+                    <option value="badminton">Badminton</option>
+                    <option value="tenis">Tenis</option>
+                    <option value="futsal">Futsal</option>
+                    <option value="padel">Padel</option>
+                    <option value="golf">Golf</option>
+                    <option value="lainnya">Lainnya</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
+
+            <button type="submit" class="md:col-span-1 w-full bg-[#06005E] hover:bg-[#1A107A] text-white font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+                Cari
+            </button>
+        </form>
+    </div>
+
+    <div id="loading-state" class="text-center py-12 hidden">...</div>
+    <div id="error-state" class="text-center py-12 hidden">...</div>
+    <div id="empty-state" class="text-center py-12 hidden">...</div>
+
+    <div id="event-list" class="hidden space-y-8"></div>
+
+    <div id="pagination-container" class="flex justify-center mt-12 mb-8"></div>
+</main>
+
+{% if user.is_authenticated %}
+<button onclick="showCreateEventModal()" 
+        class="fixed z-50 bottom-8 right-8 bg-gradient-to-r from-[#06005E] to-[#571E88] hover:from-[#1A107A] hover:to-[#7A3EAA] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 transform hover:scale-105">
+  <span class="text-4xl font-light pb-1">+</span>
+  <span class="sr-only">Buat Event Baru</span>
+</button>
+{% include 'event_modal.html' %}
+{% include 'event_delete_modal.html' %}
+{% endif %}
+
+{% if user.is_authenticated %}
+<script>
+  const CURRENT_USER_ID = "{{ user.id }}";
+</script>
+{% else %}
+<script>
+  const CURRENT_USER_ID = null;
+</script>
+{% endif %}
+
+<script>
+const GET_EVENTS_URL = "{% url 'main:get_events_json' %}";
+const searchForm = document.getElementById('search-form');
+const eventList = document.getElementById('event-list');
+
+function createEventCard(event) {
+  const article = document.createElement('article');
+  article.className = 'bg-[#353535] rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6';
+
+  const thumbnailHtml = event.thumbnail 
+    ? `<img src="${event.thumbnail}" alt="${event.nama}" class="w-48 h-48 object-cover rounded-xl flex-shrink-0">` 
+    : `<div class="w-48 h-48 bg-[#4F4F4F] rounded-xl flex items-center justify-center text-gray-500 flex-shrink-0">No Image</div>`;
+  
+  const detailUrl = `{% url 'main:show_event_detail' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', event.id);
+
+  article.innerHTML = `
+    ${thumbnailHtml}
+    
+    <div class="flex-grow w-full">
+        <h3 class="text-2xl font-bold text-white mb-2">${event.nama}</h3>
+        
+        <div class="flex flex-wrap gap-x-6 gap-y-2 text-gray-300 text-sm mb-4">
+            <div class="flex items-center">
+                <img src="{% static 'image/calendar_icon.png' %}" alt="Tanggal" class="w-4 h-4 mr-2 object-contain">
+                <span>${new Date(event.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+            </div>
+            <div class="flex items-center">
+                <img src="{% static 'image/location_icon.png' %}" alt="Lokasi" class="w-4 h-4 mr-2 object-contain">
+                <span>${event.lokasi}</span>
+            </div>
+             <div class="flex items-center">
+                <img src="{% static 'image/sports_icon.png' %}" alt="Olahraga" class="w-4 h-4 mr-2 object-contain">
+                <span>${event.olahraga}</span>
+            </div>
+        </div>
+
+        <p class="text-gray-400 text-sm leading-relaxed line-clamp-2 mb-4">
+            ${event.deskripsi}
+        </p>
+
+        <div class="flex items-center justify-between mt-4">
+            <a href="${detailUrl}" class="text-[#A4B3FF] hover:text-white font-semibold text-sm underline">
+                Selengkapnya
+            </a>
+            
+            ${ (CURRENT_USER_ID && Number(CURRENT_USER_ID) === Number(event.user_id))
+                ? `<div class="flex space-x-3">
+                        <button onclick="showEditEventModal('${event.id}')" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+                            Ubah
+                        </button>
+                        <button onclick="showDeleteEventModal('${event.id}')" class="text-red-500 hover:text-red-400 text-sm font-medium transition-colors">
+                            Hapus
+                        </button>
+                    </div>`
+                : ''
+            }
+        </div>
+    </div>
+  `;
+  return article;
+}
+
+async function fetchEvents() {
+  showState({ showLoading: true });
+
+  const formData = new FormData(searchForm);
+  const params = new URLSearchParams(formData).toString();
+  const url = `${GET_EVENTS_URL}?${params}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Network response was not ok');
+
+    const data = await response.json();
+    eventList.innerHTML = '';
+
+    if (data.events && data.events.length > 0) {
+      data.events.forEach(event => {
+        const card = createEventCard(event);
+        eventList.appendChild(card);
+      });
+      showState({ showList: true });
+    } else {
+      showState({ showEmpty: true });
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+    showState({ showError: true });
+  }
+}
+
+function showState({ showLoading = false, showError = false, showEmpty = false, showList = false }) {
+    document.getElementById('loading-state').classList.toggle('hidden', !showLoading);
+    document.getElementById('error-state').classList.toggle('hidden', !showError);
+    document.getElementById('empty-state').classList.toggle('hidden', !showEmpty);
+    document.getElementById('event-list').classList.toggle('hidden', !showList);
+}
+
+searchForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetchEvents();
+});
+
+document.addEventListener('event-changed', fetchEvents);
+document.addEventListener('DOMContentLoaded', fetchEvents);
+</script>
+{% endblock content %}
