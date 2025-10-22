@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coach Management</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .actions a { margin-right: 10px; text-decoration: none; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .add-btn { background-color: #06005E; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; }
+        .logout-btn { color: #E53E3E; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Coach Management Dashboard</h1>
+        <div>
+            <span>Welcome, {{ request.user.first_name }}!</span> |
+            <a href="{% url 'coach:logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+    <a href="{% url 'coach:coach_create' %}" class="add-btn">Add New Coach</a>
+    <br><br>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sport Branch</th>
+                <th>Location</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coach in coaches %}
+            <tr>
+                <td>{{ coach.name }}</td>
+                <td>{{ coach.sport_branch }}</td>
+                <td>{{ coach.location }}</td>
+                <td>{{ coach.contact }}</td>
+                <td class="actions">
+                    <a href="{% url 'coach:coach_update' coach.pk %}">Edit</a>
+                    <a href="{% url 'coach:coach_delete' coach.pk %}" style="color:red;">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No coaches found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

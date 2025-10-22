@@ -1,0 +1,100 @@
+<div id="delete-modal" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 font-['Plus_Jakarta_Sans']">
+    <div class="bg-white rounded-lg shadow-lg w-11/12 sm:w-1/3">
+      <div class="p-6 text-center">
+          <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+          </svg>
+          <h3 class="mb-5 text-lg font-normal text-gray-500">Apakah Anda yakin ingin menghapus Event ini?</h3>
+          <button id="confirm-delete-btn" type="button" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+              Ya, saya yakin
+          </button>
+          <button type="button" class="text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900" onclick="hideDeleteModal()">
+              Tidak, batalkan
+          </button>
+      </div>
+    </div>
+</div>
+  
+<script>
+    // ===================================================================
+    // PENAMBAHAN FUNGSI getCookie (WAJIB ADA)
+    // ===================================================================
+    function getCookie(name) {zz
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    // ===================================================================
+
+    // Cek dulu apakah elemen-elemen ini sudah ada (untuk menghindari error duplikat)
+    let deleteModal = document.getElementById('delete-modal');
+    let confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    
+    let eventIdToDelete = null;
+
+    if (!window.showDeleteModal) { // Cek apakah fungsi sudah didefinisikan
+        function showDeleteModal(eventId) {
+            eventIdToDelete = eventId;
+            if (deleteModal) deleteModal.classList.remove('hidden'); 
+        }
+    }
+
+    if (!window.hideDeleteModal) { // Cek apakah fungsi sudah didefinisikan
+        function hideDeleteModal() {
+            eventIdToDelete = null;
+            if (deleteModal) deleteModal.classList.add('hidden'); 
+        }
+    }
+
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', async function() {
+            if (!eventIdToDelete) return; 
+
+            // Buat URL yang benar menggunakan URL template Django
+            const baseUrl = "{% url 'main:delete_event_ajax' '0000' %}";
+            const deleteUrl = baseUrl.replace('0000', eventIdToDelete);
+
+            try {
+                const response = await fetch(deleteUrl, { 
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken') 
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorResult = await response.json();
+                    throw new Error(errorResult.message || `Server error: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    hideDeleteModal();
+                    // alert(result.message); // Ganti showToast dengan alert sederhana
+                    
+                    // Ini akan memicu fetchEvents() di event.html
+                    document.dispatchEvent(new CustomEvent('event-changed'));
+
+                } else {
+                    hideDeleteModal();
+                    // alert(result.message || 'Gagal menghapus event.');
+                    console.error(result.message || 'Gagal menghapus event.');
+                }
+            } catch (error) {
+                hideDeleteModal();
+                // alert(error.message || 'Terjadi kesalahan.');
+                console.error(error.message || 'Terjadi kesalahan.');
+            }
+        });
+    }
+</script>

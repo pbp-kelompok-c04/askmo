@@ -11,7 +11,7 @@
 <!-- Username (diklik ke profile) -->
 {% if user.is_authenticated and user.username %}
 <div class="fixed top-9 right-9 z-50 hidden md:block">
-  <a href="#">
+  <a href="{% url 'main:show_profile' %}">
     <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
       <span>{{ user.username }}</span>
     </div>
