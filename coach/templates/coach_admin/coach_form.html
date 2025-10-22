@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        form p { display: flex; flex-direction: column; margin-bottom: 15px; }
+        form label { margin-bottom: 5px; font-weight: bold; }
+        input, textarea, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+        <a href="{% url 'coach:dashboard' %}">Cancel</a>
+    </form>
+</body>
+</html>

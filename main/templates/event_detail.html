@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block meta %}
+<title>{{ event.nama }} - ASKMO</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="bg-black text-white w-full min-h-screen font-['Plus_Jakarta_Sans'] pt-32">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <div class="mb-6">
+      <a href="{% url 'main:show_event' %}" class="text-gray-300 hover:text-white font-medium transition-colors">
+        ← Kembali ke Semua Event
+      </a>
+    </div>
+    
+    <article class="bg-[#353535] rounded-2xl border border-white/20 overflow-hidden">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2">
+
+      <div class="p-4">
+        {% if event.thumbnail %}
+          <div class="aspect-[3/4] w-full">
+            <img src="{{ event.thumbnail }}" alt="{{ event.nama }}" class="w-full h-full object-cover rounded-lg">
+          </div>
+        {% else %}
+          <div class="aspect-[3/4] w-full bg-[#4F4F4F] rounded-lg flex items-center justify-center">
+            <span class="text-gray-400">No Image</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="p-8 flex flex-col">
+        <div class="mb-4">
+          <span class="font-medium text-white">
+            {% if event.user %}
+              Dibuat oleh: {{ event.user.username }}
+            {% else %}
+              Dibuat oleh: Anonymous
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-[#06005E] text-white">
+            {{ event.get_olahraga_display }}
+          </span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl font-bold text-white leading-tight mb-2">
+          {{ event.nama }}
+        </h1>
+        <p class="text-lg text-gray-300 mt-2 mb-4">Lokasi: {{ event.lokasi }}</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4 text-gray-300 border-y border-white/20 py-4">
+            <div class="flex items-center">
+                <img src="{% static 'image/calendar_icon.png' %}" alt="Tanggal" class="w-5 h-5 mr-3 object-contain flex-shrink-0">
+                <div>
+                    <span class="text-sm">Tanggal</span>
+                    <p class="font-semibold text-white">{{ event.tanggal|date:"d F Y" }}</p>
+                </div>
+            </div>
+            {% if event.jam %}
+            <div class="flex items-center">
+                <img src="{% static 'image/clock_icon.png' %}" alt="Jam" class="w-5 h-5 mr-3 object-contain flex-shrink-0">
+                <div>
+                    <span class="text-sm">Jam</span>
+                    <p class="font-semibold text-white">{{ event.jam|time:"H:i" }} WIB</p>
+                </div>
+            </div>
+            {% endif %}
+            <div class="flex items-center col-span-1 sm:col-span-2">
+                <img src="{% static 'image/contact_icon.png' %}" alt="Kontak" class="w-5 h-5 mr-3 object-contain flex-shrink-0">
+                <div>
+                    <span class="text-sm">Kontak</span>
+                    <p class="font-semibold text-white">{{ event.kontak }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="my-4">
+          <span class="text-4xl font-bold text-[#A4B3FF]">
+            {% if event.biaya == 0 %}
+                Gratis
+            {% else %}
+                Rp{{ event.biaya|intcomma }}
+            {% endif %}
+          </span>
+        </div>
+
+        <div class="prose prose-invert max-w-none mt-4">
+          <div class="text-gray-300 leading-relaxed whitespace-pre-line text-base">
+            {{ event.deskripsi }}
+          </div>
+        </div>
+
+        <div class="mt-auto pt-8">
+          {% if user.is_authenticated and event.user == user %}
+            <div class="flex justify-end space-x-4">
+              <button onclick="showEditEventModal('{{ event.id }}')" class="px-4 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-sm font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">
+                Ubah
+              </button>
+              <button onclick="showDeleteEventModal('{{ event.id }}')" class="px-4 py-2 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition-colors">
+                Hapus
+              </button>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+{% if user.is_authenticated %}
+  {% include 'event_modal.html' %}
+  {% include 'event_delete_modal.html' %}
+{% endif %}
+
+{% endblock content %}

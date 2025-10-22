@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>Confirm Deletion</title></head>
+<body>
+    <h1>Are you sure?</h1>
+    <p>You are about to permanently delete the coach: <strong>{{ coach.name }}</strong></p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" style="background-color:red; color:white;">Yes, delete</button>
+        <a href="{% url 'coach:dashboard' %}">No, cancel</a>
+    </form>
+</body>
+</html>
