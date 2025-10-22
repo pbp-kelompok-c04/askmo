@@ -6,6 +6,10 @@ from main.forms import LapanganForm, CoachForm, EventForm
 from main.models import Lapangan, Coach, Event
 from django.db.models import Q
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponseForbidden
+from .models import UserProfile, Avatar
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -20,8 +24,10 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags;
+from .models import UserProfile, Avatar 
 
 def show_main(request):
+    
     context = {
         'app_name' : 'ASKMO',
         'username': request.user.username,
@@ -276,3 +282,53 @@ def show_lapangan_dashboard(request):
     return render(request, 'lapangan/dashboard_lapangan.html', context)
 
 
+@login_required(login_url='/login/')
+def show_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    avatars = Avatar.objects.all()
+    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
+
+    context = {
+        'profile': profile,
+        'avatars': avatars,
+        'olahraga_choices': olahraga_choices,
+        'current_sport_key': profile.olahraga_favorit,
+    }
+    return render(request, 'profile.html', context) 
+
+@login_required(login_url='/login/')
+@csrf_exempt
+def update_profile_ajax(request):
+    if request.method == 'POST':
+        # *Logika update akan diisi di langkah implementasi Edit Profile*
+        try:
+            data = json.loads(request.body)
+            new_avatar_id = data.get('avatar_id')
+            new_sport_key = data.get('olahraga_favorit')
+
+            profile = get_object_or_404(UserProfile, user=request.user)
+
+            # Update Avatar
+            if new_avatar_id:
+                try:
+                    avatar = Avatar.objects.get(pk=new_avatar_id)
+                    profile.avatar = avatar
+                except Avatar.DoesNotExist:
+                    return JsonResponse({'status': 'error', 'message': 'Avatar tidak valid'}, status=400)
+            
+            # Update Olahraga Favorit
+            if new_sport_key:
+                valid_sports = [key for key, _ in UserProfile.OLAHRAGA_CHOICES]
+                if new_sport_key in valid_sports:
+                    profile.olahraga_favorit = new_sport_key
+                else:
+                    return JsonResponse({'status': 'error', 'message': 'Pilihan olahraga tidak valid'}, status=400)
+
+            profile.save()
+            return JsonResponse({'status': 'success', 'message': 'Profil berhasil diperbarui'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    
+    return HttpResponseForbidden()
