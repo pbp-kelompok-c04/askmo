@@ -31,6 +31,9 @@ class Lapangan(models.Model):
     review = models.TextField(blank=True, null=True)
     peraturan = models.TextField(blank=True, null=True)
     fasilitas = models.TextField(blank=True, null=True)
+
+    rating = models.FloatField(default=0.0)  
+    original_rating = models.FloatField(default=0.0)  
     
     def __str__(self):
         return self.nama
@@ -86,6 +89,7 @@ class Event(models.Model):
     
     def __str__(self):
         return self.nama
+ 
 
 class Avatar(models.Model):
     # Simpan URL/path ke gambar avatar
