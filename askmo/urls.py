@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+app_name = 'main'
+
 urlpatterns = [
     # URL default untuk panel admin bawaan Django (tidak kita gunakan, tapi baik untuk ada)
     path('admin/', admin.site.urls),
@@ -30,6 +32,7 @@ urlpatterns = [
     # Anda bisa menambahkan URL untuk aplikasi lain di sini di masa depan
     # Contoh: path('lapangan/', include('lapangan.urls', namespace='lapangan')),
     # Contoh: path('event/', include('event.urls', namespace='event')),
+    path('', include('main.urls')),
 ]
 
 # Konfigurasi ini PENTING untuk menampilkan gambar yang di-upload (seperti foto coach)
