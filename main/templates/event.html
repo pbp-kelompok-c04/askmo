@@ -21,7 +21,9 @@
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <h1 class="text-5xl font-bold mb-8 text-center tracking-wider">EVENT</h1>
+    <p class="text-center" style="margin-bottom: 50px;">Bagikan dan temukan event olahraga di sekitarmu!</p>
     
+
     <div class="bg-[#353535] rounded-xl p-4 mb-8">
         <form id="search-form" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center">
             <div class="relative md:col-span-2">
@@ -187,9 +189,9 @@
         </form>
     </div>
 
-    <div id="loading-state" class="text-center py-12 hidden">...</div>
-    <div id="error-state" class="text-center py-12 hidden">...</div>
-    <div id="empty-state" class="text-center py-12 hidden">...</div>
+    <div id="loading-state" class="text-center py-12 hidden">Memuat event...</div>
+    <div id="error-state" class="text-center py-12 hidden">Gagal memuat event</div>
+    <div id="empty-state" class="text-center py-12 hidden">Tidak ada event yang ditemukan</div>
 
     <div id="event-list" class="hidden space-y-8"></div>
 
@@ -265,20 +267,46 @@ function createEventCard(event) {
             </a>
             
             ${ (CURRENT_USER_ID && Number(CURRENT_USER_ID) === Number(event.user_id))
-                ? `<div class="flex space-x-3">
-                        <button onclick="showEditEventModal('${event.id}')" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">
-                            Ubah
-                        </button>
-                        <button onclick="showDeleteEventModal('${event.id}')" class="text-red-500 hover:text-red-400 text-sm font-medium transition-colors">
-                            Hapus
-                        </button>
-                    </div>`
-                : ''
+            ? `<div class="flex space-x-3">
+            <button onclick="copyShareLink('${detailUrl}', this)" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-gray-300 hover:text-white hover:underline text-sm font-medium transition-colors">
+                Bagikan
+            </button>
+            <button onclick="showEditEventModal('${event.id}')" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-gray-300 hover:text-white hover:underline text-sm font-medium transition-colors">
+                Ubah
+            </button>
+            <button onclick="showDeleteEventModal('${event.id}')" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-red-500 hover:text-red-400 hover:underline text-sm font-medium transition-colors">
+                Hapus
+            </button>
+        </div>`
+            : `<div class="flex space-x-3">
+                    <button onclick="copyShareLink('${detailUrl}', this)" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-gray-300 hover:text-white hover:underline text-sm font-medium transition-colors">
+                        Bagikan
+                    </button>
+        </div>`
             }
         </div>
     </div>
   `;
   return article;
+}
+
+function copyShareLink(detailUrl, buttonElement) {
+    const absoluteUrl = `${window.location.origin}${detailUrl}`;
+    
+    navigator.clipboard.writeText(absoluteUrl).then(() => {
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = 'Tersalin!';
+        buttonElement.disabled = true;
+        
+        setTimeout(() => {
+            buttonElement.innerHTML = originalText;
+            buttonElement.disabled = false;
+        }, 2000);
+
+    }).catch(err => {
+        console.error('Gagal menyalin link: ', err);
+        alert('Gagal menyalin link.');
+    });
 }
 
 async function fetchEvents() {

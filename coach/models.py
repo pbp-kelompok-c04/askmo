@@ -1,0 +1,14 @@
+from django.db import models
+
+class Coach(models.Model):
+    name = models.CharField(max_length=100)
+    sport_branch = models.CharField(max_length=50, help_text="Example: Futsal, Badminton, Basketball")
+    location = models.CharField(max_length=100, help_text="Example: South Jakarta")
+    contact = models.CharField(max_length=50, help_text="Phone Number or Email")
+    experience = models.TextField(blank=True, help_text="Briefly describe the coaching experience")
+    certifications = models.TextField(blank=True, help_text="List certifications, separated by commas")
+    service_fee = models.CharField(max_length=100, blank=True, help_text="Example: IDR 300,000 / hour")
+    photo = models.ImageField(upload_to='coach_photos/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.sport_branch}"

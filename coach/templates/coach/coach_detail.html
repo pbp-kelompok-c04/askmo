@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail {{ coach.name }} - ASKMO</title>
+    <link rel="stylesheet" href="{% static 'coach/style.css' %}"> 
+    <style>
+        /* Style sederhana untuk halaman detail */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            padding: 40px;
+        }
+
+        /* CSS UNTUK TOMBOL KEMBALI (POSISI BARU) */
+        .back-link-container {
+            width: 100%;
+            max-width: 800px; /* Samakan dengan lebar card */
+            margin: 0 auto 20px auto; /* Posisikan di atas card */
+            text-align: left;
+        }
+        .back-link {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            background-color: #06005E;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .back-link:hover {
+            background-color: #1a157a;
+        }
+        /* AKHIR CSS TOMBOL KEMBALI */
+
+
+        .detail-container {
+            max-width: 800px;
+            margin: 0 auto 20px auto; /* Hapus margin atas */
+            background-color: #1A1A1A;
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap; /* Agar responsif di layar kecil */
+        }
+        .detail-photo {
+            flex-basis: 200px; /* Lebar dasar untuk foto */
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .detail-photo img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #333;
+        }
+        .detail-info {
+            flex-grow: 1;
+            flex-basis: 400px; /* Lebar dasar untuk info */
+        }
+        .detail-info h1 {
+            font-size: 2.5em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            letter-spacing: 0; /* Reset letter-spacing dari style.css */
+        }
+
+        /* =============================================
+           KODE BARU DITAMBAHKAN DI SINI
+           =============================================
+        */
+        .coach-name-detail {
+          color: #fff; /* Memastikan warna default tetap putih */
+          cursor: pointer; /* Kursor berubah jadi tangan saat di-hover */
+          user-select: none; /* Mencegah teks ter-highlight saat diklik */
+          transition: color 0.2s ease-in-out; /* Transisi perubahan warna */
+        }
+
+        .coach-name-detail:active {
+          color: purple; /* 🎨 WARNA UNGU SAAT DITEKAN */
+        }
+        /* =============================================
+           AKHIR KODE BARU
+           =============================================
+        */
+
+        .detail-info p, .detail-info h3 {
+            font-size: 1.1em;
+            color: #ccc;
+            margin: 8px 0;
+        }
+        .detail-info .sport {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #eee;
+            margin-bottom: 15px;
+        }
+        .detail-info h3 {
+            font-weight: bold;
+            color: #fff;
+            margin-top: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        .detail-info p {
+            line-height: 1.6;
+        }
+
+        /* STYLE BARU UNTUK TOMBOL AKSI */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px; /* Jarak dari info kontak */
+            margin-bottom: 10px; /* Jarak sebelum 'Pengalaman' */
+            flex-wrap: wrap; 
+        }
+        .action-btn {
+            flex-grow: 1; 
+            flex-basis: 200px; /* Lebar minimum sebelum wrap */
+            text-decoration: none;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: opacity 0.2s;
+        }
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+        .action-btn i {
+            margin-right: 8px;
+        }
+        .action-btn.whatsapp {
+            background-color: #25D366; /* Warna WhatsApp */
+        }
+        .action-btn.phone {
+            background-color: #3498DB; /* Warna biru telepon */
+        }
+        /* AKHIR STYLE BARU */
+
+    </style>
+</head>
+<body>
+
+    <div class="back-link-container">
+        <a href="{% url 'coach:coach_list' %}" class="back-link">&larr; Kembali ke Daftar Coach</a>
+    </div>
+
+    <div class="detail-container">
+        <div class="detail-photo">
+            {% if coach.photo %}
+                <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">
+            {% else %}
+                <img src="https://via.placeholder.com/200" alt="Foto tidak tersedia">
+            {% endif %}
+        </div>
+
+        <div class="detail-info">
+            
+            <h1 class="coach-name-detail">{{ coach.name }}</h1>
+            
+            <p class="sport">{{ coach.sport_branch }}</p>
+            
+            <p><strong><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>Lokasi:</strong> {{ coach.location }}</p>
+            <p><strong><i class="fas fa-phone" style="margin-right: 8px;"></i>Kontak:</strong> {{ coach.contact }}</p>
+            <p><strong><i class="fas fa-money-bill-wave" style="margin-right: 8px;"></i>Tarif Jasa:</strong> {{ coach.service_fee|default:"-" }}</p>
+
+            {% if not is_email and phone_number_cleaned and whatsapp_number %}
+            <div class="action-buttons">
+                <a href="https://wa.me/{{ whatsapp_number }}" target="_blank" class="action-btn whatsapp">
+                    <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
+                </a>
+                <a href="tel:{{ phone_number_cleaned }}" class="action-btn phone">
+                    <i class="fas fa-phone"></i> Telepon Langsung
+                </a>
+            </div>
+            {% endif %}
+            <h3>Pengalaman</h3>
+            <p>{{ coach.experience|linebreaksbr|default:"Belum ada data pengalaman." }}</p>
+
+            <h3>Sertifikasi</h3>
+            <p>{{ coach.certifications|linebreaksbr|default:"Belum ada data sertifikasi." }}</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>
