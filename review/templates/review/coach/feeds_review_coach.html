@@ -1,0 +1,401 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review {{ coach.name }} - ASKMO</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+       
+        body {
+            background: #121212;
+            color: #E0E0E0;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+       
+        .review-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 30px;
+            background: #1A1A1A;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+       
+        .header-review {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+       
+        .header-left {
+            flex: 1;
+            min-width: 300px;
+        }
+       
+        .back-link {
+            text-decoration: none;
+            color: #CFCFCF;
+            transition: color 0.3s;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        .back-link:hover {
+            color: #7A3EAA;
+        }
+       
+        .header-review h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+       
+        .header-right {
+            text-align: right;
+            min-width: 200px;
+        }
+       
+        .rating-summary {
+            font-size: 1.3rem;
+            color: #FFD700;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+       
+        .rating-summary small {
+            font-size: 0.8rem;
+            color: #aaa;
+            display: block;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+       
+        .btn-add-review-link {
+            background: #571E88;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        .btn-add-review-link:hover {
+            background: #7A3EAA;
+            transform: translateY(-2px);
+        }
+       
+        .section-title {
+            margin: 30px 0 20px 0;
+            color: #fff;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+       
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+       
+        .review-card {
+            background: #222;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #571E88;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+       
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+       
+        .review-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+       
+        .reviewer-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+       
+        .reviewer-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+       
+        .reviewer-info strong {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+       
+        .review-rating {
+            color: #FFD700;
+            font-size: 1.1rem;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+       
+        .review-date {
+            color: #aaa;
+            font-size: 0.9em;
+            text-align: right;
+            min-width: 120px;
+        }
+       
+        .review-text {
+            margin-top: 15px;
+            line-height: 1.6;
+            color: #CFCFCF;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+        }
+       
+        /* Tombol Action */
+        .review-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+       
+        .btn-edit {
+            background: #571E88;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        .btn-edit:hover {
+            background: #7A3EAA;
+            transform: translateY(-1px);
+        }
+       
+        .btn-delete {
+            background: #b91c1c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+       
+        .no-reviews {
+            text-align: center;
+            color: #999;
+            margin: 40px 0;
+            font-style: italic;
+        }
+       
+        .rating-summary .no-rating {
+            color: #aaa;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+
+        .review-count {
+            color: #888;
+            font-size: 0.9em;
+        }
+       
+        /* Responsive */
+        @media (max-width: 768px) {
+            .review-container {
+                padding: 20px;
+                margin: 15px auto;
+            }
+           
+            .header-review {
+                flex-direction: column;
+                text-align: left;
+            }
+           
+            .header-right {
+                text-align: left;
+                width: 100%;
+            }
+           
+            .review-meta {
+                flex-direction: column;
+            }
+           
+            .review-date {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="review-container">
+        <div class="header-review">
+            <div class="header-left">
+                <a href="{% url 'coach:coach_detail' coach.pk %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Detail Coach
+                </a>
+                <h1>Review Coach: {{ coach.name }}</h1>
+            </div>
+           
+            <div class="header-right">
+                <div class="rating-summary">
+                    <i class="fas fa-star"></i>
+                    {% if average_rating %}
+                        {{ average_rating|floatformat:1 }}/5.0
+                    {% else %}
+                        <span class="no-rating">Belum ada rating</span>
+                    {% endif %}
+                    <small class="review-count">
+                        {% if total_reviews > 0 %}
+                            ({{ total_reviews }} review)
+                        {% else %}
+                            (Belum ada review)
+                        {% endif %}
+                    </small>
+                </div>
+               
+                <a href="/review/{{ coach.id }}/add/" class="btn-add-review-link">
+                    <i class="fas fa-edit"></i> Beri Review & Rating
+                </a>
+            </div>
+        </div>
+       
+        <h2 class="section-title">Semua Review</h2>
+       
+        <div class="review-list" id="review-list-container">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-meta">
+                    <div class="reviewer-info">
+                        <div class="reviewer-name">
+                            <strong>{{ review.reviewer_name }}</strong>
+                        </div>
+                        <div class="review-rating">
+                            <i class="fas fa-star"></i> {{ review.rating }}/5
+                        </div>
+                    </div>
+                    <div class="review-date">
+                        {{ review.created_at|date:"d M Y" }}
+                    </div>
+                </div>
+                <div class="review-text">{{ review.review_text }}</div>
+                <div class="review-actions">
+                    {% if request.user.is_authenticated and review.user_id == request.user.id %}
+                    <a href="/review/edit/{{ review.id }}/" class="btn-edit">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button class="btn-delete" data-review-id="{{ review.id }}">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-reviews">Belum ada review untuk coach ini. Jadilah yang pertama!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <script>
+        // Event delegation untuk handle semua tombol delete
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-delete')) {
+                const button = e.target.closest('.btn-delete');
+                const reviewId = button.getAttribute('data-review-id');
+                deleteReview(reviewId);
+            }
+        });
+
+
+        async function deleteReview(reviewId) {
+            if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) {
+                return;
+            }
+
+
+            try {
+                const url = `/review/delete/${reviewId}/`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                });
+
+
+                const result = await response.json();
+
+
+                if (response.status === 200) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Gagal menghapus review: ' + result.message);
+                }
+            } catch (error) {
+                console.error("Error deleting review:", error);
+                alert("Terjadi kesalahan saat menghapus review.");
+            }
+        }
+    </script>
+</body>
+</html>
+

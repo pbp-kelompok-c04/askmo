@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail {{ coach.name }} - ASKMO</title>
-    <link rel="stylesheet" href="{% static 'coach/style.css' %}"> 
+    <link rel="stylesheet" href="{% static 'coach/style.css' %}">
     <style>
         /* Style sederhana untuk halaman detail */
         body {
@@ -14,6 +14,7 @@
             font-family: 'Inter', sans-serif;
             padding: 40px;
         }
+
 
         /* CSS UNTUK TOMBOL KEMBALI (POSISI BARU) */
         .back-link-container {
@@ -71,10 +72,7 @@
             letter-spacing: 0; /* Reset letter-spacing dari style.css */
         }
 
-        /* =============================================
-           KODE BARU DITAMBAHKAN DI SINI
-           =============================================
-        */
+
         .coach-name-detail {
           color: #fff; /* Memastikan warna default tetap putih */
           cursor: pointer; /* Kursor berubah jadi tangan saat di-hover */
@@ -82,13 +80,11 @@
           transition: color 0.2s ease-in-out; /* Transisi perubahan warna */
         }
 
+
         .coach-name-detail:active {
           color: purple; /* 🎨 WARNA UNGU SAAT DITEKAN */
         }
-        /* =============================================
-           AKHIR KODE BARU
-           =============================================
-        */
+
 
         .detail-info p, .detail-info h3 {
             font-size: 1.1em;
@@ -112,17 +108,61 @@
             line-height: 1.6;
         }
 
+
+        /* PERBAIKAN: Style untuk rating yang benar */
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+
+        .rating-label {
+            font-weight: bold;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+
+        .rating-value {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+
+        .rating-stars {
+            color: #FFD700; /* Warna emas untuk bintang */
+        }
+
+
+        .no-rating {
+            color: #aaa !important;
+            font-style: italic;
+        }
+
+
+        .review-count {
+            color: #888;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+
+
         /* STYLE BARU UNTUK TOMBOL AKSI */
         .action-buttons {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: 25px; 
-            margin-bottom: 10px; 
+            margin-top: 25px;
+            margin-bottom: 10px;
             margin-right: 20px;/* Jarak sebelum 'Pengalaman' */
         }
         .action-btn {
-            flex-grow: 1; 
+            flex-grow: 1;
             width: 100%;
             text-decoration: none;
             color: #fff;
@@ -156,15 +196,67 @@
         .action-btn.phone {
             background-color: #3498DB; /* Warna biru telepon */
         }
-        /* AKHIR STYLE BARU */
+        .action-btn.review {
+            background-color: #571E88; /* Warna ungu untuk review */
+        }
+
+
+        /* Info sections untuk pengalaman dan sertifikasi */
+        .info-sections {
+            margin-top: 30px;
+        }
+
+
+        .info-section {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #571E88;
+        }
+
+
+        .info-section h3 {
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+
+        .info-section p {
+            color: #ccc;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+
+        /* Style untuk info lokasi, kontak, dan tarif */
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+
+        .info-item strong {
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
 
     </style>
 </head>
 <body>
 
+
     <div class="back-link-container">
         <a href="{% url 'coach:coach_list' %}" class="back-link">&larr; Kembali ke Daftar Coach</a>
     </div>
+
 
     <div class="detail-container">
         <div class="detail-photo">
@@ -175,27 +267,61 @@
             {% endif %}
         </div>
 
+
         <div class="detail-info">
-            
+           
             <h1 class="coach-name-detail">{{ coach.name }}</h1>
-            
+           
             <p class="sport">{{ coach.sport_branch }}</p>
-            
-            <p><strong><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>Lokasi:</strong> {{ coach.location }}</p>
-            <p><strong><i class="fas fa-phone" style="margin-right: 8px;"></i>Kontak:</strong> {{ coach.contact }}</p>
-            <p><strong><i class="fas fa-money-bill-wave" style="margin-right: 8px;"></i>Tarif Jasa:</strong> {{ coach.service_fee|default:"-" }}</p>
+
+
+            <!-- PERBAIKAN: Rating dengan bintang di samping -->
+            <div class="rating-container">
+                <span class="rating-label">
+                    <i class="fas fa-star"></i>Rating:
+                </span>
+                <span class="rating-value {% if not coach.calculate_average_rating %}no-rating{% endif %}">
+                    <span class="rating-stars">
+                        {% if coach.calculate_average_rating %}
+                            {{ coach.get_average_rating_display }}
+                        {% else %}
+                            Belum ada rating
+                        {% endif %}
+                    </span>
+                    {% if coach.calculate_average_rating %}
+                        <small class="review-count">({{ coach.get_total_reviews_display }})</small>
+                    {% endif %}
+                </span>
+            </div>
+           
+            <!-- Info lainnya dengan layout yang konsisten -->
+            <div class="info-item">
+                <strong><i class="fas fa-map-marker-alt"></i>Lokasi:</strong>
+                <span>{{ coach.location }}</span>
+            </div>
+           
+            <div class="info-item">
+                <strong><i class="fas fa-phone"></i>Kontak:</strong>
+                <span>{{ coach.contact }}</span>
+            </div>
+           
+            <div class="info-item">
+                <strong><i class="fas fa-money-bill-wave"></i>Tarif Jasa:</strong>
+                <span>{{ coach.service_fee|default:"-" }}</span>
+            </div>
+
 
             {% if not is_email and phone_number_cleaned and whatsapp_number %}
             <div class="action-buttons">
-                <a 
-                    href="{% url 'coach:add_to_coach_list' coach.pk %}" 
-                    class="action-btn save {% if is_saved_to_wishlist %}is-saved{% endif %}" 
-                    style="cursor: pointer;"> 
-                    
-                    <i class="fas fa-bookmark"></i> 
-                    
+                <a
+                    href="{% url 'coach:add_to_coach_list' coach.pk %}"
+                    class="action-btn save {% if is_saved_to_wishlist %}is-saved{% endif %}"
+                    style="cursor: pointer;">
+                   
+                    <i class="fas fa-bookmark"></i>
+                   
                     {% if is_saved_to_wishlist %}
-                        Hapus dari Wishlist 
+                        Hapus dari Wishlist
                     {% else %}
                         Tambahkan ke Wishlist
                     {% endif %}
@@ -206,15 +332,35 @@
                 <a href="tel:{{ phone_number_cleaned }}" class="action-btn phone">
                     <i class="fas fa-phone"></i> Telepon Langsung
                 </a>
+               
+                <!-- Tombol Review -->
+                <a href="/review/{{ coach.pk }}/" class="action-btn review">
+                    <i class="fas fa-star"></i>
+                    {% if coach.get_total_reviews > 0 %}
+                        Lihat Rating & Review
+                    {% else %}
+                        Beri Rating & Review Pertama
+                    {% endif %}
+                </a>
             </div>
             {% endif %}
-            <h3>Pengalaman</h3>
-            <p>{{ coach.experience|linebreaksbr|default:"Belum ada data pengalaman." }}</p>
+           
+            <!-- Pengalaman & Sertifikasi DALAM CARD -->
+            <div class="info-sections">
+                <div class="info-section">
+                    <h3><i class="fas fa-briefcase" style="margin-right: 8px;"></i>Pengalaman</h3>
+                    <p>{{ coach.experience|linebreaksbr|default:"Belum ada data pengalaman." }}</p>
+                </div>
 
-            <h3>Sertifikasi</h3>
-            <p>{{ coach.certifications|linebreaksbr|default:"Belum ada data sertifikasi." }}</p>
+
+                <div class="info-section">
+                    <h3><i class="fas fa-award" style="margin-right: 8px;"></i>Sertifikasi</h3>
+                    <p>{{ coach.certifications|linebreaksbr|default:"Belum ada data sertifikasi." }}</p>
+                </div>
+            </div>
         </div>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 </body>

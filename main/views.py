@@ -32,14 +32,28 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags;
 from .models import UserProfile, Avatar 
-
-
+from coach.models import Coach 
+from .models import Lapangan, Event, UserProfile, Avatar
 
 def show_main(request):
+    lapangan_list = Lapangan.objects.all()[:5] 
+    event_list = Event.objects.all()[:5]
+    coach_list_for_template = Coach.objects.all()[:5]
+
+    lapangan_count = Lapangan.objects.count()
+    coach_count = Coach.objects.count()
+    event_count = Event.objects.count()
+
     context = {
         'app_name' : 'ASKMO',
         'username': request.user.username,
         'last_login': request.COOKIES.get('last_login', 'Tidak Pernah'),
+        'lapangan_list': lapangan_list,
+        'coach_list': coach_list_for_template,
+        'event_list': event_list,
+        'lapangan_count': lapangan_count,
+        'coach_count': coach_count,
+        'event_count': event_count,
     }
     return render(request, "main.html", context)
 
@@ -120,13 +134,14 @@ def show_profile(request):
     
     avatars = Avatar.objects.all()
     olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
-    wishlist_coaches = CoachWishlist.objects.filter(user=request.user).select_related('coach')
+    wishlist_entries = CoachWishlist.objects.filter(user=request.user).select_related('coach')
+    wishlist_coaches = [item.coach for item in wishlist_entries][:3]
     context = {
         'profile': profile,
         'avatars': avatars,
         'olahraga_choices': olahraga_choices,
         'current_sport_key': profile.olahraga_favorit,
-        'coach_wishlist': wishlist_coaches,
+        'wishlist_coaches': wishlist_coaches,
     }
     return render(request, 'profile.html', context) 
 
@@ -582,7 +597,7 @@ def show_wishlist_coach(request):
         'coach_list': coach_list,
     }
     return render(request, 'wishlist/wishlist_coach_list.html', context)
-# <-- THIS IS THE REQUIRED VIEW FUNCTION
+
 def get_events_json(request):
     event_objects = Event.objects.all().order_by('-tanggal')
     
@@ -643,23 +658,18 @@ def get_event_detail_ajax(request, id):
 
 @login_required(login_url='/login/') # 1. Tambahkan ini
 @csrf_exempt
-def add_event_ajax(request):  # <--- INI FUNGSINYA
+def add_event_ajax(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-            # 2. Jangan langsung save
             event = form.save(commit=False) 
-            
-            # 3. Tambahkan user yang sedang login
-            # (Ganti 'user' jika nama field di model Anda beda, misal 'author')
+
             event.user = request.user 
             
-            # 4. Baru save ke database
             event.save() 
             
             return JsonResponse({"status": "success", "message": "Event berhasil ditambahkan!"}, status=201)
         else:
-            # Kirim error validasi form ke frontend
             return JsonResponse({"status": "error", "errors": form.errors}, status=400)
     
     return JsonResponse({"status": "error", "message": "Metode permintaan tidak valid."}, status=405)

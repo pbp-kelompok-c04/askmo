@@ -1,7 +1,9 @@
 from django.forms import ModelForm
 from django import forms
 from main.models import Lapangan, Coach, Event
-from review.models import Review
+from review.models import Review, ReviewCoach
+
+
 
 
 class LapanganForm(ModelForm):
@@ -9,12 +11,15 @@ class LapanganForm(ModelForm):
         model = Lapangan
         fields = ["nama", "deskripsi", "olahraga", "thumbnail", "rating", "refund", "tarif_per_sesi", "kontak", "alamat", "review", "peraturan", "fasilitas"]
 
+
     def clean_rating(self):
         rating = self.cleaned_data.get("rating",0.0)
         if not (0.0 <= rating <= 5.0):
             raise forms.ValidationError("Rating harus antara 0.0 sampai 5.0")
         return rating
-        
+       
+
+
 
 
 class CoachForm(ModelForm):
@@ -22,10 +27,12 @@ class CoachForm(ModelForm):
         model = Coach
         fields = ["nama", "olahraga", "deskripsi", "kontak", "tarif_per_jam", "thumbnail"]
 
+
 class EventForm(ModelForm):
     class Meta:
         model = Event
         fields = ["nama", "deskripsi", "olahraga", "tanggal", "lokasi", "kontak", "thumbnail", "jam"]
+
 
 # Form BARU untuk Review
 class ReviewForm(ModelForm):
@@ -36,17 +43,18 @@ class ReviewForm(ModelForm):
         decimal_places=1,
         widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0.0', 'max': '5.0'})
     )
-    
+   
     reviewer_name = forms.CharField(
         max_length=255,
         label="Nama",  # ⭐ GANTI LABEL JADI "Nama"
         widget=forms.TextInput(attrs={'placeholder': 'Masukkan Nama Anda'})
     )
 
+
     class Meta:
         model = Review
         fields = ["reviewer_name", "rating", "review_text", "gambar"]  # ⭐ INI YANG BENAR!
-        
+       
         widgets = {
             'reviewer_name': forms.TextInput(attrs={'placeholder': 'Masukkan Nama Anda'}),
             'review_text': forms.Textarea(attrs={'placeholder': 'Masukkan review Anda'}),
@@ -56,4 +64,40 @@ class ReviewForm(ModelForm):
             'reviewer_name': 'Nama',
             'review_text': 'Masukan dan Saran Anda',
             'gambar': 'Gambar (URL)',
+        }
+
+
+from django import forms
+
+
+class ReviewCoachForm(forms.ModelForm):
+    rating = forms.IntegerField(
+        min_value=1,
+        max_value=5,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '1-5',
+            'min': '1',
+            'max': '5'
+        })
+    )
+   
+    class Meta:
+        model = ReviewCoach
+        fields = ['reviewer_name', 'rating', 'review_text']
+        widgets = {
+            'reviewer_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Masukkan nama Anda'
+            }),
+            'review_text': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Bagikan pengalaman Anda dengan coach ini...',
+                'rows': 4
+            }),
+        }
+        labels = {
+            'reviewer_name': 'Nama Anda',
+            'rating': 'Rating (1-5)',
+            'review_text': 'Review',
         }

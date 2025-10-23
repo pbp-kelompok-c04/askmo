@@ -1,14 +1,97 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %} 
 
 {% block meta %}
 <title>ASKMO</title>
+
+<style>
+  /* Style Slideshow */
+  .hero-slideshow { position: absolute; inset: 0; }
+  .hero-slide {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    background-size: cover; background-repeat: no-repeat; background-position: center;
+    opacity: 0; 
+    animation-name: fadeSlideshow; animation-duration: 22s;
+    animation-timing-function: linear; animation-iteration-count: infinite;
+  }
+  @keyframes fadeSlideshow {
+    0%    { opacity: 0; } 4.5%  { opacity: 1; } 27.3% { opacity: 1; }
+    31.8% { opacity: 0; } 100%  { opacity: 0; }
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  #modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
+      justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+  }
+  #modal-content {
+      background: #1A1A1A; border-radius: 20px; width: 100%; max-width: 600px; 
+      max-height: 90vh; overflow-y: auto; color: #fff; position: relative;
+      border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  #modal-close-btn {
+      position: absolute; top: 15px; right: 20px; background: none; border: none;
+      color: #888; font-size: 1.8rem; cursor: pointer; transition: color 0.2s; line-height: 1; /* Tambah line-height */
+  }
+  #modal-close-btn:hover { color: #fff; }
+  #modal-image {
+      width: 100%; height: 250px; object-fit: cover; border-radius: 20px 20px 0 0;
+  }
+  .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 15px; }
+  #modal-nama { font-size: 2rem; font-weight: 700; line-height: 1.2; }
+  .modal-priority-info { display: flex; flex-direction: column; gap: 10px; font-size: 1rem; color: #CFCFCF; }
+  .modal-priority-info p { display: flex; align-items: center; gap: 10px; margin: 0; /* Reset margin */ }
+  .modal-priority-info i { width: 20px; text-align: center; color: #888; }
+  .modal-divider { border: 0; height: 1px; background: #333; margin: 10px 0; }
+  .modal-details { display: flex; flex-direction: column; gap: 10px; }
+  .modal-details h4 { font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 0; /* Reset margin */ }
+  .modal-details p { font-size: 0.95rem; color: #CFCFCF; line-height: 1.6; white-space: pre-wrap; margin: 0; /* Reset margin */ }
+  #modal-kontak-btn {
+      display: inline-block; text-decoration: none; padding: 12px 20px; background: #571E88; 
+      color: #fff; font-weight: 600; border-radius: 10px; text-align: center; margin-top: 10px; transition: background 0.2s;
+  }
+  #modal-kontak-btn:hover { background: #7A3EAA; }
+  #modal-kontak-btn i { margin-right: 8px; } 
+
+@keyframes scrollLeft {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } 
+  }
+
+  #stats-viewport {
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+
+  #stats-track {
+    display: flex;
+    width: 200%; 
+    animation: scrollLeft 25s linear infinite; 
+  }
+
+  #stats-track:hover {
+    animation-play-state: paused;
+  }
+
+  .stat-card {
+    flex-shrink: 0;
+    width: 16.666667%; 
+    padding: 0 0.75rem; /
+    box-sizing: border-box; 
+  }
+
+</style>
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
 
-<!-- Username (diklik ke profile) -->
 {% if user.is_authenticated and user.username %}
 <div class="fixed top-9 right-9 z-50 hidden md:block">
   <a href="{% url 'main:show_profile' %}">
@@ -19,24 +102,759 @@
 </div>
 {% endif %}
 
-<!-- Foto background ungu -->
-<div class="w-full min-h-screen">
-  <div 
-    class="relative w-full h-[60vh] flex items-start justify-start md:items-center md:justify-center bg-cover bg-no-repeat p-6"
-    style="background-image: url('{% static 'image/bg.png' %}'); background-position: center -30px;"
-    >
-
-    <!-- ASKMO -->
+<div class="w-full min-h-screen bg-black text-white font-['Plus_Jakarta_Sans']">
+  
+  <div class="relative w-full h-[60vh] flex pt-20 justify-center md:items-center md:pt-0 p-6 overflow-hidden"> 
+     <div class="hero-slideshow">
+      <div class="hero-slide" style="background-image: url('{% static 'image/bg1.png' %}'); animation-delay: 0s;"></div>
+      <div class="hero-slide" style="background-image: url('{% static 'image/bg2.png' %}'); animation-delay: 7s;"></div>
+      <div class="hero-slide" style="background-image: url('{% static 'image/bg3.png' %}'); animation-delay: 14s;"></div>
+    </div>
+    
     <div class="absolute inset-0 bg-black opacity-25"></div>
-    <h1 class="relative z-10 text-5xl sm:text-6xl lg:text-8xl font-bold text-white tracking-wider md:bottom-8">
-      ASKMO
-    </h1>
+    
+    <div class="relative z-10 flex flex-col items-center">        
+        <h1 class="text-5xl sm:text-6xl lg:text-8xl font-bold text-white tracking-wider mb-8">
+          ASKMO
+        </h1>
+        <p class="text-center text-gray-300 max-w-xl mx-auto mb-6">
+          Platform utama Anda untuk mencari lapangan olahraga, bertemu dengan coach, dan membagi serta menemukan event olahraga.
+      </p>
+        <div class="mt-4">
+            <a href="#content-start" 
+               class="inline-block px-8 py-3 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white font-semibold rounded-full shadow-lg hover:from-[#1A107A] hover:to-[#7A3EAA] transition-all duration-300 transform hover:scale-105">
+                Jelajah ASKMO
+            </a>
+        </div>
+        </div> 
+    </div>
+<div id="content-start" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8"></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <!-- Cari Lapangan -->
+    <div class="mb-16">
+      <h2 class="text-3xl font-bold text-white mb-2">Cari Lapangan</h2>
+      <p class="text-lg text-gray-400 mb-6">Temukan lapangan terbaik untuk olahraga favorit Anda.</p>
+      <div class="relative">
+        <button type="button" id="lapangan-scroll-left-btn" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -ml-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <button type="button" id="lapangan-scroll-right-btn" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </button>
+        <div id="lapangan-scroll-container" class="flex overflow-x-scroll space-x-6 pb-4 no-scrollbar scroll-smooth">
+          {% for lapangan in lapangan_list %}
+          <div class="flex-shrink-0 w-80 bg-[#353535] rounded-2xl overflow-hidden shadow-lg">
+            <div class="h-48 w-full bg-[#4F4F4F]">
+              {% if lapangan.thumbnail %}<img src="{{ lapangan.thumbnail }}" alt="Foto {{ lapangan.nama }}" class="w-full h-full object-cover">{% else %}<div class="w-full h-full flex items-center justify-center text-gray-400">Foto tidak ditemukan</div>{% endif %}
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-bold text-white mb-2 truncate">{{ lapangan.nama }}</h3>
+              <p class="text-sm text-gray-300 mb-3 truncate">{{ lapangan.alamat }}</p>
+              <p class="text-sm text-yellow-400 flex items-center mb-4">
+                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                {{ lapangan.rating|floatformat:1 }} / 5,0
+              </p>
+              <div class="flex justify-between space-x-3">
+                {% if user.is_authenticated %}<a href="tel:{{ lapangan.kontak }}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% else %}<a href="{% url 'main:login' %}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% endif %}
+                {% if user.is_authenticated %}<a href="#" onclick="event.preventDefault(); showDetail('{{ lapangan.id }}');" class="flex-1 text-center px-4 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-sm font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">Detail</a>{% else %}<a href="{% url 'main:login' %}" class="flex-1 text-center px-4 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-sm font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">Detail</a>{% endif %}
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-gray-400 w-full text-center">Belum ada data lapangan untuk ditampilkan.</p>
+          {% endfor %}
+          {% if lapangan_list|length > 0 %}
+          <a href="{% if user.is_authenticated %}{% url 'main:show_lapangan' %}{% else %}{% url 'main:login' %}{% endif %}" class="flex-shrink-0 w-80 bg-[#353535] rounded-2xl overflow-hidden shadow-lg hover:bg-[#4F4F4F] transition-colors flex flex-col items-center justify-center text-white">
+            <div class="p-5 text-center">
+              <img src="{% static 'image/more.png' %}" alt="Lihat Lebih Banyak" class="w-16 h-16 mx-auto mb-4 object-contain">
+              <h3 class="text-xl font-bold">Lihat Lebih Banyak</h3>
+              <p class="text-sm text-gray-300">Jelajahi semua lapangan</p>
+            </div>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Temui Coach -->
+    <div class="mb-12">
+      <h2 class="text-3xl font-bold text-white mb-2">Temui Coach</h2>
+      <p class="text-lg text-gray-400 mb-6">Temukan coach yang terbaik untuk Anda</p>
+      <div class="relative">
+        <button type="button" id="coach-scroll-left-btn" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -ml-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <button type="button" id="coach-scroll-right-btn" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </button>
+        <div id="coach-scroll-container" class="flex overflow-x-scroll space-x-6 pb-4 no-scrollbar scroll-smooth">
+          {% for coach in coach_list %}
+          <div class="flex-shrink-0 w-80 bg-[#353535] rounded-2xl overflow-hidden shadow-lg"> <div class="h-48 w-full bg-[#4F4F4F]">
+                  {% if coach.photo %} 
+                      <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}" class="w-full h-full object-cover">
+                  {% else %}
+                      <div class="w-full h-full flex items-center justify-center text-gray-400">Foto tidak ditemukan</div>
+                  {% endif %}
+              </div>
+              <div class="p-5">
+                  <h3 class="text-xl font-bold text-white mb-2 truncate">{{ coach.name }}</h3>
+                  <p class="text-sm text-gray-300 mb-1 truncate">{{ coach.sport_branch }}</p>
+                  <p class="text-sm text-green-400 flex items-center mb-4">{{ coach.service_fee | default:"Tarif tidak tersedia" }}</p>
+                  <div class="flex justify-between space-x-3">
+                      {% if user.is_authenticated %}<a href="tel:{{ coach.contact }}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% else %}<a href="{% url 'main:login' %}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% endif %}
+                      {% if user.is_authenticated %}
+                          <a href="{% url 'coach:coach_detail' coach.id %}" 
+                            class="flex-1 text-center px-4 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-sm font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">
+                            Detail
+                          </a>
+                      {% else %}
+                          <a href="{% url 'main:login' %}" 
+                            class="flex-1 text-center px-4 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-sm font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">
+                            Detail
+                          </a>
+                      {% endif %}
+                  </div>
+              </div>
+          </div> {% empty %}
+              <p class="text-gray-400 w-full text-center">Belum ada data coach untuk ditampilkan.</p>
+          {% endfor %}
+          {% if coach_list|length > 0 %}
+            <a 
+              href="{% if user.is_authenticated %}{% url 'coach:coach_list' %}{% else %}{% url 'main:login' %}{% endif %}" 
+              class="flex-shrink-0 w-80 bg-[#353535] rounded-2xl overflow-hidden shadow-lg hover:bg-[#4F4F4F] transition-colors flex flex-col items-center justify-center text-white">
+                
+                <div class="p-5 text-center">
+                    <img src="{% static 'image/more.png' %}" alt="Lihat Lebih Banyak" class="w-16 h-16 mx-auto mb-4 object-contain">
+                    <h3 class="text-xl font-bold">Lihat Lebih Banyak</h3>
+                    <p class="text-sm text-gray-300">Temui semua coach</p>
+                </div>
+            </a>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Event yang akan datang -->
+    <div class="mb-16">
+      <h2 class="text-3xl font-bold text-white mb-2">Event yang akan Datang</h2>
+      <p class="text-lg text-gray-400 mb-6">Bagikan dan temukan event menarik di sekitar Anda.</p>
+      <div class="relative">
+        <button type="button" id="event-scroll-left-btn" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -ml-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <button type="button" id="event-scroll-right-btn" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -mr-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </button>
+        <div id="event-scroll-container" class="flex overflow-x-scroll space-x-6 pb-4 no-scrollbar scroll-smooth">
+          {% for event in event_list %}
+          <!-- KARTU HORIZONTAL BARU (LEBIH LEBAR) -->
+          <div class="flex-shrink-0 w-[28rem] bg-[#353535] rounded-2xl overflow-hidden shadow-lg flex p-4 gap-4">
+              <!-- Bagian Gambar (Kiri) -->
+              <div class="w-32 h-full flex-shrink-0 bg-[#4F4F4F] rounded-lg overflow-hidden">
+                  {% if event.thumbnail %}
+                      <img src="{{ event.thumbnail }}" alt="Foto {{ event.nama }}" class="w-full h-full object-cover">
+                  {% else %}
+                      <div class="w-full h-full flex items-center justify-center text-center text-sm text-gray-400">Foto tidak ada</div>
+                  {% endif %}
+              </div>
+
+              <!-- Bagian Konten (Kanan) -->
+              <div class="flex-1 flex flex-col justify-between min-w-0">
+                  <div>
+                      <h3 class="text-lg font-bold text-white mb-2 truncate">{{ event.nama }}</h3>
+                      
+                      <div class="flex flex-col space-y-1 text-xs text-gray-300 mb-3">
+                          <div class="flex items-center">
+                              <img src="{% static 'image/calendar_icon.png' %}" alt="Tanggal" class="w-3 h-3 mr-2 object-contain flex-shrink-0">
+                              <span>{{ event.tanggal|date:"d M Y" }} {% if event.jam %}| {{ event.jam|time:"H:i" }} WIB{% endif %}</span>
+                          </div>
+                          <div class="flex items-center">
+                              <img src="{% static 'image/location_icon.png' %}" alt="Lokasi" class="w-3 h-3 mr-2 object-contain flex-shrink-0">
+                              <span class="truncate">{{ event.lokasi }}</span>
+                          </div>
+                          <div class="flex items-center">
+                              <img src="{% static 'image/sports_icon.png' %}" alt="Olahraga" class="w-3 h-3 mr-2 object-contain flex-shrink-0">
+                              <span>{{ event.get_olahraga_display }}</span>
+                          </div>
+                      </div>
+                      
+                      <p class="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                          {{ event.deskripsi }}
+                      </p>
+                  </div>
+                  
+                  <div class="flex justify-between space-x-2 mt-auto">
+                      {% if user.is_authenticated %}
+                          <a href="tel:{{ event.kontak }}" class="flex-1 text-center px-3 py-2 border border-gray-500 text-gray-300 rounded-md text-xs font-medium hover:bg-gray-700 transition-colors">Hubungi</a>
+                      {% else %}
+                          <a href="{% url 'main:login' %}" class="flex-1 text-center px-3 py-2 border border-gray-500 text-gray-300 rounded-md text-xs font-medium hover:bg-gray-700 transition-colors">Hubungi</a>
+                      {% endif %}
+                      
+                      {% if user.is_authenticated %}
+                          <a href="{% url 'main:show_event_detail' event.id %}" 
+                             class="flex-1 text-center px-3 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-xs font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">
+                             Detail
+                          </a>
+                      {% else %}
+                          <a href="{% url 'main:login' %}" 
+                             class="flex-1 text-center px-3 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-xs font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">
+                             Detail
+                          </a>
+                      {% endif %}
+                  </div>
+              </div>
+          </div>
+          {% empty %}
+          <p class="text-gray-400 w-full text-center">Belum ada event yang akan datang.</p>
+          {% endfor %}
+          
+          {% if event_list|length > 0 %}
+          <a href="{% if user.is_authenticated %}{% url 'main:show_event' %}{% else %}{% url 'main:login' %}{% endif %}" 
+             class="flex-shrink-0 w-80 bg-[#353535] rounded-2xl overflow-hidden shadow-lg hover:bg-[#4F4F4F] transition-colors flex flex-col items-center justify-center text-white">
+              <div class="p-5 text-center">
+                  <img src="{% static 'image/more.png' %}" alt="Lihat Lebih Banyak" class="w-16 h-16 mx-auto mb-4 object-contain">
+                  <h3 class="text-xl font-bold">Lihat Semua Event</h3>
+                  <p class="text-sm text-gray-300">Lihat semua event</p>
+              </div>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-16 bg-[#353535] rounded-2xl overflow-hidden shadow-lg grid grid-cols-1 md:grid-cols-2">
+
+      <div class="bg-gradient-to-r from-[#06005E] to-[#571E88] p-12 flex items-center justify-center min-h-[300px] md:min-h-full">
+          <h2 class="text-4xl lg:text-5xl font-bold text-white text-center">Kenapa ASKMO?</h2>
+      </div>
+
+      <div class="p-8 md:p-12 flex flex-col justify-between">
+
+          <div class="overflow-hidden relative flex-1">
+              <div id="testimonial-slider" class="flex transition-transform duration-500 ease-in-out h-full">
+
+                  <div class="w-full flex-shrink-0 px-2 flex flex-col justify-center">
+                      <div class="flex items-start gap-4 mb-4">
+                          <img src="{% static 'image/syafiq.png' %}" alt="Syafiq Faqih" class="w-12 h-12 rounded-full flex-shrink-0 object-cover">
+                          <div>
+                              <p class="font-semibold text-white">Syafiq Faqih</p>
+                              <p class="text-sm text-gray-400">Admin ASKMO</p>
+                          </div>
+                      </div>
+                      <p class="text-gray-300 text-lg leading-relaxed">
+                        "Kami membangun ASKMO karena lelahnya mencari info olahraga yang terpisah-pisah. Kami ingin satu platform di mana menemukan lapangan bagus, coach berkualitas, dan event seru jadi semudah beberapa klik."
+                    </p>
+                  </div>
+
+                  <div class="w-full flex-shrink-0 px-2 flex flex-col justify-center">
+                      <div class="flex items-start gap-4 mb-4">
+                          <img src="{% static 'image/ojan.png' %}" alt="Ahmad Fauzan" class="w-12 h-12 rounded-full flex-shrink-0 object-cover">
+                          <div>
+                              <p class="font-semibold text-white">Ahmad Fauzan Al Ayubi</p>
+                              <p class="text-sm text-gray-400">Admin ASKMO</p>
+                          </div>
+                      </div>
+                      <p class="text-gray-300 text-lg leading-relaxed">
+                        "Sebagai penggemar futsal, saya sering frustrasi mencari lapangan kosong di jam primetime. Dengan ASKMO, kami ingin proses pencarian dan pemesanan lapangan jadi transparan dan bebas repot."
+                    </p>
+                  </div>
+
+                  <div class="w-full flex-shrink-0 px-2 flex flex-col justify-center">
+                      <div class="flex items-start gap-4 mb-4">
+                          <img src="{% static 'image/kamali.png' %}" alt="Lessyarta Kamali" class="w-12 h-12 rounded-full flex-shrink-0 object-cover">
+                          <div>
+                              <p class="font-semibold text-white">Lessyarta Kamali Sopamena Pirade</p>
+                              <p class="text-sm text-gray-400">Admin ASKMO</p>
+                          </div>
+                      </div>
+                      <p class="text-gray-300 text-lg leading-relaxed">
+                        "Saya percaya pengembangan skill itu penting. Dulu, mencari coach yang cocok itu. Makanya, kami buat ASKMO agar semua orang bisa mudah menemukan pelatih berkualitas untuk olahraga apa pun."
+                    </p>
+                  </div>
+
+                  <div class="w-full flex-shrink-0 px-2 flex flex-col justify-center">
+                      <div class="flex items-start gap-4 mb-4">
+                          <img src="{% static 'image/matthew.png' %}" alt="Matthew Wijaya" class="w-12 h-12 rounded-full flex-shrink-0 object-cover">
+                          <div>
+                              <p class="font-semibold text-white">Matthew Wijaya</p>
+                              <p class="text-sm text-gray-400">Admin ASKMO</p>
+                          </div>
+                      </div>
+                      <p class="text-gray-300 text-lg leading-relaxed">
+                        "Olahraga itu soal komunitas. Kami menciptakan ASKMO untuk jadi jembatan; tempat siapa saja bisa berbagi info event, mulai dari fun run sampai sparring rutin, dan memudahkan orang lain untuk bergabung."
+                    </p>
+                  </div>
+
+                  <div class="w-full flex-shrink-0 px-2 flex flex-col justify-center">
+                      <div class="flex items-start gap-4 mb-4">
+                          <img src="{% static 'image/alya.png' %}" alt="Nisrina Alya" class="w-12 h-12 rounded-full flex-shrink-0 object-cover">
+                          <div>
+                              <p class="font-semibold text-white">Nisrina Alya Nabilah</p>
+                              <p class="text-sm text-gray-400">Admin ASKMO</p>
+                          </div>
+                      </div>
+                      <p class="text-gray-300 text-lg leading-relaxed">
+                        "Kami ingin ASKMO tidak hanya fungsional, tapi juga nyaman digunakan. Desainnya kami buat intuitif agar, baik saat mencari lapangan basket atau event yoga, pengalamannya tetap mulus dan modern."
+                    </p>
+                  </div>
+
+              </div>
+          </div>
+
+          <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-700">
+              <span id="testimonial-counter" class="text-sm text-gray-400 font-mono">01 / 05</span>
+              <div class="flex space-x-4">
+                  <button id="testimonial-prev-btn" class="text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7 7-7" /></svg>
+                  </button>
+                  <button id="testimonial-next-btn" class="text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7" /></svg>
+                  </button>
+              </div>
+          </div>
+      </div>
   </div>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- isi lain -->
-  </div>
+  <div class="mb-24 pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> 
+    
+    <div class="relative z-10 flex flex-col items-center mb-12"> 
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Statistika ASKMO</h2>
+    </div>
 
+    <div id="stats-viewport" x-data="statsComponent()" x-intersect:enter="animateCounters()">
+      <div id="stats-track">
+        
+        <div class="stat-card">
+          <div class="h-48 bg-gradient-to-r from-[#06005E] to-[#571E88] rounded-2xl flex flex-col items-center justify-center text-center p-6 shadow-lg">
+            <span id="count-lapangan" class="text-4xl font-bold text-white mb-2" data-target="{{ lapangan_count }}">{{ lapangan_count }}</span>
+            <span class="text-lg text-gray-200">Jumlah Lapangan</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="h-48 bg-gradient-to-r from-[#06005E] to-[#571E88] rounded-2xl flex flex-col items-center justify-center text-center p-6 shadow-lg">
+            <span id="count-coach" class="text-4xl font-bold text-white mb-2" data-target="{{ coach_count }}">{{ coach_count }}</span>
+            <span class="text-lg text-gray-200">Jumlah Coach</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="h-48 bg-gradient-to-r from-[#06005E] to-[#571E88] rounded-2xl flex flex-col items-center justify-center text-center p-6 shadow-lg">
+            <span id="count-event" class="text-4xl font-bold text-white mb-2" data-target="{{ event_count }}">{{ event_count}}</span>
+            <span class="text-lg text-gray-200">Jumlah Event</span>
+          </div>
+        </div>
+
+        </div>
+    </div>
+  </div>
+  <footer class="w-full mt-24 py-8 px-4 sm:px-6 lg:px-8"> 
+    <div class="max-w-7xl mx-auto pt-8 border-t border-gray-700 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0"> 
+        <div class="text-sm text-gray-500 text-center sm:text-left">
+            &copy;ASKMO Team. All Rights Reserved. 
+        </div>
+        <div class="text-sm text-gray-500 text-center sm:text-right">
+            Projek Tengah Semester PBP C Kelompok 04
+        </div>
+    </div>
+</footer>
+
+  </div>
 </div>
-{% endblock content %}
 
+<div id="modal-overlay" onclick="checkCloseModal(event)">
+    <div id="modal-content"> 
+        <button id="modal-close-btn" onclick="hideDetail()">&times;</button>
+        <img id="modal-image" src="https://via.placeholder.com/600x250.png?text=Loading..." alt="Foto Detail">
+        <div class="modal-body">
+            <h2 id="modal-nama">Nama...</h2>
+            <div class="modal-priority-info">
+                </div>
+            <a id="modal-kontak-btn" href="#" target="_blank"><i class="fas fa-phone"></i> Hubungi</a>
+            <hr class="modal-divider">
+            <div class="modal-details">
+                </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+
+<script>
+
+function animateCountUp(el) {
+        if (el.dataset.animating === 'true') return; // Jangan animasikan jika sudah berjalan
+        
+        let start = 0;
+        const end = parseInt(el.dataset.target, 10);
+        
+        if (isNaN(end) || end === 0) {
+            el.textContent = '0';
+            return; 
+        }
+
+        el.dataset.animating = 'true'; // Set flag
+        
+        const duration = 1500; // milliseconds
+        const frameRate = 1000 / 60; // 60fps
+        const totalFrames = Math.round(duration / frameRate);
+        const increment = end / totalFrames;
+        let current = 0;
+        let frame = 0;
+
+        const counter = setInterval(() => {
+            current += increment;
+            frame++;
+
+            if (frame >= totalFrames) {
+                clearInterval(counter);
+                el.textContent = end.toLocaleString('id-ID');
+                el.dataset.animating = 'false'; // Reset flag
+            } else {
+                el.textContent = Math.round(current).toLocaleString('id-ID');
+            }
+        }, frameRate);
+    }
+
+  // 2. Definisikan `statsSlider` di scope global AGAR BISA DIAKSES
+  //    oleh 'x-data'
+  function statsSlider() {
+    return {
+        animationFrameId: null,
+        speed: 0.5, 
+        currentTranslateX: 0, 
+        cardObserver: null, 
+        
+        init() {
+            // 'this.$refs' adalah cara AlpineJS mendapatkan elemen 'x-ref'
+            const track = this.$refs.sliderTrack; 
+            if (!track) {
+                console.error("Alpine Error: sliderTrack ref not found!"); 
+                return;
+            }
+            const container = track.parentElement; 
+            if (!container) {
+                console.error("Alpine Error: sliderTrack container not found!");
+                return;
+            }
+            console.log("statsSlider init() called. Track and container found."); 
+
+            // --- KLONING ---
+            const originalItems = Array.from(track.children);
+            if (originalItems.length === 0) return;
+            
+            originalItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                clone.setAttribute('aria-hidden', 'true'); // Tandai klon
+                
+                const counterEl = clone.querySelector('[data-target]');
+                if (counterEl) {
+                    const targetVal = parseInt(counterEl.dataset.target, 10);
+                    if (!isNaN(targetVal)) {
+                        counterEl.textContent = targetVal.toLocaleString('id-ID'); 
+                    }
+                }
+                track.appendChild(clone);
+            });
+
+            // --- LOGIKA OBSERVER ---
+            const observerOptions = { 
+                root: container, 
+                rootMargin: '0px',
+                threshold: 0.1   // Picu saat 10% kartu terlihat
+            };
+
+            this.cardObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.target.hasAttribute('aria-hidden')) {
+                        return; // Abaikan klon
+                    }
+
+                    if (entry.isIntersecting) {
+                        // KARTU MASUK: Panggil fungsi 'animateCountUp'
+                        console.log("Card ENTERED, animating:", entry.target.querySelector('[data-target]').dataset.target);
+                        const counterEl = entry.target.querySelector('[data-target]');
+                        if (counterEl) {
+                            animateCountUp(counterEl); // Panggil fungsi global
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Amati kartu-kartu ASLI
+            const originalCards = track.querySelectorAll('.flex-shrink-0:not([aria-hidden="true"])');
+            originalCards.forEach(card => {
+                this.cardObserver.observe(card);
+            });
+            // --- BATAS LOGIKA OBSERVER ---
+
+            // Mulai animasi scroll
+            this.startAutoScroll();
+
+            // Berhenti saat hover
+            container.addEventListener('mouseenter', () => this.stopAutoScroll()); 
+            container.addEventListener('mouseleave', () => this.startAutoScroll()); 
+        },
+
+        scrollStep() {
+            const track = this.$refs.sliderTrack;
+            if (!track || this.animationFrameId === null) return; 
+
+            const resetPoint = track.scrollWidth / 2;
+            this.currentTranslateX -= this.speed; 
+            
+            if (Math.abs(this.currentTranslateX) >= resetPoint) {
+                this.currentTranslateX = 0; // Lompat kembali ke awal
+            }
+
+            track.style.transform = `translateX(${this.currentTranslateX}px)`;
+            this.animationFrameId = requestAnimationFrame(() => this.scrollStep()); 
+        },
+
+        startAutoScroll() {
+            if (this.animationFrameId) return; 
+            this.animationFrameId = requestAnimationFrame(() => this.scrollStep());
+        },
+
+        stopAutoScroll() {
+            if (this.animationFrameId) {
+                cancelAnimationFrame(this.animationFrameId);
+                this.animationFrameId = null; 
+            }
+        }
+    }
+  }
+
+document.addEventListener('alpine:init', () => {
+        Alpine.data('statsComponent', () => ({
+          
+          animateCountUp(el) {
+            let start = 0;
+            const end = parseInt(el.dataset.target, 10);
+
+            if (isNaN(end) || end === 0) {
+                el.textContent = '0';
+                return;
+            }
+
+            if (el.dataset.animated === 'true') return; 
+            el.dataset.animated = 'true';
+
+            const duration = 1500;
+            const frameRate = 1000 / 60;
+            const totalFrames = Math.round(duration / frameRate);
+            const increment = end / totalFrames;
+            let current = 0;
+            let frame = 0;
+
+            const counterInterval = setInterval(() => {
+                  current += increment;
+                  frame++;
+
+                  if (frame >= totalFrames) {
+                    clearInterval(counterInterval);
+                    el.textContent = end.toLocaleString('id-ID'); 
+                  } else {
+                    el.textContent = Math.round(current).toLocaleString('id-ID');
+                  }
+                }, frameRate);
+              },
+              animateCounters() {
+            console.log("Animate counters triggered!"); // debug log
+            const counters = document.querySelectorAll('#count-lapangan, #count-coach, #count-event');
+            counters.forEach(counterEl => {
+                animateCountUp(counterEl);
+              });
+            }
+        }));
+    });
+    
+document.addEventListener('DOMContentLoaded', function() {
+    const track = document.getElementById('stats-track');
+    if (track) {
+      const cards = Array.from(track.children);
+      cards.forEach(card => {
+        const clone = card.cloneNode(true);
+        track.appendChild(clone);
+      });
+    } else {
+      console.warn('Stats track not found for cloning.');
+    }
+  });
+
+  function setupScrollButtons(containerId, leftBtnId, rightBtnId) {
+    const container = document.getElementById(containerId);
+    const leftBtn = document.getElementById(leftBtnId);
+    const rightBtn = document.getElementById(rightBtnId);
+
+    if (container && leftBtn && rightBtn) {
+      function scrollItems(direction) {
+        const scrollAmount = 344; // w-80 (320px) + space-x-6 (24px)
+        container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+      }
+      leftBtn.addEventListener('click', () => scrollItems(-1));
+      rightBtn.addEventListener('click', () => scrollItems(1));
+
+      function updateArrowState() {
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        const currentScroll = container.scrollLeft;
+        
+        const tolerance = 5; 
+        
+        leftBtn.classList.toggle('opacity-0', currentScroll < tolerance);
+        leftBtn.disabled = currentScroll < tolerance;
+        rightBtn.classList.toggle('opacity-0', currentScroll > maxScroll - tolerance);
+        rightBtn.disabled = currentScroll > maxScroll - tolerance;
+      }
+      
+      container.addEventListener('scroll', updateArrowState);
+      window.addEventListener('load', () => setTimeout(updateArrowState, 100));
+      window.addEventListener('resize', updateArrowState); 
+      
+      setTimeout(updateArrowState, 100); 
+    } else {
+        console.warn(`Scroll container or buttons not found for: ${containerId}`);
+    }
+  }
+
+  setupScrollButtons('lapangan-scroll-container', 'lapangan-scroll-left-btn', 'lapangan-scroll-right-btn');
+  setupScrollButtons('coach-scroll-container', 'coach-scroll-left-btn', 'coach-scroll-right-btn');
+  setupScrollButtons('event-scroll-container', 'event-scroll-left-btn', 'event-scroll-right-btn');
+
+
+  const modalOverlay = document.getElementById('modal-overlay');
+
+  function getModalElement(id) {
+      const element = document.getElementById(id);
+      if (!element) {
+          console.error(`Modal element with ID "${id}" not found!`);
+      }
+      return element;
+  }
+
+// slider kenapa askmo
+const testimonialSlider = document.getElementById('testimonial-slider');
+const testimonialPrevBtn = document.getElementById('testimonial-prev-btn');
+const testimonialNextBtn = document.getElementById('testimonial-next-btn');
+const testimonialCounter = document.getElementById('testimonial-counter');
+
+if (testimonialSlider && testimonialPrevBtn && testimonialNextBtn && testimonialCounter) {
+    const slides = testimonialSlider.children;
+    const totalSlides = slides.length;
+    let currentSlideIndex = 0;
+
+    function updateTestimonialSlider() {
+        testimonialSlider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+
+        testimonialCounter.textContent = `${String(currentSlideIndex + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+
+        testimonialPrevBtn.disabled = currentSlideIndex === 0;
+        testimonialNextBtn.disabled = currentSlideIndex === totalSlides - 1;
+
+        testimonialPrevBtn.classList.toggle('opacity-50', currentSlideIndex === 0);
+        testimonialPrevBtn.classList.toggle('cursor-not-allowed', currentSlideIndex === 0);
+        testimonialNextBtn.classList.toggle('opacity-50', currentSlideIndex === totalSlides - 1);
+        testimonialNextBtn.classList.toggle('cursor-not-allowed', currentSlideIndex === totalSlides - 1);
+    }
+
+    testimonialNextBtn.addEventListener('click', () => {
+        if (currentSlideIndex < totalSlides - 1) {
+            currentSlideIndex++;
+            updateTestimonialSlider();
+        }
+    });
+
+    testimonialPrevBtn.addEventListener('click', () => {
+        if (currentSlideIndex > 0) {
+            currentSlideIndex--;
+            updateTestimonialSlider();
+        }
+    });
+
+    updateTestimonialSlider();
+} else {
+    console.warn("Testimonial slider elements not found.");
+}
+
+  async function showDetail(lapanganId) {
+    console.log("showDetail called with ID:", lapanganId); // debug log
+    if (!modalOverlay) {
+        console.error("Modal overlay element not found!");
+        alert("Error displaying details.");
+        return;
+    }
+    modalOverlay.innerHTML = '<div style="color:white; font-size: 1.5rem;">Loading...</div>'; 
+    modalOverlay.style.cssText = "display: flex; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; padding: 20px;";
+
+    try {
+      const response = await fetch(`/json/${lapanganId}/`);
+      console.log("Fetch status:", response.status);
+      if (!response.ok) throw new Error(`Data not found (${response.status})`);
+      const data = await response.json();
+      console.log("Data received:", data); 
+
+      modalOverlay.innerHTML = `
+        <div id="modal-content"> 
+            <button id="modal-close-btn" onclick="hideDetail()">&times;</button>
+            <img id="modal-image" src="${data.thumbnail || 'https://via.placeholder.com/600x250.png?text=No+Image'}" alt="Foto ${data.nama}">
+            <div class="modal-body">
+                <h2 id="modal-nama">${data.nama}</h2>
+                <div class="modal-priority-info">
+                    <p><i class="fas fa-map-marker-alt"></i> <span id="modal-alamat">${data.alamat || '-'}</span></p>
+                    <p><i class="fas fa-star"></i> <span id="modal-rating">${data.rating} / 5.0</span></p>
+                    <p><i class="fas fa-futbol"></i> <span id="modal-olahraga">${data.olahraga}</span></p>
+                    <p><i class="fas fa-money-bill-wave"></i> <span id="modal-tarif"></span></p> <p><i class="fas fa-undo"></i> <span id="modal-refund">${data.refund ? 'Bisa Refund' : 'Tidak Bisa Refund'}</span></p>
+                </div>
+                <a id="modal-kontak-btn" href="#" target="_blank" style="display: none;"><i class="fas fa-phone"></i> Hubungi</a> <hr class="modal-divider">
+                <div class="modal-details">
+                    <h4>Deskripsi</h4><p id="modal-deskripsi">${data.deskripsi || '-'}</p>
+                    <h4>Fasilitas</h4><p id="modal-fasilitas">${data.fasilitas || '-'}</p>
+                    <h4>Peraturan</h4><p id="modal-peraturan">${data.peraturan || '-'}</p>
+                    <h4>Review</h4><p id="modal-review">${data.review || '-'}</p>
+                </div>
+            </div>
+        </div>`;
+      
+      const modalTarif = getModalElement('modal-tarif');
+      const modalKontakBtn = getModalElement('modal-kontak-btn');
+
+      if (modalTarif) {
+          const tarif = data.tarif_per_sesi ? parseFloat(data.tarif_per_sesi) : null;
+          modalTarif.textContent = tarif ? `Rp ${tarif.toLocaleString('id-ID')}` : 'N/A';
+      }
+      
+      if (modalKontakBtn && data.kontak) {
+          modalKontakBtn.href = `tel:${data.kontak}`;
+          modalKontakBtn.style.display = 'inline-block';
+      }
+
+      modalOverlay.style.display = 'flex'; 
+      console.log("Modal should be visible now."); // debug log
+
+    } catch (error) { 
+        console.error("Error in showDetail:", error); 
+        modalOverlay.innerHTML = `<div style="color:white; padding: 20px; text-align: center;">Error: ${error.message}<br/><button onclick="hideDetail()" style="margin-top: 10px; padding: 5px 10px;">Close</button></div>`;
+        modalOverlay.style.display = 'flex'; 
+        // alert("Gagal memuat detail lapangan. Cek console (F12)."); 
+    }
+  }
+
+   
+
+  function hideDetail() {
+    if (modalOverlay) {
+        modalOverlay.style.display = 'none';
+        modalOverlay.innerHTML = '';
+    }
+  }
+  
+  function checkCloseModal(event) {
+    if (event.target === modalOverlay) { 
+        hideDetail(); 
+    }
+  }
+</script>
+{% endblock content %}

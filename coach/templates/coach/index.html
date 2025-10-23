@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
 {% block meta %}
 <title>Coach Finder - ASKMO</title>
 <link rel="stylesheet" href="{% static 'coach/style.css' %}">
@@ -43,26 +44,47 @@
         text-align: center;
         width: 100%;
     }
+    .rating-no-review {
+        color: #888;
+        font-style: italic;
+        font-size: 0.85em;
+    }
+
+
+    .rating-with-review {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+
+    .rating-count {
+        color: #666;
+        font-size: 0.8em;
+    }
 </style>
 {% endblock meta %}
+
 
 {% block content %}
 {% include 'navbar.html' %}
     <div class="fixed top-9 right-9 z-50 hidden md:block">
     <a href="{% url 'main:show_profile' %}">
         <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
-        
+       
         <span class="[text-shadow:0_1px_3px_rgb(0_0_0_/_0.7)]">{{ user.username }}</span>
+
 
         </div>
     </a>
     </div>
     <main>
         <h1 style="margin-top: 70px; font-size: 40px; margin-bottom: 15px; text-align: center;"><b>COACH</b></h1>
-        
+       
         <div class="bg-[#353535] rounded-xl p-4 mb-8">
             <form class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center" method="GET" action="{% url 'coach:coach_list' %}">
-                
+               
                 <div class="relative md:col-span-2">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="fas fa-search w-5 h-5 text-white opacity-75"></i>
@@ -70,12 +92,13 @@
                     <input type="text" name="name" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white placeholder:text-white focus:outline-none focus:border-[#06005E] focus:border-[2px]" placeholder="Cari nama coach" value="{{ search_values.name }}">
                 </div>
 
+
                 <div class="relative md:col-span-2">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="fas fa-map-marker-alt w-5 h-5 text-white opacity-75"></i>
                     </div>
-                    <select name="location" 
-                            class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none" 
+                    <select name="location"
+                            class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none"
                             style="color-scheme: dark;">
                         <option value="">Pilih lokasi</option>
                         <optgroup label="Jakarta Pusat">
@@ -205,6 +228,7 @@
                     </div>
                 </div>
 
+
                 <div class="relative md:col-span-2">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <i class="fas fa-futbol w-5 h-5 text-white opacity-75"></i>
@@ -231,6 +255,7 @@
             </form>
         </div>
 
+
         <div class="card-container">
             {% for coach in coaches %}
             <a href="{% url 'coach:coach_detail' coach.pk %}" class="card-link">
@@ -242,6 +267,20 @@
                     {% endif %}
                     <h3>{{ coach.name }}</h3>
                     <p class="card-cabor">{{ coach.sport_branch }}</p>
+                    <!-- Buat rating by syafiq -->
+                    <p>
+                        <i class="fas fa-star" style="margin-right: 5px;"></i>
+                        {% if coach.calculate_average_rating %}
+                            <span class="rating-with-review">
+                                {{ coach.get_average_rating_display }}/5
+                                <span class="rating-count">({{ coach.get_total_reviews_display }})</span>
+                            </span>
+                        {% else %}
+                            <span class="rating-no-review">Belum ada rating</span>
+                        {% endif %}
+                    </p>
+
+
                     <p><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> {{ coach.location }}</p>
                     <p><i class="fas fa-phone" style="margin-right: 5px;"></i> {{ coach.contact }}</p>
                 </div>
@@ -252,3 +291,4 @@
         </div>
     </main>
 {% endblock content %}
+
