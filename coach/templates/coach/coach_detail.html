@@ -1,9 +1,7 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% block meta %}
     <title>Detail {{ coach.name }} - ASKMO</title>
     <link rel="stylesheet" href="{% static 'coach/style.css' %}">
     <style>
@@ -155,18 +153,19 @@
         /* STYLE BARU UNTUK TOMBOL AKSI */
         .action-buttons {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex-wrap: wrap; /* Izinkan tombol melipat ke baris baru */
+            justify-content: space-between; /* Spasi antar tombol */
+            gap: 10px; /* Jarak antara baris dan kolom */
             margin-top: 25px;
             margin-bottom: 10px;
-            margin-right: 20px;/* Jarak sebelum 'Pengalaman' */
+            margin-right: 0; /* Jarak sebelum 'Pengalaman' */
         }
         .action-btn {
-            flex-grow: 1;
-            width: 100%;
+            /* flex-grow: 1; */
+            flex: 1 1 calc(50% - 5px); 
+            max-width: calc(50% - 5px); /* Batasi lebar agar dua tombol pas */
             text-decoration: none;
             color: #fff;
-            margin-right: 12px;
             padding: 12px 15px;
             border-radius: 8px;
             text-align: center;
@@ -194,7 +193,7 @@
             color: #FFD700 !important; /* Warna Kuning saat sudah disimpan */
         }
         .action-btn.phone {
-            background-color: #3498DB; /* Warna biru telepon */
+            background-color: #571E88; /* Warna biru telepon */
         }
         .action-btn.review {
             background-color: #571E88; /* Warna ungu untuk review */
@@ -247,14 +246,23 @@
             gap: 8px;
         }
 
+        @media (max-width: 600px) {
+            .action-btn {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+        }
 
     </style>
-</head>
-<body>
-
-
-    <div class="back-link-container">
-        <a href="{% url 'coach:coach_list' %}" class="back-link">&larr; Kembali ke Daftar Coach</a>
+{% endblock meta %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="bg-black text-white w-full min-h-screen font-['Plus_Jakarta_Sans'] pt-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+      <a href="{% url 'coach:coach_list' %}" class="text-gray-300 hover:text-white font-medium transition-colors" style="margin-left: 150px;">
+        ← Kembali ke Semua Coach
+      </a>
     </div>
 
 
@@ -336,11 +344,7 @@
                 <!-- Tombol Review -->
                 <a href="/review/{{ coach.pk }}/" class="action-btn review">
                     <i class="fas fa-star"></i>
-                    {% if coach.get_total_reviews > 0 %}
-                        Lihat Rating & Review
-                    {% else %}
-                        Beri Rating & Review Pertama
-                    {% endif %}
+                    Rating & Ulasan
                 </a>
             </div>
             {% endif %}
@@ -360,8 +364,8 @@
             </div>
         </div>
     </div>
-
+</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-</body>
-</html>
+
+{% endblock content %}
