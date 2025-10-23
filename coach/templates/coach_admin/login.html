@@ -5,10 +5,14 @@
     <meta charset="UTF-8">
     <title>Admin Login - ASKMO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
-            font-family: sans-serif;
-            background-color: #f4f4f4;
+            /* FONT DIGANTI */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #000;
+            color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,45 +20,66 @@
             margin: 0;
         }
         .login-container {
-            background: white;
+            background: #1A1A1A;
             padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px S10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             width: 350px;
         }
         h2 {
             text-align: center;
-            color: #333;
+            color: #fff;
             margin-top: 0;
         }
         .input-group {
             margin-bottom: 20px;
-            position: relative; /* Needed for positioning the icon */
+            position: relative; 
         }
+        
         input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            padding: 12px 15px;
+            border: 1px solid #333;
+            background-color: #2c2c2c;
+            color: #fff;
+            border-radius: 8px;
+            box-sizing: border-box; 
+            /* FONT DIGANTI */
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
+        input::placeholder {
+            color: #888;
+        }
+        input:focus {
+            outline: none;
+            border-color: #571E88;
+        }
+
         button {
             width: 100%;
-            background-color: #06005E;
+            background-image: linear-gradient(to right, #06005E, #571E88);
             color: white;
             padding: 12px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+            /* FONT DIGANTI */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-image 0.3s ease-in-out;
         }
+
+        button:hover {
+            background-image: linear-gradient(to right, #1A107A, #7A3EAA);
+        }
+
         .error {
-            color: red;
+            color: #E53E3E;
             text-align: center;
             margin-top: 15px;
             font-size: 0.9em;
         }
-        /* Style for the eye icon */
         #togglePassword {
             position: absolute;
             top: 50%;
@@ -80,20 +105,28 @@
             <button type="submit">Login</button>
         </form>
         {% if form.errors %}
-            <p class="error">{{ form.non_field_errors.as_text }}</p>
+            {% for error in form.non_field_errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
         {% endif %}
     </div>
 
     <script>
         const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#id_password'); // Django's default ID for the password field
+        const password = document.querySelector('#id_password');
+        const username = document.querySelector('#id_username');
+
+        if (username && !username.getAttribute('placeholder')) {
+            username.setAttribute('placeholder', 'Username');
+        }
+        if (password && !password.getAttribute('placeholder')) {
+            password.setAttribute('placeholder', 'Password');
+        }
 
         togglePassword.addEventListener('click', function (e) {
-            // Toggle the type attribute
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
-            
-            // Toggle the eye icon
+    
             this.classList.toggle('fa-eye-slash');
         });
     </script>

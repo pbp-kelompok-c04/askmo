@@ -60,6 +60,8 @@ button:focus-visible {
     outline: none;
     border-color: #06005E;
     box-shadow: 0 0 0 1px #06005E;
+a {
+  text-decoration: none;
 }
 
 .edit-profile-container {

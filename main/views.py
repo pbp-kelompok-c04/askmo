@@ -315,6 +315,24 @@ def show_lapangan_dashboard(request):
     }
     return render(request, 'lapangan/dashboard_lapangan.html', context)
 
+
+
+
+@login_required(login_url='/login/')
+def show_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    avatars = Avatar.objects.all()
+    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
+
+    context = {
+        'profile': profile,
+        'avatars': avatars,
+        'olahraga_choices': olahraga_choices,
+        'current_sport_key': profile.olahraga_favorit,
+    }
+    return render(request, 'profile.html', context) 
+
 @login_required(login_url='/login/')
 @csrf_exempt
 def update_profile_ajax(request):

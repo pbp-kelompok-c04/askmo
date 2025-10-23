@@ -53,4 +53,4 @@ class ReviewForm(ModelForm):
             'review_text': 'Masukan dan Saran Anda',
             'gambar': 'Gambar (URL)',
         }
-        fields = ["nama", "deskripsi", "olahraga", "tanggal", "lokasi", "kontak", "thumbnail", "jam", "biaya"]
+        # fields = ["nama", "deskripsi", "olahraga", "tanggal", "lokasi", "kontak", "thumbnail", "jam", "biaya"]
