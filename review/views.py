@@ -70,9 +70,20 @@ def show_feeds_review_lapangan(request, lapangan_id):
         lapangan = Lapangan.objects.get(pk=lapangan_id)
     except Lapangan.DoesNotExist:
         return HttpResponse("Lapangan tidak ditemukan.", status=404)
-       
+    
+    reviews = Review.objects.filter(lapangan=lapangan).order_by('-tanggal_dibuat')
+    total_reviews = reviews.count()
+
+    if total_reviews > 0:
+        average_rating = update_lapangan_rating(lapangan)
+    else:
+        average_rating = lapangan.original_rating
+ 
     context = {
         'lapangan': lapangan,
+        'reviews': reviews,
+        'average_rating': average_rating,
+        'total_reviews': total_reviews,
     }
     return render(request, 'review/lapangan/feeds_review_lapangan.html', context)
 

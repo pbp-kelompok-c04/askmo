@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Review {{ coach.name }} - ASKMO</title>
+    <title>Form Review {{ lapangan.nama }} - ASKMO</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -130,10 +130,10 @@
 <body>
     <div class="form-container">
         <div class="header-form">
-            <a href="{% url 'review:show_feeds_review_coach' coach.id %}" class="back-link">
+            <a href="{% url 'main:show_feeds_review_lapangan' lapangan.id %}" class="back-link">
                 <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
             </a>
-            <p>Coach: {{ coach.name }}</p>
+            <p>Lapangan: {{ lapangan.nama }}</p>
         </div>
 
 

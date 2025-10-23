@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review {{ coach.name }} - ASKMO</title>
+    <title>Review {{ lapangan.nama }} - ASKMO</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -126,12 +126,41 @@
             gap: 20px;
         }
        
+/* 1. Ubah .review-card menjadi flex container */
         .review-card {
             background: #222;
-            padding: 25px;
+            padding: 0; 
             border-radius: 12px;
             border-left: 5px solid #571E88;
+            overflow: hidden; 
             transition: transform 0.2s, box-shadow 0.2s;
+            
+            /* TAMBAHKAN INI */
+            display: flex; 
+            align-items: stretch; /* Membuat gambar dan konten sama tinggi */
+        }
+
+/* 2. Ubah style gambar agar menjadi kolom kiri */
+        .review-card-image {
+            /* Tentukan lebar tetap untuk gambar */
+            flex-basis: 200px;  /* Lebar kolom gambar, bisa diubah (cth: 200px) */
+            flex-shrink: 0;   /* Mencegah gambar menyusut */
+            
+            /* Hapus 'width' dan 'height' dari style sebelumnya */
+            
+            object-fit: cover; 
+            display: block; 
+        }
+
+/* 3. Atur konten agar mengisi sisa ruang di kanan */
+        .review-card-content {
+            padding: 25px; 
+            
+            /* TAMBAHKAN INI */
+            flex: 1; /* Membuat div ini mengisi sisa ruang yang tersedia */
+            
+            /* Pastikan bisa menangani teks panjang */
+            min-width: 0; 
         }
        
         .review-card:hover {
@@ -274,6 +303,15 @@
             font-size: 0.9em;
         }
        
+        .review-card-image {
+            width: 100%; /* Ini membuatnya reaktif (penuhi lebar card) */
+            height: auto; /* Menjaga rasio aspek gambar */
+            max-height: 350px; /* Batas tinggi agar tidak terlalu dominan */
+            object-fit: cover; /* Memastikan gambar tidak gepeng/stretch */
+            border-radius: 8px; /* Sudut melengkung agar serasi */
+            margin-bottom: 20px; /* Memberi jarak ke konten di bawahnya */
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .review-container {
@@ -305,10 +343,10 @@
     <div class="review-container">
         <div class="header-review">
             <div class="header-left">
-                <a href="{% url 'coach:coach_detail' coach.pk %}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Detail Coach
+                <a href="{% url 'main:show_lapangan_dashboard' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Detail Lapangan
                 </a>
-                <h1>Review Coach: {{ coach.name }}</h1>
+                <h1>Review Lapangan: {{ lapangan.nama }}</h1>
             </div>
            
             <div class="header-right">
@@ -328,7 +366,7 @@
                     </small>
                 </div>
                
-                <a href="{% url 'review:show_form_review_coach' coach.id %}" class="btn-add-review-link">
+                <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
                     <i class="fas fa-edit"></i> Beri Review & Rating
                 </a>
             </div>
@@ -336,37 +374,46 @@
        
         <h2 class="section-title">Semua Review</h2>
        
-        <div class="review-list" id="review-list-container">
-            {% for review in reviews %}
-            <div class="review-card">
-                <div class="review-meta">
-                    <div class="reviewer-info">
-                        <div class="reviewer-name">
-                            <strong>{{ review.reviewer_name }}</strong>
-                        </div>
-                        <div class="review-rating">
-                            <i class="fas fa-star"></i> {{ review.rating }}/5
-                        </div>
+<div class="review-list" id="review-list-container">
+    {% for review in reviews %}
+    <div class="review-card">
+
+        {% if lapangan.thumbnail %}
+            <img src="{{ lapangan.thumbnail }}" alt="Foto {{ lapangan.nama }}" class="review-card-image">
+        {% else %}
+            <img src="https://via.placeholder.com/400x200.png?text=No+Image" alt="Foto tidak tersedia" class="review-card-image">
+        {% endif %}
+
+        <div class="review-card-content">
+            <div class="review-meta">
+                <div class="reviewer-info">
+                    <div class="reviewer-name">
+                        <strong>{{ review.reviewer_name }}</strong>
                     </div>
-                    <div class="review-date">
-                        {{ review.created_at|date:"d M Y" }}
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i> {{ review.rating }}/5
                     </div>
                 </div>
-                <div class="review-text">{{ review.review_text }}</div>
-                <div class="review-actions">
-                    <a href="{% url 'review:edit_review_coach' review.id %}" class="btn-edit">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <button class="btn-delete" data-review-id="{{ review.id }}">
-                        <i class="fas fa-trash"></i> Hapus
-                    </button>
+                <div class="review-date">
+                    {{ review.created_at|date:"d M Y" }}
                 </div>
             </div>
-            {% empty %}
-            <p class="no-reviews">Belum ada review untuk coach ini. Jadilah yang pertama!</p>
-            {% endfor %}
+            <div class="review-text">{{ review.review_text }}</div>
+            <div class="review-actions">
+                <a href="{% url 'main:show_edit_review_lapangan' review.id %}" class="btn-edit">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <button class="btn-delete" data-review-id="{{ review.id }}">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+            </div>
         </div>
+        
     </div>
+    {% empty %}
+    <p class="no-reviews">Belum ada review untuk lapangan ini. Jadilah yang pertama!</p>
+    {% endfor %}
+</div>
 
 
         <script>
@@ -387,7 +434,7 @@
 
 
             try {
-                const url = `{% url 'review:delete_review_coach' 0 %}`.replace('0', reviewId);
+                const url = `{% url 'main:delete_review' 0 %}`.replace('0', reviewId);
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -401,7 +448,7 @@
 
                 if (response.status === 200) {
                     alert(result.message);
-                    location.reload();
+                    location.rega();
                 } else {
                     alert('Gagal menghapus review: ' + result.message);
                 }
