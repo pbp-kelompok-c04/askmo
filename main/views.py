@@ -11,7 +11,7 @@ from django.core import serializers
 from main import models
 from coach.models import CoachWishlist
 from main.forms import LapanganForm, CoachForm, EventForm
-from main.models import Lapangan, Coach, Event
+from main.models import Lapangan, Coach, Event, Collection
 from django.db.models import Q
 
 from django.views.decorators.http import require_POST
@@ -307,6 +307,13 @@ def show_lapangan_dashboard(request):
         lapangan_list = lapangan_list.filter(kecamatan__icontains=search_kecamatan)
     if search_olahraga :
         lapangan_list = lapangan_list.filter(olahraga__icontains=search_olahraga)
+
+    if request.user.is_authenticated:
+        for lapangan in lapangan_list:
+            lapangan.is_saved_to_wishlist = Collection.objects.filter(
+                user=request.user,
+                lapangan=lapangan
+            ).exists()
 
     context = {
         'lapangan_list' : lapangan_list,
