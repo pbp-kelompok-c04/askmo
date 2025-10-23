@@ -491,11 +491,6 @@
         const modalDeskripsi = document.getElementById('modal-deskripsi');
         const modalFasilitas = document.getElementById('modal-fasilitas');
         const modalPeraturan = document.getElementById('modal-peraturan');
-        //const modalReview = document.getElementById('modal-review');
-        const reviewBtn = document.getElementById('modal-review-btn');
-        reviewBtn.href = `/lapangan/review/feeds/${lapanganId}/`;
-
-        modalOverlay.style.display = 'flex';
         
         async function showDetail(lapanganId) {
             try {
@@ -527,11 +522,10 @@
                 modalDeskripsi.textContent = data.deskripsi || 'Tidak ada deskripsi.';
                 modalFasilitas.textContent = data.fasilitas || 'Tidak ada info fasilitas.';
                 modalPeraturan.textContent = data.peraturan || 'Tidak ada info peraturan.';
-                    
+
                 const reviewBtn = document.getElementById('modal-review-btn');
                 if (reviewBtn) {
                     reviewBtn.href = `/lapangan/review/feeds/${lapanganId}/`;
-                    reviewBtn.style.display = 'block';
                 }
 
                 modalOverlay.style.display = 'flex';
@@ -571,7 +565,7 @@
 
         async function toggleWishlist(itemId, itemType) {
             try {
-                const response = await fetch('/wishlist/toggle/', {
+                const response = await fetch('/wishlist/toggle/', { 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -601,7 +595,7 @@
 
             } catch (error) {
                 console.error("Error toggling wishlist:", error);
-                alert("Gagal menghubungi server. Pastikan Anda sudah login.");
+                alert("Gagal menghubungi server. Pastikan Anda sudah login."); // Tambahkan pesan ini jika login diperlukan
             }
         }
         function updateBookmarkIcon(itemId, action) {
