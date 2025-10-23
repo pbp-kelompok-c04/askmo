@@ -4,203 +4,319 @@
 
 {% block meta %}
 <title>Event - ASKMO</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* === KODE AURA === */
+        .background-aura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-aura-container::before,
+        .background-aura-container::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            filter: blur(100px);
+            animation: pulseAura 15s infinite alternate ease-in-out;
+        }
+
+        .background-aura-container::before {
+            background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0));
+            width: 700px;
+            height: 700px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .background-aura-container::after {
+            background: radial-gradient(circle at center, rgba(111, 7, 50), rgba(87, 30, 136, 0));
+            width: 800px;
+            height: 800px;
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 7.5s;
+        }
+
+        @keyframes pulseAura {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+        /* === BATAS KODE AURA === */
+    </style>
+
 {% endblock meta %}
 
 {% block content %}
-{% include 'navbar.html' %}
+<div class="background-aura-container"></div> {% include 'navbar.html' %}
 
 {% if user.is_authenticated %}
-<div class="fixed top-6 right-8 z-50 hidden md:block">
-    <a href="{% url 'main:show_profile' %}" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+<div class="fixed top-9 right-9 z-50 hidden md:block"> <a href="{% url 'main:show_profile' %}" class="text-gray-300 hover:text-white text-sm font-medium transition-colors [text-shadow:0_1px_3px_rgb(0_0_0_/_0.7)]">
         {{ user.username }}
     </a>
 </div>
 {% endif %}
 
-<div class="bg-black text-white w-full min-h-screen font-['Plus_Jakarta_Sans']">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="bg-black text-white w-full min-h-screen font-['Plus_Jakarta_Sans'] flex flex-col">
+    <main class="flex-1 relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
 
-    <h1 style="margin-top: 75px; font-size: 40px; margin-bottom: 15px; text-align: center;"><b>EVENT</b></h1>
-    <p style="margin-bottom: 15px; text-align: center;">Bagikan dan temukan event olahraga di sekitarmu!</p>
-    
+        <h1 style="margin-top: 75px; font-size: 40px; margin-bottom: 15px; text-align: center;"><b>EVENT</b></h1>
+        <p style="margin-bottom: 15px; text-align: center;">Bagikan dan temukan event olahraga di sekitarmu!</p>
+        
 
-    <div class="bg-[#353535] rounded-xl p-4 mb-8">
-        <form id="search-form" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center">
-            <div class="relative md:col-span-2">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <img src="{% static 'image/search_icon.png' %}" alt="Search" class="w-5 h-5 object-contain">
+        <div class="bg-[#353535] rounded-xl p-4 mb-8">
+            <form id="search-form" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center">
+                <div class="relative md:col-span-2">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <img src="{% static 'image/search_icon.png' %}" alt="Search" class="w-5 h-5 object-contain">
+                    </div>
+                    <input type="text" id="search-name" name="search_name" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white placeholder:text-white focus:outline-none focus:border-[#06005E] focus:border-[2px]" placeholder="Cari nama event">
                 </div>
-                <input type="text" id="search-name" name="search_name" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white placeholder:text-white focus:outline-none focus:border-[#06005E] focus:border-[2px]" placeholder="Cari nama event">
+
+                <div class="relative md:col-span-2">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                         <img src="{% static 'image/location_icon.png' %}" alt="Location" class="w-5 h-5 object-contain">
+                    </div>
+                    <select id="search-location" name="search_location" 
+                            class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none" 
+                            style="color-scheme: dark;">
+                        <option value="">Pilih lokasi</option>
+                        <optgroup label="Jakarta Pusat">
+                            <option value="Cempaka Putih">Cempaka Putih</option>
+                            <option value="Gambir">Gambir</option>
+                            <option value="Johar Baru">Johar Baru</option>
+                            <option value="Kemayoran">Kemayoran</option>
+                            <option value="Menteng">Menteng</option>
+                            <option value="Sawah Besar">Sawah Besar</option>
+                            <option value="Senen">Senen</option>
+                            <option value="Tanah Abang">Tanah Abang</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Utara">
+                            <option value="Cilincing">Cilincing</option>
+                            <option value="Kelapa Gading">Kelapa Gading</option>
+                            <option value="Koja">Koja</option>
+                            <option value="Pademangan">Pademangan</option>
+                            <option value="Penjaringan">Penjaringan</option>
+                            <option value="Tanjung Priok">Tanjung Priok</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Timur">
+                            <option value="Cakung">Cakung</option>
+                            <option value="Cipayung">Cipayung</option>
+                            <option value="Ciracas">Ciracas</option>
+                            <option value="Duren Sawit">Duren Sawit</option>
+                            <option value="Jatinegara">Jatinegara</option>
+                            <option value="Kramat Jati">Kramat Jati</option>
+                            <option value="Makasar">Makasar</option>
+                            <option value="Matraman">Matraman</option>
+                            <option value="Pasar Rebo">Pasar Rebo</option>
+                            <option value="Pulo Gadung">Pulo Gadung</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Selatan">
+                            <option value="Cilandak">Cilandak</option>
+                            <option value="Jagakarsa">Jagakarsa</option>
+                            <option value="Kebayoran Baru">Kebayoran Baru</option>
+                            <option value="Kebayoran Lama">Kebayoran Lama</option>
+                            <option value="Mampang Prapatan">Mampang Prapatan</option>
+                            <option value="Pancoran">Pancoran</option>
+                            <option value="Pasar Minggu">Pasar Minggu</option>
+                            <option value="Pesanggrahan">Pesanggrahan</option>
+                            <option value="Setiabudi">Setiabudi</option>
+                            <option value="Tebet">Tebet</option>
+                        </optgroup>
+                        <optgroup label="Jakarta Barat">
+                            <option value="Cengkareng">Cengkareng</option>
+                            <option value="Grogol Petamburan">Grogol Petamburan</option>
+                            <option value="Taman Sari">Taman Sari</option>
+                            <option value="Tambora">Tambora</option>
+                            <option value="Kebon Jeruk">Kebon Jeruk</option>
+                            <option value="Kalideres">Kalideres</option>
+                            <option value="Palmerah">Palmerah</option>
+                            <option value="Kembangan">Kembangan</option>
+                        </optgroup>
+                        <optgroup label="Kepulauan Seribu">
+                            <option value="Kepulauan Seribu Utara">Kepulauan Seribu Utara</option>
+                            <option value="Kepulauan Seribu Selatan">Kepulauan Seribu Selatan</option>
+                        </optgroup>
+                        <optgroup label="Tangerang Kota">
+                            <option value="Batuceper">Batuceper</option>
+                            <option value="Benda">Benda</option>
+                            <option value="Cibodas">Cibodas</option>
+                            <option value="Ciledug">Ciledug</option>
+                            <option value="Cipondoh">Cipondoh</option>
+                            <option value="Jatiuwung">Jatiuwung</option>
+                            <option value="Karangtengah">Karangtengah</option>
+                            <option value="Karawaci">Karawaci</option>
+                            <option value="Larangan">Larangan</option>
+                            <option value="Neglasari">Neglasari</option>
+                            <option value="Periuk">Periuk</option>
+                            <option value="Pinang">Pinang</option>
+                            <option value="Tangerang">Tangerang</option>
+                        </optgroup>
+                        <optgroup label="Tangerang Selatan">
+                            <option value="Ciputat">Ciputat</option>
+                            <option value="Ciputat Timur">Ciputat Timur</option>
+                            <option value="Pamulang">Pamulang</option>
+                            <option value="Pondok Aren">Pondok Aren</option>
+                            <option value="Serpong">Serpong</option>
+                            <option value="Serpong Utara">Serpong Utara</option>
+                            <option value="Setu">Setu</option>
+                        </optgroup>
+                        <optgroup label="Bekasi">
+                            <option value="Bantargebang">Bantargebang</option>
+                            <option value="Bekasi Barat">Bekasi Barat</option>
+                            <option value="Bekasi Selatan">Bekasi Selatan</option>
+                            <option value="Bekasi Timur">Bekasi Timur</option>
+                            <option value="Bekasi Utara">Bekasi Utara</option>
+                            <option value="Jatiasih">Jatiasih</option>
+                            <option value="Jatisampurna">Jatisampurna</option>
+                            <option value="Medansatria">Medansatria</option>
+                            <option value="Mustikajaya">Mustikajaya</option>
+                            <option value="Pondok Gede">Pondok Gede</option>
+                            <option value="Pondokmelati">Pondokmelati</option>
+                            <option value="Rawalumbu">Rawalumbu</option>
+                        </optgroup>
+                        <optgroup label="Bogor">
+                            <option value="Bogor Barat">Bogor Barat</option>
+                            <option value="Bogor Selatan">Bogor Selatan</option>
+                            <option value="Bogor Tengah">Bogor Tengah</option>
+                            <option value="Bogor Timur">Bogor Timur</option>
+                            <option value="Bogor Utara">Bogor Utara</option>
+                            <option value="Bojonggede">Bojonggede</option>
+                            <option value="Caringin">Caringin</option>
+                            <option value="Ciampea">Ciampea</option>
+                            <option valueA="Ciawi">Ciawi</option>
+                            <option value="Cisarua">Cisarua</option>
+                            <option value="Gunung Putri">Gunung Putri</option>
+                            <option value="Jonggol">Jonggol</option>
+                            <option value="Parung">Parung</option>
+                        </optgroup>
+                        <optgroup label="Depok">
+                            <option value="Beji">Beji</option>
+                            <option value="Bojongsari">Bojongsari</option>
+                            <option value="Cilodong">Cilodong</option>
+                            <option value="Cimanggis">Cimanggis</option>
+                            <option value="Cinere">Cinere</option>
+                            <option value="Cipayung">Cipayung</option>
+                            <option value="Limo">Limo</option>
+                            <option value="Sawangan">Sawangan</option>
+                            <option value="Sukmajaya">Sukmajaya</option>
+                            <option value="Tapos">Tapos</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="relative md:col-span-2">
+                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                         <i class="fas fa-futbol w-5 h-5 text-white opacity-75"></i>
+                    </div>
+                    <select id="search-sport" name="search_sport" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none">
+                        <option value="">Pilih cabang olahraga</option>
+                        <option value="sepakbola">Sepak Bola</option>
+                        <option value="basket">Basket</option>
+                        <option value="voli">Voli</option>
+                        <option value="badminton">Badminton</option>
+                        <option value="tenis">Tenis</option>
+                        <option value="futsal">Futsal</option>
+                        <option value="padel">Padel</option>
+                        <option value="golf">Golf</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="md:col-span-1 w-full bg-[#06005E] hover:bg-[#1A107A] text-white font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+                    Cari
+                </button>
+            </form>
+        </div>
+
+        <div id="loading-state" class="text-center py-12 hidden">Memuat event...</div>
+        <div id="error-state" class="text-center py-12 hidden">Gagal memuat event</div>
+        <div id="empty-state" class="text-center py-12 hidden">Tidak ada event yang ditemukan</div>
+
+        <div id="event-list" class="hidden space-y-8"></div>
+
+        <div id="pagination-container" class="flex justify-center mt-12 mb-8"></div>
+
+    </main> <footer class="relative z-10 w-full mt-24 bg-black border-t border-gray-800">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-4">ASKMO</h3>
+                    <p class="text-gray-400 text-sm max-w-xs leading-relaxed">
+                        Platform utama Anda untuk mencari lapangan olahraga, bertemu dengan coach, dan membagi serta menemukan event olahraga.
+                    </p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f fa-lg"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Navigasi</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'main:show_main' %}" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="{% url 'main:show_main' %}#content-start" class="text-gray-400 hover:text-white transition-colors">Cari Lapangan</a></li>
+                        <li><a href="{% url 'main:show_main' %}#content-start" class="text-gray-400 hover:text-white transition-colors">Temui Coach</a></li>
+                        <li><a href="{% url 'main:show_main' %}#content-start" class="text-gray-400 hover:text-white transition-colors">Event</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Fitur</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% if user.is_authenticated %}{% url 'main:show_lapangan_dashboard' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Lapangan</a></li>
+                        <li><a href="{% if user.is_authenticated %}{% url 'coach:coach_list' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Coach</a></li>
+                        <li><a href="{% if user.is_authenticated %}{% url 'main:show_event' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Event</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Kontak Kami</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-gray-500 flex-shrink-0"></i>
+                            <span>Depok, Jawa Barat, Indonesia</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-envelope mt-1 text-gray-500 flex-shrink-0"></i>
+                            <a href="mailto:info@askmo.com" class="hover:text-white transition-colors break-all">info@askmo.com</a>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-phone mt-1 text-gray-500 flex-shrink-0"></i>
+                            <a href="tel:+621234567890" class="hover:text-white transition-colors">+62 123 4567 890</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="relative md:col-span-2">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                     <img src="{% static 'image/location_icon.png' %}" alt="Location" class="w-5 h-5 object-contain">
+            <div class="mt-12 pt-8 border-t border-gray-700">
+                <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                    <div class="text-sm text-gray-500 text-center sm:text-left">
+                        © 2025 ASKMO Team. All Rights Reserved.
+                    </div>
+                    <div class="text-sm text-gray-500 text-center sm:text-right">
+                        Projek Tengah Semester PBP C Kelompok 04
+                    </div>
                 </div>
-                <select id="search-location" name="search_location" 
-                        class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none" 
-                        style="color-scheme: dark;">
-                    <option value="">Pilih lokasi</option>
-                    <optgroup label="Jakarta Pusat">
-                        <option value="Cempaka Putih">Cempaka Putih</option>
-                        <option value="Gambir">Gambir</option>
-                        <option value="Johar Baru">Johar Baru</option>
-                        <option value="Kemayoran">Kemayoran</option>
-                        <option value="Menteng">Menteng</option>
-                        <option value="Sawah Besar">Sawah Besar</option>
-                        <option value="Senen">Senen</option>
-                        <option value="Tanah Abang">Tanah Abang</option>
-                    </optgroup>
-                    <optgroup label="Jakarta Utara">
-                        <option value="Cilincing">Cilincing</option>
-                        <option value="Kelapa Gading">Kelapa Gading</option>
-                        <option value="Koja">Koja</option>
-                        <option value="Pademangan">Pademangan</option>
-                        <option value="Penjaringan">Penjaringan</option>
-                        <option value="Tanjung Priok">Tanjung Priok</option>
-                    </optgroup>
-                    <optgroup label="Jakarta Timur">
-                        <option value="Cakung">Cakung</option>
-                        <option value="Cipayung">Cipayung</option>
-                        <option value="Ciracas">Ciracas</option>
-                        <option value="Duren Sawit">Duren Sawit</option>
-                        <option value="Jatinegara">Jatinegara</option>
-                        <option value="Kramat Jati">Kramat Jati</option>
-                        <option value="Makasar">Makasar</option>
-                        <option value="Matraman">Matraman</option>
-                        <option value="Pasar Rebo">Pasar Rebo</option>
-                        <option value="Pulo Gadung">Pulo Gadung</option>
-                    </optgroup>
-                    <optgroup label="Jakarta Selatan">
-                        <option value="Cilandak">Cilandak</option>
-                        <option value="Jagakarsa">Jagakarsa</option>
-                        <option value="Kebayoran Baru">Kebayoran Baru</option>
-                        <option value="Kebayoran Lama">Kebayoran Lama</option>
-                        <option value="Mampang Prapatan">Mampang Prapatan</option>
-                        <option value="Pancoran">Pancoran</option>
-                        <option value="Pasar Minggu">Pasar Minggu</option>
-                        <option value="Pesanggrahan">Pesanggrahan</option>
-                        <option value="Setiabudi">Setiabudi</option>
-                        <option value="Tebet">Tebet</option>
-                    </optgroup>
-                    <optgroup label="Jakarta Barat">
-                        <option value="Cengkareng">Cengkareng</option>
-                        <option value="Grogol Petamburan">Grogol Petamburan</option>
-                        <option value="Taman Sari">Taman Sari</option>
-                        <option value="Tambora">Tambora</option>
-                        <option value="Kebon Jeruk">Kebon Jeruk</option>
-                        <option value="Kalideres">Kalideres</option>
-                        <option value="Palmerah">Palmerah</option>
-                        <option value="Kembangan">Kembangan</option>
-                    </optgroup>
-                    <optgroup label="Kepulauan Seribu">
-                        <option value="Kepulauan Seribu Utara">Kepulauan Seribu Utara</option>
-                        <option value="Kepulauan Seribu Selatan">Kepulauan Seribu Selatan</option>
-                    </optgroup>
-                    <optgroup label="Tangerang Kota">
-                        <option value="Batuceper">Batuceper</option>
-                        <option value="Benda">Benda</option>
-                        <option value="Cibodas">Cibodas</option>
-                        <option value="Ciledug">Ciledug</option>
-                        <option value="Cipondoh">Cipondoh</option>
-                        <option value="Jatiuwung">Jatiuwung</option>
-                        <option value="Karangtengah">Karangtengah</option>
-                        <option value="Karawaci">Karawaci</option>
-                        <option value="Larangan">Larangan</option>
-                        <option value="Neglasari">Neglasari</option>
-                        <option value="Periuk">Periuk</option>
-                        <option value="Pinang">Pinang</option>
-                        <option value="Tangerang">Tangerang</option>
-                    </optgroup>
-                    <optgroup label="Tangerang Selatan">
-                        <option value="Ciputat">Ciputat</option>
-                        <option value="Ciputat Timur">Ciputat Timur</option>
-                        <option value="Pamulang">Pamulang</option>
-                        <option value="Pondok Aren">Pondok Aren</option>
-                        <option value="Serpong">Serpong</option>
-                        <option value="Serpong Utara">Serpong Utara</option>
-                        <option value="Setu">Setu</option>
-                    </optgroup>
-                    <optgroup label="Bekasi">
-                        <option value="Bantargebang">Bantargebang</option>
-                        <option value="Bekasi Barat">Bekasi Barat</option>
-                        <option value="Bekasi Selatan">Bekasi Selatan</option>
-                        <option value="Bekasi Timur">Bekasi Timur</option>
-                        <option value="Bekasi Utara">Bekasi Utara</option>
-                        <option value="Jatiasih">Jatiasih</option>
-                        <option value="Jatisampurna">Jatisampurna</option>
-                        <option value="Medansatria">Medansatria</option>
-                        <option value="Mustikajaya">Mustikajaya</option>
-                        <option value="Pondok Gede">Pondok Gede</option>
-                        <option value="Pondokmelati">Pondokmelati</option>
-                        <option value="Rawalumbu">Rawalumbu</option>
-                    </optgroup>
-                    <optgroup label="Bogor">
-                        <option value="Bogor Barat">Bogor Barat</option>
-                        <option value="Bogor Selatan">Bogor Selatan</option>
-                        <option value="Bogor Tengah">Bogor Tengah</option>
-                        <option value="Bogor Timur">Bogor Timur</option>
-                        <option value="Bogor Utara">Bogor Utara</option>
-                        <option value="Bojonggede">Bojonggede</option>
-                        <option value="Caringin">Caringin</option>
-                        <option value="Ciampea">Ciampea</option>
-                        <option valueA="Ciawi">Ciawi</option>
-                        <option value="Cisarua">Cisarua</option>
-                        <option value="Gunung Putri">Gunung Putri</option>
-                        <option value="Jonggol">Jonggol</option>
-                        <option value="Parung">Parung</option>
-                    </optgroup>
-                    <optgroup label="Depok">
-                        <option value="Beji">Beji</option>
-                        <option value="Bojongsari">Bojongsari</option>
-                        <option value="Cilodong">Cilodong</option>
-                        <option value="Cimanggis">Cimanggis</option>
-                        <option value="Cinere">Cinere</option>
-                        <option value="Cipayung">Cipayung</option>
-                        <option value="Limo">Limo</option>
-                        <option value="Sawangan">Sawangan</option>
-                        <option value="Sukmajaya">Sukmajaya</option>
-                        <option value="Tapos">Tapos</option>
-                    </optgroup>
-                </select>
             </div>
-
-            <div class="relative md:col-span-2">
-                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                     <img src="{% static 'image/sports_icon.png' %}" alt="Sport" class="w-5 h-5 object-contain">
-                </div>
-                <select id="search-sport" name="search_sport" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none">
-                    <option value="">Pilih cabang olahraga</option>
-                    <option value="sepakbola">Sepak Bola</option>
-                    <option value="basket">Basket</option>
-                    <option value="voli">Voli</option>
-                    <option value="badminton">Badminton</option>
-                    <option value="tenis">Tenis</option>
-                    <option value="futsal">Futsal</option>
-                    <option value="padel">Padel</option>
-                    <option value="golf">Golf</option>
-                    <option value="lainnya">Lainnya</option>
-                </select>
-            </div>
-
-            <button type="submit" class="md:col-span-1 w-full bg-[#06005E] hover:bg-[#1A107A] text-white font-semibold py-3 px-4 rounded-md transition-colors duration-300">
-                Cari
-            </button>
-        </form>
-    </div>
-
-    <div id="loading-state" class="text-center py-12 hidden">Memuat event...</div>
-    <div id="error-state" class="text-center py-12 hidden">Gagal memuat event</div>
-    <div id="empty-state" class="text-center py-12 hidden">Tidak ada event yang ditemukan</div>
-
-    <div id="event-list" class="hidden space-y-8"></div>
-
-    <div id="pagination-container" class="flex justify-center mt-12 mb-8"></div>
-
-  </div>
-</div>
-
-{% if user.is_authenticated %}
+        </div>
+    </footer>
+    </div> {% if user.is_authenticated %}
 <button onclick="showCreateEventModal()" 
         class="fixed z-50 bottom-8 right-8 bg-gradient-to-r from-[#06005E] to-[#571E88] hover:from-[#1A107A] hover:to-[#7A3EAA] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 transform hover:scale-105">
   <span class="text-4xl font-light pb-1">+</span>
@@ -282,7 +398,7 @@ function createEventCard(event) {
                     <button onclick="copyShareLink('${detailUrl}', this)" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-gray-300 hover:text-white hover:underline text-sm font-medium transition-colors">
                         Bagikan
                     </button>
-        </div>`
+            </div>`
             }
         </div>
     </div>

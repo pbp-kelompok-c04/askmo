@@ -6,6 +6,9 @@
 <title>ASKMO</title>
 
 <style>
+  html {
+    scroll-behavior: smooth;
+  }
   /* Style Slideshow */
   .hero-slideshow { position: absolute; inset: 0; }
   .hero-slide {
@@ -14,6 +17,10 @@
     opacity: 0; 
     animation-name: fadeSlideshow; animation-duration: 22s;
     animation-timing-function: linear; animation-iteration-count: infinite;
+  }
+  .hero-container-fade {
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
   }
   @keyframes fadeSlideshow {
     0%    { opacity: 0; } 4.5%  { opacity: 1; } 27.3% { opacity: 1; }
@@ -86,6 +93,59 @@
     box-sizing: border-box; 
   }
 
+/* Style untuk background aura */
+    .background-aura-container {
+        position: fixed; /* Membuat aura tetap di viewport */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* Memastikan aura tidak meluap keluar */
+        pointer-events: none; /* Memastikan aura tidak mengganggu interaksi mouse */
+        z-index: 0; /* Pastikan di bawah semua konten */
+    }
+
+    .background-aura-container::before,
+    .background-aura-container::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.6; /* Sesuaikan tingkat transparansi */
+        filter: blur(100px); /* Semakin besar nilai blur, semakin halus auranya */
+        animation: pulseAura 15s infinite alternate ease-in-out; /* Animasi berdenyut */
+    }
+
+    /* Aura pertama: Lebih dominan ungu */
+    .background-aura-container::before {
+        background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0)); /* Ungu tua ke transparan */
+        width: 700px;
+        height: 700px;
+        top: -150px; /* Posisikan sedikit di atas dan kiri */
+        left: -150px;
+        animation-delay: 0s;
+    }
+
+    /* Aura kedua: Sedikit lebih terang atau berbeda posisi */
+    .background-aura-container::after {
+        background: radial-gradient(circle at center, rgba(111, 7, 50), rgba(87, 30, 136, 0)); /* Ungu yang lebih terang ke transparan */
+        width: 800px;
+        height: 800px;
+        bottom: -200px; /* Posisikan sedikit di bawah dan kanan */
+        right: -200px;
+        animation-delay: 7.5s; /* Mulai animasi sedikit tertunda dari yang pertama */
+    }
+
+    /* Keyframes untuk animasi denyut (opsional) */
+    @keyframes pulseAura {
+        0% { transform: scale(1); opacity: 0.6; }
+        50% { transform: scale(1.05); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 0.6; }
+    }
+
+    /* Pastikan background utama div tetap hitam agar aura terlihat */
+    body {
+        background-color: black;
+    }
 </style>
 {% endblock meta %}
 
@@ -103,8 +163,9 @@
 {% endif %}
 
 <div class="w-full min-h-screen bg-black text-white font-['Plus_Jakarta_Sans']">
+  <div class="background-aura-container"></div>
   
-  <div class="relative w-full h-[60vh] flex pt-20 justify-center md:items-center md:pt-0 p-6 overflow-hidden"> 
+  <div class="relative w-full h-[60vh] flex pt-20 justify-center md:items-center md:pt-0 p-6 overflow-hidden hero-container-fade">
      <div class="hero-slideshow">
       <div class="hero-slide" style="background-image: url('{% static 'image/bg1.png' %}'); animation-delay: 0s;"></div>
       <div class="hero-slide" style="background-image: url('{% static 'image/bg2.png' %}'); animation-delay: 7s;"></div>
@@ -130,8 +191,8 @@
         </div> 
     </div>
 <div id="content-start" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8"></div>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
     <!-- Cari Lapangan -->
     <div class="mb-16">
       <h2 class="text-3xl font-bold text-white mb-2">Cari Lapangan</h2>
@@ -183,7 +244,7 @@
       <h2 class="text-3xl font-bold text-white mb-2">Temui Coach</h2>
       <p class="text-lg text-gray-400 mb-6">Temukan coach yang terbaik untuk Anda</p>
       <div class="relative">
-        <button type="button" id="coach-scroll-left-btn" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -ml-4">
+        <button type="button" id="coach-scroll(111, 7, 50)-left-btn" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -ml-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
         </button>
         <button type="button" id="coach-scroll-right-btn" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -mr-4">
@@ -450,13 +511,69 @@
         </div>
     </div>
   </div>
-  <footer class="w-full mt-24 py-8 px-4 sm:px-6 lg:px-8"> 
-    <div class="max-w-7xl mx-auto pt-8 border-t border-gray-700 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0"> 
-        <div class="text-sm text-gray-500 text-center sm:text-left">
-            &copy;ASKMO Team. All Rights Reserved. 
+<footer class="w-full mt-24 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4">ASKMO</h3>
+                <p class="text-gray-400 text-sm max-w-xs leading-relaxed">
+                    Platform utama Anda untuk mencari lapangan olahraga, bertemu dengan coach, dan membagi serta menemukan event olahraga.
+                </p>
+                <div class="flex space-x-4 mt-6">
+                    <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f fa-lg"></i></a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Navigasi</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                    <li><a href="#content-start" class="text-gray-400 hover:text-white transition-colors">Cari Lapangan</a></li>
+                    <li><a href="#content-start" class="text-gray-400 hover:text-white transition-colors">Temui Coach</a></li>
+                    <li><a href="#content-start" class="text-gray-400 hover:text-white transition-colors">Event</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Fitur</h4>
+                <ul class="space-y-3">
+                    <li><a href="{% if user.is_authenticated %}{% url 'main:show_lapangan_dashboard' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Lapangan</a></li>
+                    <li><a href="{% if user.is_authenticated %}{% url 'coach:coach_list' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Coach</a></li>
+                    <li><a href="{% if user.is_authenticated %}{% url 'main:show_event' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Event</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-4">Kontak Kami</h4>
+                <ul class="space-y-3 text-gray-400">
+                    <li class="flex items-start space-x-3">
+                        <i class="fas fa-map-marker-alt mt-1 text-gray-500 flex-shrink-0"></i>
+                        <span>Depok, Jawa Barat, Indonesia</span>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <i class="fas fa-envelope mt-1 text-gray-500 flex-shrink-0"></i>
+                        <a href="mailto:info@askmo.com" class="hover:text-white transition-colors break-all">info@askmo.com</a>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <i class="fas fa-phone mt-1 text-gray-500 flex-shrink-0"></i>
+                        <a href="tel:+621234567890" class="hover:text-white transition-colors">+62 123 4567 890</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="text-sm text-gray-500 text-center sm:text-right">
-            Projek Tengah Semester PBP C Kelompok 04
+
+        <div class="mt-12 pt-8 border-t border-gray-700">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                <div class="text-sm text-gray-500 text-center sm:text-left">
+                    &copy; 2025 ASKMO Team. All Rights Reserved.
+                </div>
+                <div class="text-sm text-gray-500 text-center sm:text-right">
+                    Projek Tengah Semester PBP C Kelompok 04
+                </div>
+            </div>
         </div>
     </div>
 </footer>

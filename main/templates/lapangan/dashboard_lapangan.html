@@ -189,16 +189,64 @@
         }
 
         #modal-map {
-        width: 100%;           
-        aspect-ratio: 4 / 3;   
+        width: 100%;          
+        aspect-ratio: 4 / 3;  
         border-radius: 12px;  
         border: none;        
         }
+
+        /* === KODE AURA === */
+        .background-aura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-aura-container::before,
+        .background-aura-container::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            filter: blur(100px);
+            animation: pulseAura 15s infinite alternate ease-in-out;
+        }
+
+        .background-aura-container::before {
+            background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0));
+            width: 700px;
+            height: 700px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .background-aura-container::after {
+            background: radial-gradient(circle at center, rgba(111, 7, 50), rgba(87, 30, 136, 0));
+            width: 800px;
+            height: 800px;
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 7.5s;
+        }
+
+        @keyframes pulseAura {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+        /* === BATAS KODE AURA === */
+
     </style>
 {% endblock meta %}
 
 {% block content %}
-{% include 'navbar.html' %}
+<div class="background-aura-container"></div> {% include 'navbar.html' %}
 <div class="fixed top-9 right-9 z-50 hidden md:block">
   <a href="{% url 'main:show_profile' %}">
     <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
@@ -208,7 +256,7 @@
     </div>
   </a>
 </div>
-    <main>
+    <main class="flex-1 relative z-10">
         <h1 class="text-white" style="margin-top: 70px; margin-bottom: 15px; font-size: 40px; text-align: center;"><b>LAPANGAN</b></h1>
         <p style="margin-bottom: 15px">Temukan lapangan olahraga di sekitarmu!</p>
 
@@ -428,10 +476,75 @@
         </div>
     </main>
 
+    <footer class="relative z-10 w-full mt-24 bg-black border-t border-gray-800">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-4">ASKMO</h3>
+                    <p class="text-gray-400 text-sm max-w-xs leading-relaxed">
+                        Platform utama Anda untuk mencari lapangan olahraga, bertemu dengan coach, dan membagi serta menemukan event olahraga.
+                    </p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" aria-label="Instagram" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" aria-label="Twitter" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f fa-lg"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Navigasi</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'main:show_main' %}" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="{% url 'main:show_main' %}#content-start" class="text-gray-400 hover:text-white transition-colors">Cari Lapangan</a></li>
+                        <li><a href="{% url 'main:show_main' %}#content-start" class="text-gray-400 hover:text-white transition-colors">Temui Coach</a></li>
+                        <li><a href="{% url 'main:show_main' %}#content-start" class="text-gray-400 hover:text-white transition-colors">Event</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Fitur</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% if user.is_authenticated %}{% url 'main:show_lapangan_dashboard' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Lapangan</a></li>
+                        <li><a href="{% if user.is_authenticated %}{% url 'coach:coach_list' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Coach</a></li>
+                        <li><a href="{% if user.is_authenticated %}{% url 'main:show_event' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-gray-400 hover:text-white transition-colors">Semua Event</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Kontak Kami</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-gray-500 flex-shrink-0"></i>
+                            <span>Depok, Jawa Barat, Indonesia</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-envelope mt-1 text-gray-500 flex-shrink-0"></i>
+                            <a href="mailto:info@askmo.com" class="hover:text-white transition-colors break-all">info@askmo.com</a>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-phone mt-1 text-gray-500 flex-shrink-0"></i>
+                            <a href="tel:+621234567890" class="hover:text-white transition-colors">+62 123 4567 890</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
+            <div class="mt-12 pt-8 border-t border-gray-700">
+                <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+                    <div class="text-sm text-gray-500 text-center sm:text-left">
+                        &copy; 2025 ASKMO Team. All Rights Reserved.
+                    </div>
+                    <div class="text-sm text-gray-500 text-center sm:text-right">
+                        Projek Tengah Semester PBP C Kelompok 04
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <div id="modal-overlay" onclick="checkCloseModal(event)">
         <div id="modal-content">
-            <button id="modal-close-btn" onclick="hideDetail()">&times;</button>
+            <button id="modal-close-btn" onclick="hideDetail()">×</button>
             
             <img id="modal-image" src="https://via.placeholder.com/600x250.png?text=Loading..." alt="Foto Lapangan">
             
@@ -471,9 +584,7 @@
                     <h4>Peraturan</h4>
                     <p id="modal-peraturan">Peraturan...</p>
                     
-                    <!-- <h4>Review</h4>
-                    <p id="modal-review">Review...</p> -->
-                </div>
+                    </div>
 
             </div>
         </div>
