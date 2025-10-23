@@ -11,7 +11,7 @@ from django.core import serializers
 from main import models
 from coach.models import CoachWishlist
 from main.forms import LapanganForm, CoachForm, EventForm
-from main.models import Lapangan, Coach, Event
+from main.models import Lapangan, Coach, Event, Collection
 from django.db.models import Q
 
 from django.views.decorators.http import require_POST
@@ -322,12 +322,37 @@ def show_lapangan_dashboard(request):
     if search_olahraga :
         lapangan_list = lapangan_list.filter(olahraga__icontains=search_olahraga)
 
+    if request.user.is_authenticated:
+        for lapangan in lapangan_list:
+            lapangan.is_saved_to_wishlist = Collection.objects.filter(
+                user=request.user,
+                lapangan=lapangan
+            ).exists()
+
     context = {
         'lapangan_list' : lapangan_list,
         'search_values' : request.GET,
         'olahraga_choices' : Lapangan.OLAHRAGA_CHOICES,
     }
     return render(request, 'lapangan/dashboard_lapangan.html', context)
+
+
+
+
+@login_required(login_url='/login/')
+def show_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    avatars = Avatar.objects.all()
+    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
+
+    context = {
+        'profile': profile,
+        'avatars': avatars,
+        'olahraga_choices': olahraga_choices,
+        'current_sport_key': profile.olahraga_favorit,
+    }
+    return render(request, 'profile.html', context) 
 
 @login_required(login_url='/login/')
 @csrf_exempt

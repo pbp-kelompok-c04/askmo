@@ -76,10 +76,8 @@ body {
 button:focus-visible {
   outline: 2px solid #4a90e2 !important;
   outline: -webkit-focus-ring-color auto 5px !important;
->>>>>>> master
-=======
->>>>>>> fix-landing-page
-}
+a {
+  text-decoration: none;
 
 .edit-profile-container {
     background-color: #1a1a1a; /* Dark background */
