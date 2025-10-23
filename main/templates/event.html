@@ -4,39 +4,38 @@
 
 {% block meta %}
 <title>Event - ASKMO</title>
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="fixed top-9 right-9 z-50 hidden md:block">
-  <a href="#">
-    <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
-      
-      <span class="[text-shadow:0_1px_3px_rgb(0_0_0_/_0.7)]">{{ user.username }}</span>
-
-    </div>
-  </a>
+{% if user.is_authenticated %}
+<div class="fixed top-6 right-8 z-50 hidden md:block">
+    <a href="{% url 'main:show_profile' %}" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+        {{ user.username }}
+    </a>
 </div>
+{% endif %}
 
-<main>
-    <h1 class="text-white" style="margin-top: 70px; margin-bottom: 15px; font-size: 40px; text-align: center;"><b>EVENT</b></h1>
+<div class="bg-black text-white w-full min-h-screen font-['Plus_Jakarta_Sans'] pt-32">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <h1 class="text-5xl font-bold mb-8 text-center tracking-wider">EVENT</h1>
+    <p class="text-center" style="margin-bottom: 50px;">Bagikan dan temukan event olahraga di sekitarmu!</p>
     
+
     <div class="bg-[#353535] rounded-xl p-4 mb-8">
         <form id="search-form" class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center">
             <div class="relative md:col-span-2">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <i class="fas fa-search w-5 h-5 text-white opacity-75"></i>
+                    <img src="{% static 'image/search_icon.png' %}" alt="Search" class="w-5 h-5 object-contain">
                 </div>
                 <input type="text" id="search-name" name="search_name" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white placeholder:text-white focus:outline-none focus:border-[#06005E] focus:border-[2px]" placeholder="Cari nama event">
             </div>
 
             <div class="relative md:col-span-2">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <i class="fas fa-map-marker-alt w-5 h-5 text-white opacity-75"></i>
+                     <img src="{% static 'image/location_icon.png' %}" alt="Location" class="w-5 h-5 object-contain">
                 </div>
                 <select id="search-location" name="search_location" 
                         class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none" 
@@ -145,7 +144,7 @@
                         <option value="Bojonggede">Bojonggede</option>
                         <option value="Caringin">Caringin</option>
                         <option value="Ciampea">Ciampea</option>
-                        <option value="Ciawi">Ciawi</option>
+                        <option valueA="Ciawi">Ciawi</option>
                         <option value="Cisarua">Cisarua</option>
                         <option value="Gunung Putri">Gunung Putri</option>
                         <option value="Jonggol">Jonggol</option>
@@ -164,14 +163,11 @@
                         <option value="Tapos">Tapos</option>
                     </optgroup>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                </div>
             </div>
 
             <div class="relative md:col-span-2">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <i class="fas fa-futbol w-5 h-5 text-white opacity-75"></i>
+                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                     <img src="{% static 'image/sports_icon.png' %}" alt="Sport" class="w-5 h-5 object-contain">
                 </div>
                 <select id="search-sport" name="search_sport" class="w-full pl-10 pr-4 py-3 bg-[#4F4F4F] border border-transparent rounded-md text-white appearance-none focus:outline-none">
                     <option value="">Pilih cabang olahraga</option>
@@ -185,9 +181,6 @@
                     <option value="golf">Golf</option>
                     <option value="lainnya">Lainnya</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                </div>
             </div>
 
             <button type="submit" class="md:col-span-1 w-full bg-[#06005E] hover:bg-[#1A107A] text-white font-semibold py-3 px-4 rounded-md transition-colors duration-300">
@@ -196,14 +189,16 @@
         </form>
     </div>
 
-    <div id="loading-state" class="text-center py-12 hidden">...</div>
-    <div id="error-state" class="text-center py-12 hidden">...</div>
-    <div id="empty-state" class="text-center py-12 hidden">...</div>
+    <div id="loading-state" class="text-center py-12 hidden">Memuat event...</div>
+    <div id="error-state" class="text-center py-12 hidden">Gagal memuat event</div>
+    <div id="empty-state" class="text-center py-12 hidden">Tidak ada event yang ditemukan</div>
 
     <div id="event-list" class="hidden space-y-8"></div>
 
     <div id="pagination-container" class="flex justify-center mt-12 mb-8"></div>
-</main>
+
+  </div>
+</div>
 
 {% if user.is_authenticated %}
 <button onclick="showCreateEventModal()" 
@@ -216,6 +211,7 @@
 {% endif %}
 
 {% if user.is_authenticated %}
+
 <script>
   const CURRENT_USER_ID = "{{ user.id }}";
 </script>
@@ -224,8 +220,8 @@
   const CURRENT_USER_ID = null;
 </script>
 {% endif %}
-
 <script>
+
 const GET_EVENTS_URL = "{% url 'main:get_events_json' %}";
 const searchForm = document.getElementById('search-form');
 const eventList = document.getElementById('event-list');
@@ -271,20 +267,46 @@ function createEventCard(event) {
             </a>
             
             ${ (CURRENT_USER_ID && Number(CURRENT_USER_ID) === Number(event.user_id))
-                ? `<div class="flex space-x-3">
-                        <button onclick="showEditEventModal('${event.id}')" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">
-                            Ubah
-                        </button>
-                        <button onclick="showDeleteEventModal('${event.id}')" class="text-red-500 hover:text-red-400 text-sm font-medium transition-colors">
-                            Hapus
-                        </button>
-                    </div>`
-                : ''
+            ? `<div class="flex space-x-3">
+            <button onclick="copyShareLink('${detailUrl}', this)" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-gray-300 hover:text-white hover:underline text-sm font-medium transition-colors">
+                Bagikan
+            </button>
+            <button onclick="showEditEventModal('${event.id}')" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-gray-300 hover:text-white hover:underline text-sm font-medium transition-colors">
+                Ubah
+            </button>
+            <button onclick="showDeleteEventModal('${event.id}')" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-red-500 hover:text-red-400 hover:underline text-sm font-medium transition-colors">
+                Hapus
+            </button>
+        </div>`
+            : `<div class="flex space-x-3">
+                    <button onclick="copyShareLink('${detailUrl}', this)" class="bg-transparent hover:bg-transparent focus:outline-none focus:ring-0 text-gray-300 hover:text-white hover:underline text-sm font-medium transition-colors">
+                        Bagikan
+                    </button>
+        </div>`
             }
         </div>
     </div>
   `;
   return article;
+}
+
+function copyShareLink(detailUrl, buttonElement) {
+    const absoluteUrl = `${window.location.origin}${detailUrl}`;
+    
+    navigator.clipboard.writeText(absoluteUrl).then(() => {
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = 'Tersalin!';
+        buttonElement.disabled = true;
+        
+        setTimeout(() => {
+            buttonElement.innerHTML = originalText;
+            buttonElement.disabled = false;
+        }, 2000);
+
+    }).catch(err => {
+        console.error('Gagal menyalin link: ', err);
+        alert('Gagal menyalin link.');
+    });
 }
 
 async function fetchEvents() {
@@ -316,18 +338,21 @@ async function fetchEvents() {
   }
 }
 
+searchForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetchEvents();
+});
+
+document.addEventListener('event-changed', fetchEvents);
+document.addEventListener('DOMContentLoaded', fetchEvents);
+
 function showState({ showLoading = false, showError = false, showEmpty = false, showList = false }) {
     document.getElementById('loading-state').classList.toggle('hidden', !showLoading);
     document.getElementById('error-state').classList.toggle('hidden', !showError);
     document.getElementById('empty-state').classList.toggle('hidden', !showEmpty);
     document.getElementById('event-list').classList.toggle('hidden', !showList);
 }
-
-searchForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    fetchEvents();
-});
-
+searchForm.addEventListener('submit', (e) => { e.preventDefault(); fetchEvents(); });
 document.addEventListener('event-changed', fetchEvents);
 document.addEventListener('DOMContentLoaded', fetchEvents);
 </script>

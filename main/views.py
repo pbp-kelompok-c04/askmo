@@ -32,14 +32,29 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags;
 from .models import UserProfile, Avatar 
-
+from coach.models import Coach 
+from .models import Lapangan, Event, UserProfile, Avatar
 
 
 def show_main(request):
+    lapangan_list = Lapangan.objects.all()[:5] 
+    event_list = Event.objects.all()[:5]
+    coach_list_for_template = Coach.objects.all()[:5]
+
+    lapangan_count = Lapangan.objects.count()
+    coach_count = Coach.objects.count()
+    event_count = Event.objects.count()
+
     context = {
         'app_name' : 'ASKMO',
         'username': request.user.username,
         'last_login': request.COOKIES.get('last_login', 'Tidak Pernah'),
+        'lapangan_list': lapangan_list,
+        'coach_list': coach_list_for_template,
+        'event_list': event_list,
+        'lapangan_count': lapangan_count,
+        'coach_count': coach_count,
+        'event_count': event_count,
     }
     return render(request, "main.html", context)
 
@@ -557,7 +572,7 @@ def show_wishlist_coach(request):
         'coach_list': coach_list,
     }
     return render(request, 'wishlist/wishlist_coach_list.html', context)
-# <-- THIS IS THE REQUIRED VIEW FUNCTION
+
 def get_events_json(request):
     event_objects = Event.objects.all().order_by('-tanggal')
     

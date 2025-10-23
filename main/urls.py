@@ -71,4 +71,6 @@ urlpatterns = [
 
     path('get-event-ajax/<uuid:id>/', get_event_detail_ajax, name='get_event_detail_ajax'),
     path('edit-event-ajax/<uuid:id>/', edit_event_ajax, name='edit_event_ajax'),
+
+    path('lapangan/', show_lapangan_dashboard, name='show_lapangan'),
 ]
