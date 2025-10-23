@@ -9,13 +9,13 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="fixed top-9 right-9 z-50 hidden md:block">
-    <a href="{% url 'main:show_profile' %}">
-        <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
-        <span>{{ user.username }}</span>
-        </div>
+{% if user.is_authenticated %}
+<div class="fixed top-6 right-8 z-50 hidden md:block">
+    <a href="{% url 'main:show_profile' %}" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">
+        {{ user.username }}
     </a>
 </div>
+{% endif %}
 
 <div class="bg-black text-white w-full min-h-screen font-['Plus_Jakarta_Sans'] pt-32">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
