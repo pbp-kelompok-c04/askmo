@@ -55,30 +55,36 @@
             <div class="w-full md:w-2/3 space-y-6"> 
                 
                 <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full"> 
-                    <div class="grid grid-cols-2 grid-rows-2 h-[80%] gap-1"> 
+                    <div class="grid grid-cols-1 grid-rows-1 h-[80%] gap-1"> 
                         <div class="relative overflow-hidden row-span-2 rounded-lg">
                             <img src="{% static 'image/wishlist_placeholder_1.png' %}" class="w-full h-full object-cover" alt="Lapangan Besar">
                             <div class="absolute inset-0 bg-black/10"></div> 
                         </div>
-                        <div class="relative overflow-hidden h-full rounded-lg">
+                        <!-- <div class="relative overflow-hidden h-full rounded-lg">
                             <img src="{% static 'image/wishlist_placeholder_2.png' %}" class="w-full h-full object-cover" alt="Lapangan Basket">
                         </div>
                         <div class="relative overflow-hidden h-full rounded-lg">
                             <img src="{% static 'image/wishlist_placeholder_3.png' %}" class="w-full h-full object-cover" alt="Lapangan Malam">
-                        </div>
+                        </div> -->
                     </div>
                     <a href="{% url 'main:show_user_collections' %}" class="block mt-4">
                         <p class="text-xl font-semibold hover:text-[#6C5CE7] transition duration-150">Wishlist - Koleksi Lapangan</p>
                     </a>
                 </div>
+                <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full"> 
 
-                <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full">
-                    <div class="flex items-center justify-center h-full bg-[#1A1A1A] rounded-lg">
-                        <i class="fa-solid fa-user-tie text-6xl text-gray-700 opacity-60"></i>
-                    </div>
+                    <div class="grid grid-cols-1 grid-rows-1 h-[80%] gap-1"> 
+                            <div class="relative overflow-hidden row-span-2 rounded-lg">
+                                <img src="{% static 'image/coach_placeholder.png' %}" class="w-full h-full object-cover" alt="Coach">
+                                <div class="absolute inset-0 bg-black/10"></div> 
+                            </div>
+                        
+                        </div>
                     <a href="{% url 'coach:coach_wishlist_list' %}" class="block mt-4">
                         <p class="text-xl font-semibold hover:text-[#6C5CE7] transition duration-150">List - Coach</p>
                     </a>
+                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -134,13 +134,14 @@ def show_profile(request):
     
     avatars = Avatar.objects.all()
     olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
-    wishlist_coaches = CoachWishlist.objects.filter(user=request.user).select_related('coach')
+    wishlist_entries = CoachWishlist.objects.filter(user=request.user).select_related('coach')
+    wishlist_coaches = [item.coach for item in wishlist_entries][:3]
     context = {
         'profile': profile,
         'avatars': avatars,
         'olahraga_choices': olahraga_choices,
         'current_sport_key': profile.olahraga_favorit,
-        'coach_wishlist': wishlist_coaches,
+        'wishlist_coaches': wishlist_coaches,
     }
     return render(request, 'profile.html', context) 
 
