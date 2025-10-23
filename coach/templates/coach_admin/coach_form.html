@@ -5,14 +5,14 @@
     <title>{{ title }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { 
+        body {
             /* FONT DIGANTI */
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 2em;
             background-color: #000;
             color: #fff;
         }
-        
+       
         .form-container {
             max-width: 700px;
             margin: 0 auto;
@@ -21,21 +21,22 @@
             border-radius: 12px;
         }
 
+
         h1 {
             margin-top: 0;
         }
-        
-        form p { 
-            display: flex; 
-            flex-direction: column; 
-            margin-bottom: 20px; 
+       
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
         }
-        form label { 
-            margin-bottom: 8px; 
-            font-weight: 600; 
+        .form-field label {
+            margin-bottom: 8px;
+            font-weight: 600;
             color: #ccc;
         }
-        input, textarea, select { 
+        input, textarea, select {
             padding: 12px 15px;
             border: 1px solid #333;
             background-color: #2c2c2c;
@@ -55,12 +56,14 @@
             min-height: 120px;
         }
 
+
         .form-actions {
             margin-top: 30px;
             display: flex;
             gap: 10px;
             align-items: center;
         }
+
 
         button[type="submit"] {
             background-image: linear-gradient(to right, #06005E, #571E88);
@@ -76,9 +79,11 @@
             transition: background-image 0.3s ease-in-out;
         }
 
+
         button[type="submit"]:hover {
             background-image: linear-gradient(to right, #1A107A, #7A3EAA);
         }
+
 
         .form-actions a {
             background-color: #444;
@@ -88,6 +93,14 @@
             border-radius: 8px;
             font-weight: 500;
         }
+
+
+        .help-text {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 5px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -95,10 +108,107 @@
         <h1>{{ title }}</h1>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+           
+            <!-- Manual form rendering dengan label bahasa Indonesia -->
+            <div class="form-field">
+                <label for="id_name">Nama Coach</label>
+                {{ form.name }}
+                {% if form.name.help_text %}
+                    <div class="help-text">{{ form.name.help_text }}</div>
+                {% endif %}
+                {% if form.name.errors %}
+                    <div class="error">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-field">
+                <label for="id_sport_branch">Cabang Olahraga</label>
+                {{ form.sport_branch }}
+                {% if form.sport_branch.help_text %}
+                    <div class="help-text">{{ form.sport_branch.help_text }}</div>
+                {% endif %}
+                {% if form.sport_branch.errors %}
+                    <div class="error">{{ form.sport_branch.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-field">
+                <label for="id_location">Lokasi</label>
+                {{ form.location }}
+                {% if form.location.help_text %}
+                    <div class="help-text">{{ form.location.help_text }}</div>
+                {% endif %}
+                {% if form.location.errors %}
+                    <div class="error">{{ form.location.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-field">
+                <label for="id_contact">Kontak</label>
+                {{ form.contact }}
+                {% if form.contact.help_text %}
+                    <div class="help-text">{{ form.contact.help_text }}</div>
+                {% endif %}
+                {% if form.contact.errors %}
+                    <div class="error">{{ form.contact.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-field">
+                <label for="id_experience">Pengalaman</label>
+                {{ form.experience }}
+                {% if form.experience.help_text %}
+                    <div class="help-text">{{ form.experience.help_text }}</div>
+                {% endif %}
+                {% if form.experience.errors %}
+                    <div class="error">{{ form.experience.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-field">
+                <label for="id_certifications">Sertifikasi</label>
+                {{ form.certifications }}
+                {% if form.certifications.help_text %}
+                    <div class="help-text">{{ form.certifications.help_text }}</div>
+                {% endif %}
+                {% if form.certifications.errors %}
+                    <div class="error">{{ form.certifications.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-field">
+                <label for="id_service_fee">Tarif Jasa</label>
+                {{ form.service_fee }}
+                {% if form.service_fee.help_text %}
+                    <div class="help-text">{{ form.service_fee.help_text }}</div>
+                {% endif %}
+                {% if form.service_fee.errors %}
+                    <div class="error">{{ form.service_fee.errors }}</div>
+                {% endif %}
+            </div>
+
+
+            <div class="form-field">
+                <label for="id_photo">Foto</label>
+                {{ form.photo }}
+                {% if form.photo.help_text %}
+                    <div class="help-text">{{ form.photo.help_text }}</div>
+                {% endif %}
+                {% if form.photo.errors %}
+                    <div class="error">{{ form.photo.errors }}</div>
+                {% endif %}
+            </div>
+
+
             <div class="form-actions">
-                <button type="submit">Save</button>
-                <a href="{% url 'coach:dashboard' %}">Cancel</a>
+                <button type="submit">Simpan</button>
+                <a href="{% url 'coach:dashboard' %}">Batal</a>
             </div>
         </form>
     </div>

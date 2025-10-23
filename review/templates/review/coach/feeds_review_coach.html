@@ -245,23 +245,6 @@
             font-style: italic;
         }
        
-        .loading {
-            text-align: center;
-            color: #999;
-            margin: 30px 0;
-            font-size: 1.1rem;
-        }
-       
-        .error-message {
-            text-align: center;
-            color: #dc2626;
-            margin: 30px 0;
-            padding: 15px;
-            background: rgba(220, 38, 38, 0.1);
-            border-radius: 8px;
-        }
-
-
         .rating-summary .no-rating {
             color: #aaa;
             font-style: italic;
@@ -328,7 +311,7 @@
                     </small>
                 </div>
                
-                <a href="{% url 'review:show_form_review_coach' coach.id %}" class="btn-add-review-link">
+                <a href="/review/{{ coach.id }}/add/" class="btn-add-review-link">
                     <i class="fas fa-edit"></i> Beri Review & Rating
                 </a>
             </div>
@@ -354,12 +337,14 @@
                 </div>
                 <div class="review-text">{{ review.review_text }}</div>
                 <div class="review-actions">
-                    <a href="{% url 'review:edit_review_coach' review.id %}" class="btn-edit">
+                    {% if request.user.is_authenticated and review.user_id == request.user.id %}
+                    <a href="/review/edit/{{ review.id }}/" class="btn-edit">
                         <i class="fas fa-edit"></i> Edit
                     </a>
                     <button class="btn-delete" data-review-id="{{ review.id }}">
                         <i class="fas fa-trash"></i> Hapus
                     </button>
+                    {% endif %}
                 </div>
             </div>
             {% empty %}
@@ -369,7 +354,7 @@
     </div>
 
 
-        <script>
+    <script>
         // Event delegation untuk handle semua tombol delete
         document.addEventListener('click', function(e) {
             if (e.target.closest('.btn-delete')) {
@@ -387,7 +372,7 @@
 
 
             try {
-                const url = `{% url 'review:delete_review_coach' 0 %}`.replace('0', reviewId);
+                const url = `/review/delete/${reviewId}/`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
