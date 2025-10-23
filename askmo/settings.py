@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'coach',
     'django.contrib.humanize',
     'main',
-    'review'
+    'review',
 ]
 
 MIDDLEWARE = [
