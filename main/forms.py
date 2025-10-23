@@ -37,20 +37,23 @@ class ReviewForm(ModelForm):
         widget=forms.NumberInput(attrs={'step': '0.1', 'min': '0.0', 'max': '5.0'})
     )
     
-    # Tambahkan field untuk nama reviewer
-    reviewer_name = forms.CharField(max_length=255)
+    reviewer_name = forms.CharField(
+        max_length=255,
+        label="Nama",  # ⭐ GANTI LABEL JADI "Nama"
+        widget=forms.TextInput(attrs={'placeholder': 'Masukkan Nama Anda'})
+    )
 
     class Meta:
         model = Review
-        fields = ["reviewer_name", "rating", "review_text", "gambar"]
+        fields = ["reviewer_name", "rating", "review_text", "gambar"]  # ⭐ INI YANG BENAR!
+        
         widgets = {
             'reviewer_name': forms.TextInput(attrs={'placeholder': 'Masukkan Nama Anda'}),
             'review_text': forms.Textarea(attrs={'placeholder': 'Masukkan review Anda'}),
             'gambar': forms.URLInput(attrs={'placeholder': 'Masukkan URL gambar (opsional)'}),
         }
         labels = {
-            'reviewer_name': 'Nama Anda',
+            'reviewer_name': 'Nama',
             'review_text': 'Masukan dan Saran Anda',
             'gambar': 'Gambar (URL)',
         }
-        fields = ["nama", "deskripsi", "olahraga", "tanggal", "lokasi", "kontak", "thumbnail", "jam", "biaya"]
