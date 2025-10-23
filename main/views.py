@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core import serializers
+
+from main import models
 from coach.models import CoachWishlist
 from main.forms import LapanganForm, CoachForm, EventForm
 from main.models import Lapangan, Coach, Event
@@ -30,6 +32,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags;
 from .models import UserProfile, Avatar 
+
+
 
 def show_main(request):
     context = {

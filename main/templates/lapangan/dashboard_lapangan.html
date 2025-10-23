@@ -28,13 +28,18 @@
             background: #1A1A1A; 
             border-radius: 20px;
             width: 100%;
-            max-width: 600px; 
+            max-width: 60px; 
             max-height: 90vh; 
             overflow-y: auto; 
             color: #fff;
             position: relative;
             border: 1px solid #333;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            scrollbar-width: none;
+        }
+
+        #modal-content::-webkit-scrollbar {
+        display: none;
         }
 
         #modal-close-btn {
@@ -137,12 +142,57 @@
         }
         .search-container {
             display: flex; 
-        gap: 15px; /* Space between elements */
-        align-items: center;
+            gap: 15px; 
+            align-items: center;
             max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
             padding: 0 20px;
+        }
+
+        #modal-kontak-btn,
+        #modal-review-btn { 
+            display: block; 
+            text-decoration: none;
+            padding: 12px 20px;
+            font-weight: 600;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 5px;
+            transition: background 0.2s;
+        }
+
+        #modal-kontak-btn {
+            background: #571E88; 
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        #modal-kontak-btn:hover {
+            background: #7A3EAA;
+        }
+
+        .btn-review-modal {
+            background: #444; 
+            color: #fff;
+        }
+        .btn-review-modal:hover {
+            background: #555; 
+        }
+        .btn-review-modal i {
+            margin-right: 5px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;    
+        }
+
+        #modal-map {
+        width: 100%;           
+        aspect-ratio: 4 / 3;   
+        border-radius: 12px;  
+        border: none;        
         }
     </style>
 {% endblock meta %}
@@ -150,11 +200,13 @@
 {% block content %}
 {% include 'navbar.html' %}
 <div class="fixed top-9 right-9 z-50 hidden md:block">
-    <a href="{% url 'main:show_profile' %}">
-        <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
-        <span>{{ user.username }}</span>
-        </div>
-    </a>
+  <a href="#">
+    <div class="flex items-center space-x-2 px-4 py-2 text-[#CFCFCF] text-sm font-medium">
+      
+      <span class="[text-shadow:0_1px_3px_rgb(0_0_0_/_0.7)]">{{ user.username }}</span>
+
+    </div>
+  </a>
 </div>
     <main>
 
@@ -384,10 +436,14 @@
             
             <div class="modal-body">
                 <h2 id="modal-nama">Nama Lapangan</h2>
-                
+
                 <div class="modal-priority-info">
                     <p><i class="fas fa-map-marker-alt"></i> <span id="modal-alamat">Alamat...</span></p>
                     <p><i class="fas fa-location-arrow"></i> <span id="modal-kecamatan">Kecamatan...</span></p>
+
+                    <div class="container">
+                        <iframe id="modal-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.183271344546!2d106.82447380886398!3d-6.370323693593243!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69ec1ad14fb6cf%3A0xc94e4d829420fa15!2sFaculty%20of%20Computer%20Science%2C%20University%20of%20Indonesia!5e0!3m2!1sen!2sid!4v1761140126873!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
                     <p><i class="fas fa-star"></i> <span id="modal-rating">Rating...</span></p>
                     <p><i class="fas fa-futbol"></i> <span id="modal-olahraga">Olahraga...</span></p>
                     <p><i class="fas fa-money-bill-wave"></i> <span id="modal-tarif">Tarif...</span></p>
@@ -396,6 +452,10 @@
                 
                 <a id="modal-kontak-btn" href="#" target="_blank">
                     <i class="fas fa-phone"></i> Hubungi
+                </a>
+
+                <a href="#" class="btn-review-modal" id="modal-review-btn">
+                    <i class="fas fa-comment"></i> Lihat Ulasan
                 </a>
                 
                 <hr class="modal-divider">
@@ -410,15 +470,13 @@
                     <h4>Peraturan</h4>
                     <p id="modal-peraturan">Peraturan...</p>
                     
-                    <h4>Review</h4>
-                    <p id="modal-review">Review...</p>
+                    <!-- <h4>Review</h4>
+                    <p id="modal-review">Review...</p> -->
                 </div>
 
             </div>
         </div>
     </div>
-
-
     <script>
         const modalOverlay = document.getElementById('modal-overlay');
         const modalNama = document.getElementById('modal-nama');
@@ -433,7 +491,11 @@
         const modalDeskripsi = document.getElementById('modal-deskripsi');
         const modalFasilitas = document.getElementById('modal-fasilitas');
         const modalPeraturan = document.getElementById('modal-peraturan');
-        const modalReview = document.getElementById('modal-review');
+        //const modalReview = document.getElementById('modal-review');
+        const reviewBtn = document.getElementById('modal-review-btn');
+        reviewBtn.href = `/lapangan/review/feeds/${lapanganId}/`;
+
+        modalOverlay.style.display = 'flex';
         
         async function showDetail(lapanganId) {
             try {
@@ -465,7 +527,12 @@
                 modalDeskripsi.textContent = data.deskripsi || 'Tidak ada deskripsi.';
                 modalFasilitas.textContent = data.fasilitas || 'Tidak ada info fasilitas.';
                 modalPeraturan.textContent = data.peraturan || 'Tidak ada info peraturan.';
-                modalReview.textContent = data.review || 'Belum ada review.';
+                    
+                const reviewBtn = document.getElementById('modal-review-btn');
+                if (reviewBtn) {
+                    reviewBtn.href = `/lapangan/review/feeds/${lapanganId}/`;
+                    reviewBtn.style.display = 'block';
+                }
 
                 modalOverlay.style.display = 'flex';
 
@@ -478,7 +545,7 @@
         function hideDetail() {
             modalOverlay.style.display = 'none';
         }
-        
+
         function checkCloseModal(event) {
             if (event.target === modalOverlay) {
                 hideDetail();
@@ -491,7 +558,6 @@
                 const cookies = document.cookie.split(';');
                 for (let i = 0; i < cookies.length; i++) {
                     const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
                     if (cookie.startsWith(name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -505,7 +571,7 @@
 
         async function toggleWishlist(itemId, itemType) {
             try {
-                const response = await fetch('/wishlist/toggle/', { // <--- Sesuaikan URL ini dengan URL Django Anda
+                const response = await fetch('/wishlist/toggle/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -535,7 +601,7 @@
 
             } catch (error) {
                 console.error("Error toggling wishlist:", error);
-                alert("Gagal menghubungi server. Pastikan Anda sudah login."); // Tambahkan pesan ini jika login diperlukan
+                alert("Gagal menghubungi server. Pastikan Anda sudah login.");
             }
         }
         function updateBookmarkIcon(itemId, action) {
