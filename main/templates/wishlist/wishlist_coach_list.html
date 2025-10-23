@@ -101,8 +101,6 @@
 <div class="wishlist-container">
     <h1 style="font-size: 40px; text-align: center;"><b>List - Coach</b></h1>
     <main>
-        
-        
         <div class="card-container">
             {% for coach in coach_list %}
             <a href="{% url 'coach:coach_detail' coach.pk %}" class="card-link">

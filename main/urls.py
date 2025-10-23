@@ -2,6 +2,11 @@ from django.urls import include, path
 from review.views import add_review_lapangan, delete_review, get_reviews_json, get_single_review_json, show_edit_review_lapangan, show_feeds_review_lapangan, show_form_review_lapangan, show_review_lapangan, update_review
 from main.views import login_user, logout_user, register, register_ajax, login_ajax, logout_ajax, show_main
 from django.urls import path
+
+from main.views import add_event_ajax, show_main, login_user, register, logout_user
+from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax, delete_event_ajax
+from main.views import show_event, show_event_detail, get_events_json, get_event_detail_ajax, edit_event_ajax
+
 from main.views import show_main, login_user, register, logout_user
 from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax
 from . import views
@@ -71,4 +76,6 @@ urlpatterns = [
 
     path('get-event-ajax/<uuid:id>/', get_event_detail_ajax, name='get_event_detail_ajax'),
     path('edit-event-ajax/<uuid:id>/', edit_event_ajax, name='edit_event_ajax'),
+
+    path('lapangan/', show_lapangan_dashboard, name='show_lapangan'),
 ]
