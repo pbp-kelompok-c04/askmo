@@ -18,4 +18,6 @@ urlpatterns = [
     path('dashboard/create/', views.coach_create_view, name='coach_create'),
     path('dashboard/<int:pk>/update/', views.coach_update_view, name='coach_update'),
     path('dashboard/<int:pk>/delete/', views.coach_delete_view, name='coach_delete'),
+    path('add-to-wishlist/<int:pk>/', views.add_to_wishlist_view, name='add_to_coach_list'),
+    path('wishlist/', views.coach_wishlist_list_view, name='coach_wishlist_list'),
 ]

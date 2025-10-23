@@ -1,11 +1,20 @@
+import uuid
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
+from .models import UserProfile, Avatar
+from main.models import Collection
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core import serializers
 
+from main import models
+from coach.models import CoachWishlist
 from main.forms import LapanganForm, CoachForm, EventForm
 from main.models import Lapangan, Coach, Event
 from django.db.models import Q
 
+from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from .models import UserProfile, Avatar, Event
@@ -14,24 +23,37 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, JsonResponse
 
 import datetime
 import json
-import uuid
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags;
 from .models import UserProfile, Avatar 
+from coach.models import Coach 
+from .models import Lapangan, Event, UserProfile, Avatar
 
 def show_main(request):
+    lapangan_list = Lapangan.objects.all()[:5] 
+    event_list = Event.objects.all()[:5]
+    coach_list_for_template = Coach.objects.all()[:5]
+
+    lapangan_count = Lapangan.objects.count()
+    coach_count = Coach.objects.count()
+    event_count = Event.objects.count()
+
     context = {
         'app_name' : 'ASKMO',
         'username': request.user.username,
         'last_login': request.COOKIES.get('last_login', 'Tidak Pernah'),
+        'lapangan_list': lapangan_list,
+        'coach_list': coach_list_for_template,
+        'event_list': event_list,
+        'lapangan_count': lapangan_count,
+        'coach_count': coach_count,
+        'event_count': event_count,
     }
     return render(request, "main.html", context)
 
@@ -106,6 +128,23 @@ def logout_user(request):
     response.delete_cookie('last_login')
     return response
 
+@login_required(login_url='/login/')
+def show_profile(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    avatars = Avatar.objects.all()
+    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
+    wishlist_coaches = CoachWishlist.objects.filter(user=request.user).select_related('coach')
+    context = {
+        'profile': profile,
+        'avatars': avatars,
+        'olahraga_choices': olahraga_choices,
+        'current_sport_key': profile.olahraga_favorit,
+        'coach_wishlist': wishlist_coaches,
+    }
+    return render(request, 'profile.html', context) 
+
+@login_required(login_url='/login/')
 @csrf_exempt
 @require_POST
 @login_required
@@ -267,6 +306,15 @@ def show_lapangan_dashboard(request):
 
     lapangan_list = Lapangan.objects.all()
 
+    wishlist_collection, created = Collection.objects.get_or_create(
+        user=request.user, 
+        defaults={'name': 'Wishlist Default'}
+    )
+
+    wishlist_lapangan_ids = wishlist_collection.lapangan.values_list('pk', flat=True)
+    for lapangan in lapangan_list:
+        lapangan.is_saved_to_wishlist = lapangan.pk in wishlist_lapangan_ids
+
     if search_nama :
         lapangan_list = lapangan_list.filter(nama__icontains=search_nama)
     if search_kecamatan :
@@ -280,22 +328,6 @@ def show_lapangan_dashboard(request):
         'olahraga_choices' : Lapangan.OLAHRAGA_CHOICES,
     }
     return render(request, 'lapangan/dashboard_lapangan.html', context)
-
-
-@login_required(login_url='/login/')
-def show_profile(request):
-    profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
-    avatars = Avatar.objects.all()
-    olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
-
-    context = {
-        'profile': profile,
-        'avatars': avatars,
-        'olahraga_choices': olahraga_choices,
-        'current_sport_key': profile.olahraga_favorit,
-    }
-    return render(request, 'profile.html', context) 
 
 @login_required(login_url='/login/')
 @csrf_exempt
@@ -330,7 +362,216 @@ def update_profile_ajax(request):
     
     return HttpResponseForbidden()
 
-# <-- THIS IS THE REQUIRED VIEW FUNCTION
+@login_required
+@require_POST
+def create_collection_ajax(request):
+    try:
+        data = json.loads(request.body)
+        collection_name = data.get('name', '').strip()
+        
+        if not collection_name:
+            return JsonResponse({'status': 'error', 'message': 'Nama koleksi tidak boleh kosong.'}, status=400)
+        
+        if Collection.objects.filter(user=request.user, name=collection_name).exists():
+            return JsonResponse({'status': 'error', 'message': f'Koleksi bernama "{collection_name}" sudah ada.'}, status=400)
+
+        # Buat objek Collection baru (tanpa is_public/is_shared)
+        new_collection = Collection.objects.create(
+            user=request.user,
+            name=collection_name,
+            # is_public dan is_shared tidak dimasukkan
+        )
+        
+        return JsonResponse({
+            'status': 'success', 
+            'message': f'Koleksi "{collection_name}" berhasil dibuat!',
+            'collection_id': new_collection.id,
+            'collection_name': new_collection.name
+        })
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Gagal membuat koleksi: {str(e)}'}, status=500)
+    return HttpResponseForbidden()
+
+@login_required
+def get_user_collections_for_item_ajax(request, item_type, item_id):
+    collections = Collection.objects.filter(user=request.user).order_by('-created_at')
+    collections_data = []
+
+    if item_type == 'lapangan':
+        ItemModel = Lapangan
+    elif item_type == 'coach':
+        ItemModel = Coach
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Tipe item tidak valid'}, status=400)
+    
+    try:
+        item = get_object_or_404(ItemModel, pk=item_id)
+    except ItemModel.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Item tidak ditemukan'}, status=404)
+
+    for collection in collections:
+        if item_type == 'lapangan':
+            is_saved = collection.lapangan.filter(pk=item_id).exists() # Menggunakan ManyToManyField 'lapangan'
+        elif item_type == 'coach':
+            is_saved = collection.coach.filter(pk=item_id).exists() # <--- TAMBAH INI (Menggunakan ManyToManyField 'coach')
+
+        collections_data.append({
+            'id': collection.id,
+            'name': collection.name,
+            'is_saved': is_saved,
+        })
+
+    return JsonResponse({'status': 'success', 'collections': collections_data})
+
+@login_required
+@require_POST
+@csrf_exempt
+def toggle_save_item_to_collection_ajax(request):
+    try:
+        data = json.loads(request.body)
+        collection_id = data.get('collection_id')
+        item_id = data.get('item_id')
+        item_type = data.get('item_type')
+        
+        collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
+
+        if item_type == 'lapangan':
+            ItemModel = Lapangan
+            related_manager = collection.lapangan
+        elif item_type == 'coach': 
+            ItemModel = Coach
+            related_manager = collection.coach
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Tipe item tidak valid.'}, status=400)
+
+        item = get_object_or_404(ItemModel, pk=item_id)
+
+        if related_manager.filter(pk=item_id).exists():
+            related_manager.remove(item)
+            action = 'removed'
+            message = f'Berhasil dihapus dari koleksi "{collection.name}"'
+        else:
+            related_manager.add(item)
+            action = 'added'
+            message = f'Berhasil ditambahkan ke koleksi "{collection.name}"'
+        
+        return JsonResponse({
+            'status': 'success', 
+            'action': action,
+            'message': message,
+            'collection_name': collection.name
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Gagal memproses permintaan: {str(e)}'}, status=500)
+    
+# main/views.py (sekitar baris 417)
+@login_required
+@require_POST
+def toggle_wishlist(request):
+    try:
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        item_type = data.get('item_type')
+        user = request.user
+        
+        collection, created = Collection.objects.get_or_create(
+            user=user, 
+            defaults={'name': 'Wishlist Default'}
+        )
+
+        if item_type == 'lapangan':
+            lapangan = Lapangan.objects.get(id=item_id)
+            
+            if collection.lapangan.filter(pk=item_id).exists():
+                collection.lapangan.remove(lapangan)
+                return JsonResponse({'status': 'removed', 'message': 'Berhasil dihapus dari wishlist'})
+            else:
+                collection.lapangan.add(lapangan)
+                return JsonResponse({'status': 'added', 'message': 'Berhasil ditambahkan ke wishlist'})
+        
+        # ... (Anda bisa menambahkan logika coach di sini jika ingin menggunakan URL yang sama)
+
+        return JsonResponse({'status': 'error', 'message': 'Invalid item type'}, status=400)
+    except Lapangan.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Lapangan not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+@login_required
+def show_collection_detail(request, collection_id):
+    collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
+    lapangan_list = collection.lapangan.all()
+    coach_list = collection.coach.all()
+
+    context = {
+        'collection': collection,
+        'lapangan_list': lapangan_list, 
+        'coach_list': coach_list, 
+    }
+    return render(request, 'wishlist/collection_detail.html', context)
+
+@login_required
+@require_POST
+@csrf_exempt
+def edit_collection_name_ajax(request):
+    try:
+        data = json.loads(request.body)
+        collection_id = data.get('collection_id')
+        new_name = data.get('new_name', '').strip()
+
+        if not new_name:
+            return JsonResponse({'status': 'error', 'message': 'Nama koleksi tidak boleh kosong.'}, status=400)
+        
+        collection = get_object_or_404(Collection, pk=collection_id, user=request.user)
+        
+        if Collection.objects.filter(user=request.user, name=new_name).exclude(pk=collection_id).exists():
+            return JsonResponse({'status': 'error', 'message': f'Koleksi bernama "{new_name}" sudah ada.'}, status=400)
+
+        old_name = collection.name
+        collection.name = new_name
+        collection.save()
+
+        return JsonResponse({
+            'status': 'success', 
+            'message': f'Nama koleksi berhasil diubah dari "{old_name}" menjadi "{new_name}".',
+            'collection_name': new_name
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Gagal mengedit koleksi: {str(e)}'}, status=500)
+    
+@login_required
+def add_to_coach_list(request, coach_id):
+    return redirect(reverse('main:show_user_collections'))
+
+@login_required
+def show_wishlist_lapangan(request):
+    user_collections = Collection.objects.filter(user=request.user)
+    
+    lapangan_list = Lapangan.objects.filter(collection__in=user_collections).distinct()
+    for lapangan in lapangan_list:
+        lapangan.is_saved_to_wishlist = True
+    context = {
+        'lapangan_list': lapangan_list,
+    }
+    return render(request, 'wishlist/wishlist_lapangan_list.html', context)
+
+@login_required
+def show_wishlist_coach(request):
+    wishlist_items = CoachWishlist.objects.filter(user=request.user).select_related('coach')    
+    coach_list = [item.coach for item in wishlist_items]
+    
+    context = {
+        'coach_list': coach_list,
+    }
+    return render(request, 'wishlist/wishlist_coach_list.html', context)
+
 def get_events_json(request):
     event_objects = Event.objects.all().order_by('-tanggal')
     

@@ -1,19 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Coach
+from .models import Coach, CoachWishlist
+from main.models import Collection
 from .forms import CoachForm
+from django.db import models
+
+User = get_user_model()
 
 # ==============================================================================
 # VIEW UNTUK HALAMAN PUBLIK
 # ==============================================================================
 
 def coach_list_view(request):
-    """
-    Menampilkan daftar coach untuk semua pengguna dan menangani fungsionalitas pencarian.
-    """
-    # Mengambil semua objek Coach dari database sebagai daftar awal, diurutkan berdasarkan nama
     coaches_list = Coach.objects.all().order_by('name')
 
     # Ambil nilai dari parameter GET di URL untuk filter
@@ -41,43 +41,36 @@ def coach_list_view(request):
 
 
 def coach_detail_view(request, pk):
-    """
-    Menampilkan halaman detail untuk satu coach berdasarkan Primary Key (pk).
-    """
-    coach = get_object_or_404(Coach, pk=pk)
+    coach_instance = get_object_or_404(Coach, pk=pk)
     
-    # --- LOGIKA BARU UNTUK MEMPROSES KONTAK ---
-    contact_str = coach.contact
+    is_saved_to_wishlist = CoachWishlist.objects.filter(
+        coach=coach_instance, 
+        user=request.user
+    ).exists()
+
+    contact_str = coach_instance.contact
     phone_number_cleaned = None
     whatsapp_number = None
-    is_email = False
 
     if '@' in contact_str:
         is_email = True
     else:
-        # Asumsikan ini nomor telepon. Bersihkan dari karakter non-digit.
-        # Hapus spasi, tanda hubung, tanda kurung, dll.
         phone_number_cleaned = ''.join(c for c in contact_str if c.isdigit() or c == '+')
         
-        # Buat nomor WhatsApp (ganti 0 di depan dengan 62)
         if phone_number_cleaned.startswith('0'):
             whatsapp_number = '62' + phone_number_cleaned[1:]
         elif phone_number_cleaned.startswith('+'):
-            # Hapus '+' untuk link wa.me
             whatsapp_number = phone_number_cleaned[1:]
         elif phone_number_cleaned.startswith('62'):
             whatsapp_number = phone_number_cleaned
         else:
-            # Anggap sudah format benar tanpa 0 atau +
             whatsapp_number = phone_number_cleaned
-    # --- AKHIR LOGIKA BARU ---
 
     context = {
-        'coach': coach,
-        # Variabel baru untuk dikirim ke template
+        'coach': coach_instance,
         'phone_number_cleaned': phone_number_cleaned,
         'whatsapp_number': whatsapp_number,
-        'is_email': is_email
+        'is_saved_to_wishlist': is_saved_to_wishlist
     }
     return render(request, 'coach/coach_detail.html', context)
 
@@ -186,3 +179,34 @@ def coach_delete_view(request, pk):
         coach.delete()
         return redirect('coach:dashboard')
     return render(request, 'coach_admin/coach_confirm_delete.html', {'coach': coach})
+
+@login_required
+def add_to_wishlist_view(request, pk):
+    coach = get_object_or_404(Coach, pk=pk)
+    user = request.user
+    
+    wishlist_item = CoachWishlist.objects.filter(user=user, coach=coach)
+    
+    if wishlist_item.exists():
+        wishlist_item.delete()
+    else:
+        CoachWishlist.objects.create(user=user, coach=coach)        
+    return redirect('coach:coach_detail', pk=pk)
+
+@login_required
+def coach_wishlist_list_view(request):
+    wishlist_items = CoachWishlist.objects.filter(user=request.user)
+    coaches_in_wishlist = [item.coach for item in wishlist_items]
+    context = {
+        'coaches': coaches_in_wishlist
+    }
+    return render(request, 'wishlist_coach_list.html', context)
+
+@login_required
+def coach_wishlist_list_view(request):
+    wishlist_items = CoachWishlist.objects.filter(user=request.user)
+    coaches_in_wishlist = [item.coach for item in wishlist_items]
+    context = {
+        'coach_list': coaches_in_wishlist
+    }
+    return render(request, 'wishlist/wishlist_coach_list.html', context)

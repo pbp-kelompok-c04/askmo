@@ -76,6 +76,7 @@ class Command(BaseCommand):
                         olahraga=olahraga_val,
                         tarif_per_sesi=tarif_val,
                         rating=rating_val,
+                        original_rating=rating_val,
                         refund=is_refund,
                         review=row.get('REVIEW') or None,
                         fasilitas=row.get('FASILITAS') or None,

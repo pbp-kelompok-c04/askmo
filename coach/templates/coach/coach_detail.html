@@ -115,16 +115,18 @@
         /* STYLE BARU UNTUK TOMBOL AKSI */
         .action-buttons {
             display: flex;
+            flex-direction: column;
             gap: 10px;
-            margin-top: 25px; /* Jarak dari info kontak */
-            margin-bottom: 10px; /* Jarak sebelum 'Pengalaman' */
-            flex-wrap: wrap; 
+            margin-top: 25px; 
+            margin-bottom: 10px; 
+            margin-right: 20px;/* Jarak sebelum 'Pengalaman' */
         }
         .action-btn {
             flex-grow: 1; 
-            flex-basis: 200px; /* Lebar minimum sebelum wrap */
+            width: 100%;
             text-decoration: none;
             color: #fff;
+            margin-right: 12px;
             padding: 12px 15px;
             border-radius: 8px;
             text-align: center;
@@ -140,6 +142,16 @@
         }
         .action-btn.whatsapp {
             background-color: #25D366; /* Warna WhatsApp */
+        }
+        .action-btn.save {
+            background-color: gray; /* Warna abu */
+        }
+        .action-btn.save i {
+            color: rgb(255, 255, 255); /* Default color */
+            transition: color 0.2s;
+        }
+        .action-btn.save.is-saved i {
+            color: #FFD700 !important; /* Warna Kuning saat sudah disimpan */
         }
         .action-btn.phone {
             background-color: #3498DB; /* Warna biru telepon */
@@ -175,6 +187,19 @@
 
             {% if not is_email and phone_number_cleaned and whatsapp_number %}
             <div class="action-buttons">
+                <a 
+                    href="{% url 'coach:add_to_coach_list' coach.pk %}" 
+                    class="action-btn save {% if is_saved_to_wishlist %}is-saved{% endif %}" 
+                    style="cursor: pointer;"> 
+                    
+                    <i class="fas fa-bookmark"></i> 
+                    
+                    {% if is_saved_to_wishlist %}
+                        Hapus dari Wishlist 
+                    {% else %}
+                        Tambahkan ke Wishlist
+                    {% endif %}
+                </a>
                 <a href="https://wa.me/{{ whatsapp_number }}" target="_blank" class="action-btn whatsapp">
                     <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
                 </a>
