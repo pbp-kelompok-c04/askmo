@@ -350,7 +350,7 @@
                 <a href="{% url 'main:show_lapangan_dashboard' %}" class="back-link">
                     <i class="fas fa-arrow-left"></i> Kembali ke Daftar Lapangan
                 </a>
-                <h1>Review Coach: {{ coach.name }}</h1>
+                <h1>Review Lapangan : {{ lapangan.nama }}</h1>
             </div>
            
             <div class="header-right">
@@ -363,7 +363,7 @@
                     {% endif %}
                 </div>
                
-                <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
+
                 <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
                     <i class="fas fa-edit"></i> Beri Review & Rating
                 </a>

@@ -1,8 +1,10 @@
 # main/forms.py
 from django.forms import ModelForm
 from django import forms
-from main.models import Lapangan, Coach, Event
-from review.models import Review
+from coach.models import User
+from main.models import Avatar, Lapangan, Coach, Event, UserProfile
+from review.models import Review, ReviewCoach
+from django.contrib.auth.forms import UserCreationForm
 
 
 class LapanganForm(ModelForm):
