@@ -2,7 +2,7 @@
 {% load static %}
 {% load humanize %} 
 
-{% block meta %}
+{% block meta %}{{ block.super }}
 <title>ASKMO</title>
 
 <style>
@@ -165,7 +165,7 @@
 <div class="w-full min-h-screen bg-black text-white font-['Plus_Jakarta_Sans']">
   <div class="background-aura-container"></div>
   
-  <div class="relative w-full h-[60vh] flex pt-20 justify-center md:items-center md:pt-0 p-6 overflow-hidden hero-container-fade">
+  <div class="relative w-full h-[70vh] min-h-[500px] flex pt-20 justify-center items-center md:pt-0 p-6 overflow-hidden hero-container-fade md:h-[60vh] md:min-h-0">
      <div class="hero-slideshow">
       <div class="hero-slide" style="background-image: url('{% static 'image/bg1.png' %}'); animation-delay: 0s;"></div>
       <div class="hero-slide" style="background-image: url('{% static 'image/bg2.png' %}'); animation-delay: 7s;"></div>
@@ -175,10 +175,10 @@
     <div class="absolute inset-0 bg-black opacity-25"></div>
     
     <div class="relative z-10 flex flex-col items-center">        
-        <h1 class="text-5xl sm:text-xl lg:text-7xl font-bold text-white tracking-wider mb-8" style="margin-top: 120px;">
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-wider mb-8" style="margin-top: 120px;">
           ASKMO
         </h1>
-        <p class="text-center text-gray-300 max-w-xl mx-auto mb-6">
+        <p class="text-center text-sm md:text-base text-gray-300 max-w-xl mx-auto mb-6">
           Platform utama Anda untuk mencari lapangan olahraga, bertemu dengan coach, dan membagi serta menemukan event olahraga.
       </p>
         <div class="mt-0">

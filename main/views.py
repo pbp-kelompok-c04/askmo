@@ -306,7 +306,7 @@ def show_lapangan_by_kecamatan_json(request, kecamatan):
     ]
     return JsonResponse(data, safe=False)
 
-@login_required
+@login_required(login_url='/login/')
 def show_lapangan_dashboard(request):
     search_nama = request.GET.get('nama', '')
     search_kecamatan = request.GET.get('kecamatan', '')

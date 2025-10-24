@@ -24,7 +24,7 @@
                   <div class="flex items-center space-x-8 text-lg">
                       <a href="{% url 'main:show_main' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Beranda</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>
-                      <a href="{% url 'coach:coach_list' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Coach</a>
+                      <a href="{% if user.is_authenticated %}{% url 'coach:coach_list' %}{% else %}{% url 'main:login' %}{% endif %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Coach</a>
                       <a href="{% url 'main:show_event' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
                       <a href="{% url 'main:login' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Masuk</a>
                       <a></a>
