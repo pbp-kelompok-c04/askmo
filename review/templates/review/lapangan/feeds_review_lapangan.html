@@ -5,209 +5,227 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Review {{ lapangan.nama }} - ASKMO</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+   
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        body { 
-            background: #121212; 
-            color: #E0E0E0; 
-            font-family: 'Inter', sans-serif; 
+       
+        body {
+            background: #121212;
+            color: #E0E0E0;
+            font-family: 'Inter', sans-serif;
             padding: 20px;
             min-height: 100vh;
         }
-        
-        .review-container { 
-            max-width: 900px; 
-            margin: 30px auto; 
-            padding: 30px; 
-            background: #1A1A1A; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+       
+        .review-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 30px;
+            background: #1A1A1A;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        
-        .header-review { 
-            display: flex; 
+       
+        .header-review {
+            display: flex;
             align-items: flex-start;
-            justify-content: space-between; 
-            border-bottom: 2px solid #333; 
-            padding-bottom: 20px; 
-            margin-bottom: 25px; 
-            flex-wrap: wrap; 
+            justify-content: space-between;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
             gap: 15px;
         }
-        
+       
         .header-left {
             flex: 1;
             min-width: 300px;
         }
-        
-        .back-link { 
-            text-decoration: none; 
-            color: #CFCFCF; 
-            transition: color 0.3s; 
+       
+        .back-link {
+            text-decoration: none;
+            color: #CFCFCF;
+            transition: color 0.3s;
             margin-bottom: 15px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-size: 0.95rem;
         }
-        .back-link:hover { 
-            color: #7A3EAA; 
+        .back-link:hover {
+            color: #7A3EAA;
         }
-        
-        .header-review h1 { 
-            font-size: 1.8rem; 
-            font-weight: 700; 
-            color: #fff; 
+       
+        .header-review h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
             margin-bottom: 10px;
             line-height: 1.3;
         }
-        
+       
         .header-right {
             text-align: right;
             min-width: 200px;
         }
-        
-        .rating-summary { 
-            font-size: 1.3rem; 
-            color: #FFD700; 
+       
+        .rating-summary {
+            font-size: 1.3rem;
+            color: #FFD700;
             font-weight: 600;
             margin-bottom: 15px;
         }
-        
+       
         .rating-summary small {
-            font-size: 0.8rem; 
-            color: #aaa; 
+            font-size: 0.8rem;
+            color: #aaa;
             display: block;
             font-weight: normal;
             margin-top: 5px;
         }
-        
-        .btn-add-review-link { 
-            background: #571E88; 
-            color: white; 
-            padding: 12px 24px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            transition: background 0.3s; 
-            font-weight: 500; 
+       
+        .btn-add-review-link {
+            background: #571E88;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 500;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-size: 0.95rem;
         }
-        .btn-add-review-link:hover { 
-            background: #7A3EAA; 
+        .btn-add-review-link:hover {
+            background: #7A3EAA;
             transform: translateY(-2px);
         }
-        
+       
         .section-title {
             margin: 30px 0 20px 0;
-            color: #fff; 
-            border-bottom: 1px solid #333; 
+            color: #fff;
+            border-bottom: 1px solid #333;
             padding-bottom: 10px;
             font-size: 1.4rem;
             font-weight: 600;
         }
-        
-        .review-list { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
+       
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
-        
-        .review-card { 
-            background: #222; 
-            padding: 25px; 
-            border-radius: 12px; 
+       
+/* 1. Ubah .review-card menjadi flex container */
+        .review-card {
+            background: #222;
+            padding: 0; 
+            border-radius: 12px;
             border-left: 5px solid #571E88;
+            overflow: hidden; 
             transition: transform 0.2s, box-shadow 0.2s;
+            
+            /* TAMBAHKAN INI */
+            display: flex; 
+            align-items: stretch; /* Membuat gambar dan konten sama tinggi */
         }
-        
+
+/* 2. Ubah style gambar agar menjadi kolom kiri */
+        .review-card-image {
+            /* Tentukan lebar tetap untuk gambar */
+            flex-basis: 200px;  /* Lebar kolom gambar, bisa diubah (cth: 200px) */
+            flex-shrink: 0;   /* Mencegah gambar menyusut */
+            
+            /* Hapus 'width' dan 'height' dari style sebelumnya */
+            
+            object-fit: cover; 
+            display: block; 
+        }
+
+/* 3. Atur konten agar mengisi sisa ruang di kanan */
+        .review-card-content {
+            padding: 25px; 
+            
+            /* TAMBAHKAN INI */
+            flex: 1; /* Membuat div ini mengisi sisa ruang yang tersedia */
+            
+            /* Pastikan bisa menangani teks panjang */
+            min-width: 0; 
+        }
+       
         .review-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        
-        .review-meta { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: flex-start; 
-            margin-bottom: 15px; 
-            flex-wrap: wrap; 
+       
+        .review-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
             gap: 10px;
         }
-        
-        .reviewer-info { 
-            display: flex; 
+       
+        .reviewer-info {
+            display: flex;
             flex-direction: column;
             flex: 1;
         }
-        
+       
         .reviewer-name {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
-        
-        .reviewer-info strong { 
-            color: #fff; 
-            font-size: 1.1rem; 
-            font-weight: 600; 
+       
+        .reviewer-info strong {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
-        
-        .dataset-badge {
-            background: #444; 
-            color: #FFD700; 
-            padding: 3px 10px; 
-            border-radius: 12px; 
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .review-rating { 
-            color: #FFD700; 
-            font-size: 1.1rem; 
+       
+        .review-rating {
+            color: #FFD700;
+            font-size: 1.1rem;
             margin: 8px 0;
             display: flex;
             align-items: center;
             gap: 5px;
         }
-        
-        .review-date { 
-            color: #aaa; 
+       
+        .review-date {
+            color: #aaa;
             font-size: 0.9em;
             text-align: right;
             min-width: 120px;
         }
-        
-        .review-text { 
-            margin-top: 15px; 
-            line-height: 1.6; 
-            color: #CFCFCF; 
+       
+        .review-text {
+            margin-top: 15px;
+            line-height: 1.6;
+            color: #CFCFCF;
             white-space: pre-wrap;
             font-size: 0.95rem;
         }
-        
+       
         .review-image {
-            max-width: 100%; 
-            height: auto; 
-            border-radius: 8px; 
             margin-top: 15px;
-            border: 1px solid #333;
+            max-width: 200px;
+            border-radius: 8px;
         }
-        
+       
         /* Tombol Action */
         .review-actions {
             display: flex;
@@ -215,15 +233,15 @@
             margin-top: 15px;
             flex-wrap: wrap;
         }
-        
-        .btn-edit { 
-            background: #571E88; 
-            color: white; 
-            padding: 8px 16px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            transition: all 0.3s; 
+       
+        .btn-edit {
+            background: #571E88;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
             font-size: 0.85rem;
             text-decoration: none;
             display: inline-flex;
@@ -231,74 +249,94 @@
             gap: 6px;
             font-weight: 500;
         }
-        .btn-edit:hover { 
-            background: #7A3EAA; 
+        .btn-edit:hover {
+            background: #7A3EAA;
             transform: translateY(-1px);
         }
-        
-        .btn-delete { 
-            background: #b91c1c; 
-            color: white; 
-            padding: 8px 16px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            transition: all 0.3s; 
+       
+        .btn-delete {
+            background: #b91c1c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
             font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-weight: 500;
         }
-        .btn-delete:hover { 
-            background: #dc2626; 
+        .btn-delete:hover {
+            background: #dc2626;
             transform: translateY(-1px);
         }
-        
+       
         .no-reviews {
             text-align: center;
-            color: #999; 
+            color: #999;
             margin: 40px 0;
             font-style: italic;
         }
-        
+       
         .loading {
             text-align: center;
-            color: #999; 
+            color: #999;
             margin: 30px 0;
             font-size: 1.1rem;
         }
-        
+       
         .error-message {
             text-align: center;
-            color: #dc2626; 
+            color: #dc2626;
             margin: 30px 0;
             padding: 15px;
             background: rgba(220, 38, 38, 0.1);
             border-radius: 8px;
         }
-        
+
+        .rating-summary .no-rating {
+            color: #aaa;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .review-count {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .dataset-badge {
+            background: #374151;
+            color: #9CA3AF;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+       
         /* Responsive */
         @media (max-width: 768px) {
             .review-container {
                 padding: 20px;
                 margin: 15px auto;
             }
-            
+           
             .header-review {
                 flex-direction: column;
                 text-align: left;
             }
-            
+           
             .header-right {
                 text-align: left;
                 width: 100%;
             }
-            
+           
             .review-meta {
                 flex-direction: column;
             }
-            
+           
             .review-date {
                 text-align: left;
             }
@@ -310,153 +348,147 @@
         <div class="header-review">
             <div class="header-left">
                 <a href="{% url 'main:show_lapangan_dashboard' %}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Lapangan
+                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Lapangan
                 </a>
-                <h1>Review Lapangan: {{ lapangan.nama }}</h1>
+                <h1>Review Lapangan : {{ lapangan.nama }}</h1>
             </div>
-            
+           
             <div class="header-right">
                 <div class="rating-summary">
-                    <i class="fas fa-star"></i> {{ lapangan.rating|floatformat:1 }} / 5.0
-                    <small>
-                        {% if lapangan.review %}
-                            (Data awal + {{ lapangan.review_set.count }} review user)
-                        {% else %}
-                            ({{ lapangan.review_set.count }} review user)
-                        {% endif %}
-                    </small>
+                    <i class="fas fa-star"></i>
+                    {% if lapangan.rating %}
+                        {{ lapangan.rating }}/5.0
+                    {% else %}
+                        <span class="no-rating">Belum ada rating</span>
+                    {% endif %}
                 </div>
-                
+               
+
                 <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
                     <i class="fas fa-edit"></i> Beri Review & Rating
                 </a>
             </div>
         </div>
-        
+       
         <h2 class="section-title">Semua Review</h2>
-        
+       
         <div class="review-list" id="review-list-container">
-            <!-- Reviews akan dimuat via JavaScript -->
+            <div class="loading">Memuat review...</div>
         </div>
-        
-        <p id="no-review-message" class="no-reviews" style="display: none;">
-            Belum ada review untuk lapangan ini. Jadilah yang pertama!
-        </p>
     </div>
-
-    <script>
-        const reviewListContainer = document.getElementById('review-list-container');
-        const noReviewMessage = document.getElementById('no-review-message');
-
-        async function fetchReviews() {
-            reviewListContainer.innerHTML = '<div class="loading">Memuat review...</div>';
+        <script>
+        async function loadReviews() {
             try {
-                const url = `{% url 'main:get_reviews_json' lapangan.id %}`;
-                const response = await fetch(url);
+                console.log('🔍 1. Mulai loadReviews...');
+                
+                const response = await fetch(`{% url 'main:get_reviews_json_lapangan' lapangan.id %}`);
+                console.log('✅ Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const reviews = await response.json();
-
-                reviewListContainer.innerHTML = ''; 
+                console.log('📊 Data reviews:', reviews);
+                
+                const container = document.getElementById('review-list-container');
+                container.innerHTML = '';
                 
                 if (reviews.length === 0) {
-                    noReviewMessage.style.display = 'block';
+                    container.innerHTML = '<p class="no-reviews">Belum ada review untuk lapangan ini. Jadilah yang pertama!</p>';
                     return;
                 }
-
-                noReviewMessage.style.display = 'none';
-
+                
                 reviews.forEach(review => {
                     const reviewCard = document.createElement('div');
                     reviewCard.className = 'review-card';
                     
-                    const isDatasetReview = review.id === 0;
-                    const datasetBadge = isDatasetReview ? 
-                        '<span class="dataset-badge">Data Awal</span>' : '';
-                    
-                    let actionButtons = '';
+                    // ========= PERBAIKAN: GUNAKAN JAVASCRIPT BUKAN DJANGO TEMPLATE =========
+                    let actionsHTML = '';
                     if (review.can_edit && review.can_delete) {
-                        actionButtons = `
+                        actionsHTML = `
                             <div class="review-actions">
                                 <a href="/lapangan/review/edit/${review.id}/" class="btn-edit">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <button class="btn-delete" onclick="deleteReview(${review.id})">
+                                <button class="btn-delete" data-review-id="${review.id}">
                                     <i class="fas fa-trash"></i> Hapus
                                 </button>
                             </div>
                         `;
                     }
-
+                    
+                    const isDataset = review.is_dataset || false;
+                    const datasetBadge = isDataset ? '<span class="dataset-badge">Data Awal</span>' : '';
+                    
                     reviewCard.innerHTML = `
-                        <div class="review-meta">
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">
-                                    <strong>${review.reviewer_name}</strong>
-                                    ${datasetBadge}
+                        <div class="review-card-content">
+                            <div class="review-meta">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-name">
+                                        <strong>${review.reviewer_name || 'Anonymous'}</strong>
+                                        ${datasetBadge}
+                                    </div>
+                                    <div class="review-rating">
+                                        <i class="fas fa-star"></i> ${review.rating}/5
+                                    </div>
                                 </div>
-                                <div class="review-rating">
-                                    <i class="fas fa-star"></i> ${review.rating.toFixed(1)} / 5.0
+                                <div class="review-date">
+                                    ${review.tanggal_dibuat}
                                 </div>
                             </div>
-                            <div class="review-date">
-                                ${review.tanggal_dibuat}
-                            </div>
+                            <div class="review-text">${review.review_text || ''}</div>
+                            ${review.gambar_url ? `<img src="${review.gambar_url}" alt="Review image" class="review-image">` : ''}
+                            ${actionsHTML}
                         </div>
-                        <div class="review-text">${review.review_text}</div>
-                        ${review.gambar ? `<img src="${review.gambar}" alt="Gambar Review" class="review-image">` : ''}
-                        ${actionButtons}
                     `;
-                    reviewListContainer.appendChild(reviewCard);
+                    
+                    container.appendChild(reviewCard);
                 });
-
-                // Refresh rating summary setelah load reviews
-                updateRatingSummary();
-
+                
+                console.log('✅ Semua review berhasil ditampilkan');
+                
+                // Add event listeners for delete buttons
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const reviewId = this.getAttribute('data-review-id');
+                        if (reviewId !== '0') {
+                            deleteReview(reviewId);
+                        }
+                    });
+                });
+                
             } catch (error) {
-                console.error("Error fetching reviews:", error);
-                reviewListContainer.innerHTML = '<div class="error-message">Gagal memuat review. Silakan refresh halaman.</div>';
+                console.error('❌ Error loading reviews:', error);
+                document.getElementById('review-list-container').innerHTML = 
+                    '<div class="error-message">Gagal memuat review. Silakan refresh halaman.</div>';
             }
         }
 
-        // Fungsi Update Rating Summary
-        async function updateRatingSummary() {
-            try {
-                const response = await fetch(`/json/${'{{ lapangan.id }}'}/`);
-                if (response.ok) {
-                    const data = await response.json();
-                    document.querySelector('.rating-summary').innerHTML = `
-                        <i class="fas fa-star"></i> ${data.rating} / 5.0
-                        <small>
-                            (Data awal + ${data.review_set ? data.review_set.length : 0} review user)
-                        </small>
-                    `;
-                }
-            } catch (error) {
-                console.error("Error updating rating:", error);
-            }
-        }
-
-        // Fungsi Delete Review
+        // ⚠️ PASTIKAN FUNCTION DELETE REVIEW ADA
         async function deleteReview(reviewId) {
             if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) {
                 return;
             }
 
+
             try {
-                const url = `{% url 'main:delete_review' 0 %}`.replace('0', reviewId);
+                const url = `/lapangan/review/delete-ajax/${reviewId}/`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
                     }
                 });
 
+
                 const result = await response.json();
+
 
                 if (response.status === 200) {
                     alert(result.message);
-                    // Refresh reviews DAN rating
-                    fetchReviews();
-                    updateRatingSummary();
+                    await loadReviews(); // Reload reviews setelah hapus
                 } else {
                     alert('Gagal menghapus review: ' + result.message);
                 }
@@ -466,7 +498,9 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', fetchReviews);
-    </script>
+        document.addEventListener('DOMContentLoaded', loadReviews);
+</script>
+
 </body>
 </html>
+

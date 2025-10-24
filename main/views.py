@@ -35,6 +35,13 @@ from .models import UserProfile, Avatar
 from coach.models import Coach 
 from .models import Lapangan, Event, UserProfile, Avatar
 
+from django.contrib.auth.models import User 
+from django.contrib.auth.decorators import login_required, user_passes_test 
+from django.contrib import messages 
+from .forms import LapanganForm 
+from .models import Lapangan 
+from coach.models import Coach 
+
 def show_main(request):
     lapangan_list = Lapangan.objects.all()[:5] 
     event_list = Event.objects.all()[:5]
@@ -134,13 +141,14 @@ def show_profile(request):
     
     avatars = Avatar.objects.all()
     olahraga_choices = UserProfile.OLAHRAGA_CHOICES 
-    wishlist_coaches = CoachWishlist.objects.filter(user=request.user).select_related('coach')
+    wishlist_entries = CoachWishlist.objects.filter(user=request.user).select_related('coach')
+    wishlist_coaches = [item.coach for item in wishlist_entries][:3]
     context = {
         'profile': profile,
         'avatars': avatars,
         'olahraga_choices': olahraga_choices,
         'current_sport_key': profile.olahraga_favorit,
-        'coach_wishlist': wishlist_coaches,
+        'wishlist_coaches': wishlist_coaches,
     }
     return render(request, 'profile.html', context) 
 
@@ -298,7 +306,7 @@ def show_lapangan_by_kecamatan_json(request, kecamatan):
     ]
     return JsonResponse(data, safe=False)
 
-@login_required
+@login_required(login_url='/login/')
 def show_lapangan_dashboard(request):
     search_nama = request.GET.get('nama', '')
     search_kecamatan = request.GET.get('kecamatan', '')
@@ -661,11 +669,12 @@ def add_event_ajax(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-            event = form.save(commit=False) 
-
-            event.user = request.user 
+            new_event = form.save(commit=False) 
+            if new_event.biaya is None:
+                new_event.biaya = 0
+            new_event.user = request.user 
             
-            event.save() 
+            new_event.save() 
             
             return JsonResponse({"status": "success", "message": "Event berhasil ditambahkan!"}, status=201)
         else:
@@ -730,3 +739,106 @@ def delete_event_ajax(request, id):
         return JsonResponse({'status': 'error', 'message': 'Event tidak ditemukan.'}, status=404)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+def staff_required(view_func):
+    """
+    Decorator ensures only logged-in staff users can access the view.
+    Redirects non-staff users to the admin login page.
+    """
+    @login_required(login_url='coach:login') # Redirect ke login admin coach
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_staff:
+            messages.error(request, "Anda tidak punya akses ke halaman admin.")
+            return redirect('coach:login') # Redirect kembali ke login jika bukan staff
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+# ==============================================================================
+# VIEW UNTUK PANEL ADMIN LAPANGAN (CRUD) - TAMBAHKAN INI DI AKHIR
+# ==============================================================================
+
+@staff_required
+def lapangan_dashboard_view(request):
+    """
+    Menampilkan halaman utama panel admin Lapangan. (Read)
+    """
+    lapangan_list = Lapangan.objects.all().order_by('nama')
+    context = {
+        'lapangan_list': lapangan_list,
+        'page_title': 'Lapangan Management' # Judul Halaman
+    }
+    # Render template dari folder lapangan_admin
+    return render(request, 'lapangan_admin/dashboard.html', context) 
+
+@staff_required
+def lapangan_create_view(request):
+    """
+    Menangani pembuatan data Lapangan baru. (Create)
+    """
+    if request.method == 'POST':
+        # Tambahkan request.FILES jika model Lapangan punya ImageField/FileField
+        form = LapanganForm(request.POST) 
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Lapangan baru berhasil ditambahkan.')
+            # Redirect ke dashboard Lapangan setelah berhasil
+            return redirect('main:lapangan_dashboard') 
+        else:
+            # Jika form tidak valid, tampilkan pesan error
+            messages.error(request, 'Terjadi kesalahan. Mohon periksa kembali isian form.')
+    else:
+        # Jika GET request, tampilkan form kosong
+        form = LapanganForm()
+    
+    context = {
+        'form': form, 
+        'title': 'Tambah Lapangan Baru' # Judul untuk template form
+    }
+    # Render template form dari folder lapangan_admin
+    return render(request, 'lapangan_admin/lapangan_form.html', context)
+
+@staff_required
+def lapangan_update_view(request, pk): # Gunakan 'pk' karena ID Lapangan adalah UUID
+    """
+    Menangani pembaruan data Lapangan yang sudah ada. (Update)
+    """
+    lapangan_instance = get_object_or_404(Lapangan, pk=pk) # Dapatkan objek Lapangan atau 404
+    if request.method == 'POST':
+        # Muat form dengan data POST dan instance yang ada
+        form = LapanganForm(request.POST, instance=lapangan_instance) # Tambahkan request.FILES jika perlu
+        if form.is_valid():
+            form.save() # Simpan perubahan
+            messages.success(request, f'Data lapangan "{lapangan_instance.nama}" berhasil diperbarui.')
+            return redirect('main:lapangan_dashboard') # Redirect ke dashboard
+        else:
+            messages.error(request, 'Terjadi kesalahan. Mohon periksa kembali isian form.')
+    else:
+        # Jika GET request, tampilkan form dengan data instance yang ada
+        form = LapanganForm(instance=lapangan_instance)
+        
+    context = {
+        'form': form, 
+        'title': f'Edit {lapangan_instance.nama}', # Judul dinamis
+        'lapangan': lapangan_instance # Kirim instance jika perlu info tambahan di template
+    }
+    # Render template form
+    return render(request, 'lapangan_admin/lapangan_form.html', context)
+
+@staff_required
+def lapangan_delete_view(request, pk):
+    """
+    Menangani penghapusan data Lapangan setelah konfirmasi. (Delete)
+    """
+    lapangan_instance = get_object_or_404(Lapangan, pk=pk) # Dapatkan objek
+    if request.method == 'POST':
+        lapangan_name = lapangan_instance.nama # Simpan nama untuk pesan
+        lapangan_instance.delete() # Hapus objek
+        messages.success(request, f'Lapangan "{lapangan_name}" berhasil dihapus.')
+        return redirect('main:lapangan_dashboard') # Redirect ke dashboard
+        
+    # Jika GET request, tampilkan halaman konfirmasi
+    context = {
+        'lapangan': lapangan_instance 
+    }
+    # Render template konfirmasi hapus
+    return render(request, 'lapangan_admin/lapangan_confirm_delete.html', context)

@@ -4,6 +4,35 @@
 {% block meta %}
 <title>My Profile - ASKMO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  #avatar-grid img{
+    outline: 2px solid transparent;
+    transition: transform .15s ease, box-shadow .15s ease, outline-color .15s ease;
+  }
+  #avatar-grid img:hover{
+    transform: translateY(-1px);
+  }
+  #avatar-grid img.selected-avatar{
+    outline-color: #571E88;
+    box-shadow:
+      0 0 0 4px rgba(87,30,136,.25),
+      0 10px 20px rgba(87,30,136,.25);
+    transform: scale(1.02);
+  }
+
+  .sport-item{
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .sport-item:hover{
+    transform: translateY(-1px);
+  }
+  .sport-item.selected-sport{
+    box-shadow:
+      0 0 0 3px rgba(108,92,231,.25),
+      0 8px 16px rgba(87,30,136,.20);
+  }
+</style>
+
 {% endblock meta %}
 
 {% block content %}
@@ -55,30 +84,36 @@
             <div class="w-full md:w-2/3 space-y-6"> 
                 
                 <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full"> 
-                    <div class="grid grid-cols-2 grid-rows-2 h-[80%] gap-1"> 
+                    <div class="grid grid-cols-1 grid-rows-1 h-[80%] gap-1"> 
                         <div class="relative overflow-hidden row-span-2 rounded-lg">
                             <img src="{% static 'image/wishlist_placeholder_1.png' %}" class="w-full h-full object-cover" alt="Lapangan Besar">
                             <div class="absolute inset-0 bg-black/10"></div> 
                         </div>
-                        <div class="relative overflow-hidden h-full rounded-lg">
+                        <!-- <div class="relative overflow-hidden h-full rounded-lg">
                             <img src="{% static 'image/wishlist_placeholder_2.png' %}" class="w-full h-full object-cover" alt="Lapangan Basket">
                         </div>
                         <div class="relative overflow-hidden h-full rounded-lg">
                             <img src="{% static 'image/wishlist_placeholder_3.png' %}" class="w-full h-full object-cover" alt="Lapangan Malam">
-                        </div>
+                        </div> -->
                     </div>
                     <a href="{% url 'main:show_user_collections' %}" class="block mt-4">
                         <p class="text-xl font-semibold hover:text-[#6C5CE7] transition duration-150">Wishlist - Koleksi Lapangan</p>
                     </a>
                 </div>
+                <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full"> 
 
-                <div class="bg-black border border-[#2A2A2A] rounded-xl p-4 flex flex-col justify-between h-72 w-full">
-                    <div class="flex items-center justify-center h-full bg-[#1A1A1A] rounded-lg">
-                        <i class="fa-solid fa-user-tie text-6xl text-gray-700 opacity-60"></i>
-                    </div>
+                    <div class="grid grid-cols-1 grid-rows-1 h-[80%] gap-1"> 
+                            <div class="relative overflow-hidden row-span-2 rounded-lg">
+                                <img src="{% static 'image/coach_placeholder.png' %}" class="w-full h-full object-cover" alt="Coach">
+                                <div class="absolute inset-0 bg-black/10"></div> 
+                            </div>
+                        
+                        </div>
                     <a href="{% url 'coach:coach_wishlist_list' %}" class="block mt-4">
                         <p class="text-xl font-semibold hover:text-[#6C5CE7] transition duration-150">List - Coach</p>
                     </a>
+                    </div>
+                    
                 </div>
             </div>
         </div>

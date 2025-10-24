@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Review - ASKMO</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+   
+    <style>
+        body {
+            background: #121212;
+            color: #E0E0E0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+       
+        .form-container {
+            background: #1A1A1A;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 30px rgba(0,0,0,1);
+            border: 1px solid #333;
+        }
+
+
+        .header-form {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+        .back-link {
+            text-decoration: none;
+            color: #CFCFCF;
+            transition: color 0.3s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .back-link:hover { color: #7A3EAA; }
+       
+        .header-form h3 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        .header-form p {
+            color: #FFD700;
+            font-weight: 500;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #CFCFCF;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #0D0D0D;
+            color: #fff;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #571E88;
+            outline: none;
+        }
+
+
+        .btn-submit-full {
+            background: #571E88;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+            text-transform: uppercase;
+            width: 100%;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        .btn-submit-full:hover {
+            background: #7A3EAA;
+        }
+
+
+        .errorlist {
+            color: #dc2626;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            padding: 0;
+            list-style: none;
+            font-size: 0.9em;
+        }
+
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="header-form">
+            <a href="{% url 'main:show_feeds_review_coach' review.coach.id %}" class="back-link">
+                <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
+            </a>
+            <p>Edit Review: {{ review.coach.name }}</p>
+        </div>
+
+
+        <h3 style="margin-bottom: 20px; color: #fff;">Edit Review Anda</h3>
+
+
+        <form method="POST">
+            {% csrf_token %}
+           
+            {% for field in review_form %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}<span style="color: #FFD700;">*</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small style="color: #888; font-size: 0.8rem; margin-top: 5px; display: block;">
+                            {{ field.help_text }}
+                        </small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+
+            <button type="submit" class="btn-submit-full">
+                <i class="fas fa-save" style="margin-right: 8px;"></i> Simpan Perubahan
+            </button>
+        </form>
+    </div>
+</body>
+</html>
