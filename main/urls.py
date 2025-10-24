@@ -86,4 +86,10 @@ urlpatterns = [
 
     path('get-event-ajax/<uuid:id>/', get_event_detail_ajax, name='get_event_detail_ajax'),
     path('edit-event-ajax/<uuid:id>/', edit_event_ajax, name='edit_event_ajax'),
+
+    # --- URLs for Custom Lapangan Admin Panel ---
+    path('lapangan-admin/dashboard/', views.lapangan_dashboard_view, name='lapangan_dashboard'),
+    path('lapangan-admin/create/', views.lapangan_create_view, name='lapangan_create'),
+    path('lapangan-admin/<uuid:pk>/update/', views.lapangan_update_view, name='lapangan_update'),
+    path('lapangan-admin/<uuid:pk>/delete/', views.lapangan_delete_view, name='lapangan_delete'),
 ]
