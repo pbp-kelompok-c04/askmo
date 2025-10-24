@@ -611,7 +611,7 @@
   <div class="mb-24 pt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> 
     
     <div class="relative z-10 flex flex-col items-center mb-12"> 
-      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Statistika ASKMO</h2>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Statistik ASKMO</h2>
     </div>
 
     <div id="stats-viewport" x-data="statsComponent()" x-intersect:enter="animateCounters()">
@@ -702,6 +702,20 @@
                 </div>
                 
                 <div class="bg-[#353535] rounded-lg shadow-lg transition-all duration-300 hover:ring-2 hover:ring-purple-500 focus-within:ring-2 focus-within:ring-purple-500">
+                    <button @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex justify-between items-center text-left p-5 outline-none">
+                        <span class="text-lg font-medium text-white">Bagaimana cara mencari event olahraga di dekat saya?</span>
+                        <svg :class="{'rotate-180': openFaq === 1}" class="w-6 h-6 text-gray-400 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 1" x-collapse class="px-5 pb-5">
+                        <p class="text-gray-300 leading-relaxed">
+                            Di website kami, Anda dapat menemukan event olahraga dengan cepat. Kami menyediakan filter kecamatan, nama event, dan jenis olahraga untuk menampilkan acara yang paling relevan di sekitar Anda hingga cakupan terkecilnya. Pilih filter, klik Cari, lalu jelajahi detail event yang sesuai.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-[#353535] rounded-lg shadow-lg transition-all duration-300 hover:ring-2 hover:ring-purple-500 focus-within:ring-2 focus-within:ring-purple-500">
                     <button @click="openFaq = (openFaq === 4 ? null : 4)" class="w-full flex justify-between items-center text-left p-5 outline-none">
                         <span class="text-lg font-medium text-white">Apakah platform ini gratis?</span>
                         <svg :class="{'rotate-180': openFaq === 4}" class="w-6 h-6 text-gray-400 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -714,7 +728,6 @@
                         </p>
                     </div>
                 </div>
-
             </div> 
         </div> </div> </div>
 <footer class="w-full mt-24 py-8 px-4 sm:px-6 lg:px-8">
