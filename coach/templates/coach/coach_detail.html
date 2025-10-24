@@ -342,7 +342,7 @@
                 </a>
                
                 <!-- Tombol Review -->
-                <a href="/review/{{ coach.pk }}/" class="action-btn review">
+                <a href="{% url 'main:show_feeds_review_coach' coach.pk %}" class="action-btn review">
                     <i class="fas fa-star"></i>
                     Rating & Ulasan
                 </a>

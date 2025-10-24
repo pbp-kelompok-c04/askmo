@@ -1,5 +1,6 @@
 from django.urls import include, path
 from review.views import add_review_lapangan, delete_review, get_reviews_json, get_reviews_json_lapangan, get_single_review_json, show_edit_review_lapangan, show_feeds_review_lapangan, show_form_review_lapangan, show_review_lapangan, update_review
+from review.views import show_form_review_coach, show_feeds_review_coach, edit_review_coach, delete_review_coach
 from main.views import login_user, logout_user, register, register_ajax, login_ajax, logout_ajax, show_main
 from django.urls import path
 from main.views import show_main, login_user, register, logout_user
@@ -12,9 +13,11 @@ from main.views import show_xml, show_json, show_xml_by_id, show_json_by_id, sho
 
 from main.views import add_event_ajax, show_main, login_user, register, logout_user
 from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax, delete_event_ajax
-from main.views import show_event, show_event_detail, get_events_json, get_event_detail_ajax, edit_event_ajax
-from review.views import show_feeds_review_coach
+from main.views import show_event, show_event_detail, get_events_json, get_event_detail_ajax, edit_event_ajax, lapangan_dashboard_view, lapangan_create_view, lapangan_delete_view, lapangan_update_view
 from review import views as review_views
+from review.views import show_feeds_review_coach
+import review.views as review_views
+
 app_name = 'main'
 
 
@@ -53,7 +56,13 @@ urlpatterns = [
     # === PROFILE ===
     path('profile/', show_profile, name='show_profile'),
     path('profile/update/', update_profile_ajax, name='update_profile_ajax'),
-   
+
+
+    path('coach/<int:coach_id>/', review_views.show_feeds_review_coach, name='show_feeds_review_coach'),
+    path('coach/<int:coach_id>/add/', review_views.show_form_review_coach, name='show_form_review_coach'),
+    path('coach/edit/<int:review_id>/', review_views.edit_review_coach, name='edit_review_coach'),
+    path('coach/delete/<int:review_id>/', review_views.delete_review_coach, name='delete_review_coach'),
+    path('coach/json/<int:coach_id>/', review_views.get_reviews_json, name='get_reviews_json_coach'),
     # === WISHLIST / KOLEKSI ===
     # Wishlist Default: Arahkan ke daftar Lapangan
     path('wishlist/', views.show_wishlist_lapangan, name='show_user_collections'), # Digunakan sebagai default/link Lapangan di profile
@@ -80,4 +89,10 @@ urlpatterns = [
 
     path('get-event-ajax/<uuid:id>/', get_event_detail_ajax, name='get_event_detail_ajax'),
     path('edit-event-ajax/<uuid:id>/', edit_event_ajax, name='edit_event_ajax'),
+
+    path('lapangan/dashboard/', lapangan_dashboard_view, name='lapangan_dashboard_view'),
+    path('lapangan/dashboard/create/', lapangan_create_view, name='lapangan_create_view'),
+    path('lapangan/dashboard/<uuid:pk>/update/', lapangan_update_view, name='lapangan_update_view'),
+    path('lapangan/dashboard/<uuid:pk>/delete/', lapangan_delete_view, name='lapangan_delete_view'),
+    
 ]

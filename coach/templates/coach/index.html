@@ -307,7 +307,7 @@
 
         <div class="card-container">
             {% for coach in coaches %}
-            <a href="{% url 'coach:coach_detail' coach.pk %}" class="card-link">
+            <a href="{% url 'coach:coach_detail_view' coach.pk %}" class="card-link">
                 <div class="card">
                     {% if coach.photo %}
                         <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">

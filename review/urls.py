@@ -2,12 +2,7 @@ from django import views
 from django.urls import path
 from . import views
 
-
-from review.views import show_review_lapangan
-from review.views import add_review_lapangan, delete_review, get_reviews_json, get_single_review_json, show_edit_review_lapangan, show_feeds_review_lapangan, show_form_review_lapangan, update_review
-
-
-# app_name = 'review'
+app_name = 'review'
 
 
 urlpatterns = [    
@@ -27,5 +22,5 @@ urlpatterns = [
     path('coach/<int:coach_id>/add/', views.show_form_review_coach, name='show_form_review_coach'),
     path('coach/edit/<int:review_id>/', views.edit_review_coach, name='edit_review_coach'),
     path('coach/delete/<int:review_id>/', views.delete_review_coach, name='delete_review_coach'),
-    path('coach/json/<int:coach_id>/', views.get_reviews, name='get_reviews_json_coach'),  
+    path('coach/json/<int:coach_id>/', views.get_reviews_json, name='get_reviews_json_coach'), 
 ]

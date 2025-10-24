@@ -129,7 +129,7 @@
 <body>
     <div class="form-container">
         <div class="header-form">
-            <a href="/review/{{ review.coach.id }}/" class="back-link">
+            <a href="{% url 'main:show_feeds_review_coach' review.coach.id %}" class="back-link">
                 <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
             </a>
             <p>Edit Review: {{ review.coach.name }}</p>

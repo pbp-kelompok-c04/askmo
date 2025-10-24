@@ -669,11 +669,12 @@ def add_event_ajax(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-            event = form.save(commit=False) 
-
-            event.user = request.user 
+            new_event = form.save(commit=False) 
+            if new_event.biaya is None:
+                new_event.biaya = 0
+            new_event.user = request.user 
             
-            event.save() 
+            new_event.save() 
             
             return JsonResponse({"status": "success", "message": "Event berhasil ditambahkan!"}, status=201)
         else:

@@ -121,7 +121,7 @@
     <div class="header">
         <h1>{{ page_title|default:"Lapangan Management" }}</h1>
         <div class="header-nav">
-             <a href="{% url 'main:lapangan_dashboard' %}" class="nav-link active">Manage Lapangan</a>
+             <a href="{% url 'main:lapangan_dashboard_view' %}" class="nav-link active">Manage Lapangan</a>
             <a href="{% url 'coach:dashboard' %}" class="nav-link">Manage Coaches</a>
             </div>
         <div class="header-user">
@@ -138,7 +138,7 @@
     </ul>
     {% endif %}
 
-    <a href="{% url 'main:lapangan_create' %}" class="add-btn"><i class="fas fa-plus"></i> Tambah Lapangan Baru</a>
+    <a href="{% url 'main:lapangan_create_view' %}" class="add-btn"><i class="fas fa-plus"></i> Tambah Lapangan Baru</a>
     
     <table>
         <thead>
@@ -170,8 +170,8 @@
                     {% endif %}
                 </td>
                 <td class="actions">
-                    <a href="{% url 'main:lapangan_update' lapangan.pk %}"><i class="fas fa-edit"></i> Edit</a>
-                    <a href="{% url 'main:lapangan_delete' lapangan.pk %}" class="delete-link"><i class="fas fa-trash-alt"></i> Delete</a>
+                    <a href="{% url 'main:lapangan_update_view' lapangan.pk %}"><i class="fas fa-edit"></i> Edit</a>
+                    <a href="{% url 'main:lapangan_delete_view' lapangan.pk %}" class="delete-link"><i class="fas fa-trash-alt"></i> Delete</a>
                 </td>
             </tr>
             {% empty %}

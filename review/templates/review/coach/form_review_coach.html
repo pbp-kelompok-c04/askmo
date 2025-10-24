@@ -130,9 +130,9 @@
 <body>
     <div class="form-container">
         <div class="header-form">
-            <a href="/review/{{ coach.id }}/" class="back-link">
-                <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
-            </a>
+            <a href="{% url 'main:show_feeds_review_coach' coach.id %}" class="back-link">
+            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
+        </a>
             <p>Coach: {{ coach.name }}</p>
         </div>
 

@@ -375,7 +375,6 @@ def delete_review(request, review_id):
     try:
         review = Review.objects.get(pk=review_id)
         
-        # ========= TAMBAHAN OTORISASI: Cek apakah user berhak hapus =========
         if not review.can_delete(request.user, request.session.session_key):
             return JsonResponse({
                 'status': 'error', 
@@ -397,12 +396,13 @@ def delete_review(request, review_id):
 def show_feeds_review_coach(request, coach_id):
     coach = get_object_or_404(Coach, pk=coach_id)
    
-    reviews = coach.reviews.all()
+    reviews = coach.reviews.all() # Asumsi 'reviews' adalah related_name di Coach model
     total_reviews = reviews.count()
    
     if total_reviews > 0:
-        average_rating = sum(review.rating for review in reviews) / total_reviews
-        average_rating = round(average_rating, 1)
+        # Menghitung rata-rata rating (Pastikan field rating ada di ReviewCoach)
+        average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+        average_rating = round(average_rating, 1) if average_rating is not None else None
     else:
         average_rating = None
    
@@ -425,8 +425,15 @@ def show_form_review_coach(request, coach_id):
             review = form.save(commit=False)
             review.coach = coach
             review.user = request.user if request.user.is_authenticated else None
+            # Jika user tidak login dan form tidak punya reviewer_name, set default
+            if not review.user and not form.cleaned_data.get('reviewer_name'):
+                 review.reviewer_name = "Anonim" # Atau ambil dari form jika ada
+            elif review.user and not form.cleaned_data.get('reviewer_name'):
+                 review.reviewer_name = request.user.username # Default ke username jika login
             review.save()
-            return redirect(f'/review/{coach_id}/')
+            
+            # === PERBAIKAN 1: Gunakan nama URL untuk redirect ===
+            return redirect('main:show_feeds_review_coach', coach_id=coach_id)
     else:
         form = ReviewCoachForm()
    
@@ -437,18 +444,20 @@ def show_form_review_coach(request, coach_id):
     return render(request, 'review/coach/form_review_coach.html', context)
 
 
-@login_required
+@login_required # Hanya user yang login yang bisa edit
 def edit_review_coach(request, review_id):
     review = get_object_or_404(ReviewCoach, pk=review_id)
    
-    if not review.can_edit(request.user):
+    # Verifikasi apakah user yang login adalah pemilik review
+    if review.user != request.user and not request.user.is_staff: # Admin bisa edit
         return HttpResponseForbidden("Anda tidak memiliki izin untuk mengedit review ini.")
    
     if request.method == 'POST':
         form = ReviewCoachForm(request.POST, instance=review)
         if form.is_valid():
             form.save()
-            return redirect(f'/review/{review.coach.id}/')
+            # === PERBAIKAN 2: Gunakan nama URL untuk redirect ===
+            return redirect('main:show_feeds_review_coach', coach_id=review.coach.id)
     else:
         form = ReviewCoachForm(instance=review)
    
@@ -460,30 +469,34 @@ def edit_review_coach(request, review_id):
 
 
 @require_POST
-@csrf_exempt
+@csrf_exempt # CSRF exempt hanya jika Anda yakin ini aman (misalnya, API internal)
 def delete_review_coach(request, review_id):
     review = get_object_or_404(ReviewCoach, pk=review_id)
    
-    if not review.can_delete(request.user):
+    # Verifikasi pemilik atau admin
+    if review.user != request.user and not request.user.is_staff:
         return JsonResponse({'message': 'Anda tidak memiliki izin untuk menghapus review ini'}, status=403)
    
     coach_id = review.coach.id
     review.delete()
+    # Anda mungkin ingin mengupdate rating coach di sini jika perlu
     return JsonResponse({'message': 'Review berhasil dihapus'})
 
 
-def get_reviews_json(request, coach_id):
+def get_reviews_json(request, coach_id): # Ubah nama fungsi ini jika konflik
     coach = get_object_or_404(Coach, pk=coach_id)
-    reviews = coach.reviews.all()
+    reviews = coach.reviews.all() # Asumsi related_name='reviews'
    
     reviews_data = []
     for review in reviews:
         reviews_data.append({
             'id': review.id,
-            'reviewer_name': review.reviewer_name,
+            # Pastikan field 'reviewer_name' ada di ReviewCoach
+            'reviewer_name': review.reviewer_name if hasattr(review, 'reviewer_name') else (review.user.username if review.user else "Anonim"),
             'rating': review.rating,
             'review_text': review.review_text,
-            'tanggal_dibuat': review.created_at.strftime('%d %B %Y'),
+            # Pastikan field 'created_at' ada di ReviewCoach
+            'tanggal_dibuat': review.created_at.strftime('%d %B %Y') if hasattr(review, 'created_at') else 'N/A',
             'user_id': review.user.id if review.user else None,
         })
    
