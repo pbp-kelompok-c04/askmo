@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_title|default:"Lapangan Management" }} - ASKMO Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 2em;
+            background-color: #000;
+            color: #fff;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px;
+            background-color: #1A1A1A;
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 0.9em; 
+        }
+        th, td { 
+            border: 1px solid #333;
+            padding: 10px 12px; 
+            text-align: left; 
+            border-width: 0 0 1px 0;
+            vertical-align: middle; 
+        }
+        th { 
+            background-color: #2c2c2c;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        /* Style untuk membatasi lebar kolom & ellipsis */
+        td:nth-child(1) { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
+        td:nth-child(3) { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
+        td:nth-child(4) { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
+        td:nth-child(5) { text-align: right; white-space: nowrap; } /* Tarif */
+        td:nth-child(6) { text-align: center; white-space: nowrap; } /* Rating */
+        td:nth-child(7) { text-align: center; } /* Refund */
+        
+        .actions a { 
+            margin-right: 8px; 
+            text-decoration: none; 
+            font-weight: 500;
+            color: #58a6ff; 
+            white-space: nowrap; 
+        }
+        .actions a.delete-link { color: #ff7b72; }
+        .actions a:hover { text-decoration: underline; }
+        
+        .header { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+            gap: 15px; 
+        }
+        .header h1 { margin: 0; font-size: 1.8em; }
+
+        .header-nav a, .header-user span, .header-user a {
+            margin-left: 15px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+         .header-nav a.nav-link {
+            padding: 8px 12px;
+            background-color: #333;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+         }
+         .header-nav a.nav-link.active { /* Style untuk link aktif */
+            background-color: #571E88; /* Warna ungu */
+         }
+         .header-nav a.nav-link:hover { background-color: #444; }
+         .header-nav a.nav-link.active:hover { background-color: #7A3EAA; }
+
+
+        .add-btn { 
+            background-image: linear-gradient(to right, #06005E, #571E88);
+            color: white; 
+            padding: 10px 15px; 
+            text-decoration: none; 
+            border-radius: 8px;
+            font-weight: 500;
+            display: inline-block;
+            transition: background-image 0.3s ease-in-out;
+            margin-bottom: 20px; 
+        }
+        .add-btn:hover { background-image: linear-gradient(to right, #1A107A, #7A3EAA); }
+
+        .logout-btn { color: #ff7b72; font-weight: 500; }
+        .logout-btn:hover { text-decoration: underline; }
+        
+        /* Message Styles */
+        .messages { list-style: none; padding: 0; margin: 0 0 20px 0; }
+        .messages li { padding: 12px 18px; margin-bottom: 10px; border-radius: 6px; color: #fff; font-weight: 500;}
+        .messages li.success { background-color: #2a6a3d; border-left: 5px solid #38c172; }
+        .messages li.error { background-color: #791f2a; border-left: 5px solid #e3342f; }
+        .messages li.warning { background-color: #8c6d1f; border-left: 5px solid #f9d26e; }
+        .messages li.info { background-color: #1f648c; border-left: 5px solid #6cb2eb; }
+
+        /* Boolean Icon Styles */
+        .boolean-icon { font-size: 1.2em; }
+        .true { color: #38c172; } /* Green */
+        .false { color: #e3342f; } /* Red */
+        
+        /* No Data Message */
+        .no-data { text-align: center; color: #888; padding: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ page_title|default:"Lapangan Management" }}</h1>
+        <div class="header-nav">
+             <a href="{% url 'main:lapangan_dashboard' %}" class="nav-link active">Manage Lapangan</a>
+            <a href="{% url 'coach:dashboard' %}" class="nav-link">Manage Coaches</a>
+            </div>
+        <div class="header-user">
+            <span>Welcome, {{ request.user.first_name|default:request.user.username }}!</span> |
+            <a href="{% url 'coach:logout' %}" class="logout-btn">Logout</a> 
+        </div>
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <a href="{% url 'main:lapangan_create' %}" class="add-btn"><i class="fas fa-plus"></i> Tambah Lapangan Baru</a>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Nama Lapangan</th>
+                <th>Olahraga</th>
+                <th>Kecamatan</th>
+                <th>Kontak</th>
+                <th>Tarif/Sesi (Rp)</th>
+                <th>Rating</th>
+                <th>Refund?</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lapangan in lapangan_list %}
+            <tr>
+                <td title="{{ lapangan.nama }}">{{ lapangan.nama }}</td>
+                <td>{{ lapangan.get_olahraga_display }}</td>
+                <td title="{{ lapangan.kecamatan }}">{{ lapangan.kecamatan|default:"-" }}</td>
+                <td>{{ lapangan.kontak|default:"-" }}</td>
+                <td>{{ lapangan.tarif_per_sesi|floatformat:0 }}</td>
+                <td>{{ lapangan.rating|floatformat:1 }} ★</td>
+                <td>
+                    {% if lapangan.refund %}
+                        <i class="fas fa-check-circle boolean-icon true" title="Ya"></i>
+                    {% else %}
+                        <i class="fas fa-times-circle boolean-icon false" title="Tidak"></i>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{% url 'main:lapangan_update' lapangan.pk %}"><i class="fas fa-edit"></i> Edit</a>
+                    <a href="{% url 'main:lapangan_delete' lapangan.pk %}" class="delete-link"><i class="fas fa-trash-alt"></i> Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="no-data">Belum ada data lapangan. Klik 'Tambah Lapangan Baru' untuk memulai.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

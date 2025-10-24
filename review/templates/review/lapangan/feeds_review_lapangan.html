@@ -350,7 +350,7 @@
                 <a href="{% url 'main:show_lapangan_dashboard' %}" class="back-link">
                     <i class="fas fa-arrow-left"></i> Kembali ke Daftar Lapangan
                 </a>
-                <h1>Review Lapangan: {{ lapangan.nama }}</h1>
+                <h1>Review Coach: {{ coach.name }}</h1>
             </div>
            
             <div class="header-right">
@@ -471,6 +471,7 @@
                 return;
             }
 
+
             try {
                 const url = `/lapangan/review/delete-ajax/${reviewId}/`;
                 const response = await fetch(url, {
@@ -481,7 +482,9 @@
                     }
                 });
 
+
                 const result = await response.json();
+
 
                 if (response.status === 200) {
                     alert(result.message);
@@ -500,3 +503,4 @@
 
 </body>
 </html>
+

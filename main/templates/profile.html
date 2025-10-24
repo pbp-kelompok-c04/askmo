@@ -4,6 +4,35 @@
 {% block meta %}
 <title>My Profile - ASKMO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  #avatar-grid img{
+    outline: 2px solid transparent;
+    transition: transform .15s ease, box-shadow .15s ease, outline-color .15s ease;
+  }
+  #avatar-grid img:hover{
+    transform: translateY(-1px);
+  }
+  #avatar-grid img.selected-avatar{
+    outline-color: #571E88;
+    box-shadow:
+      0 0 0 4px rgba(87,30,136,.25),
+      0 10px 20px rgba(87,30,136,.25);
+    transform: scale(1.02);
+  }
+
+  .sport-item{
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .sport-item:hover{
+    transform: translateY(-1px);
+  }
+  .sport-item.selected-sport{
+    box-shadow:
+      0 0 0 3px rgba(108,92,231,.25),
+      0 8px 16px rgba(87,30,136,.20);
+  }
+</style>
+
 {% endblock meta %}
 
 {% block content %}

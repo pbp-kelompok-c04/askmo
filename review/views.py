@@ -131,6 +131,7 @@ def show_form_review_lapangan(request, lapangan_id):
     else:
         form = ReviewForm()
 
+
     context = {
         'lapangan': lapangan,
         'review_form': form,
@@ -185,6 +186,7 @@ def show_edit_review_lapangan(request, review_id):
                 return redirect('main:show_feeds_review_lapangan', lapangan_id=review.lapangan.id)
         else:
             form = ReviewForm(instance=review)
+
 
         context = {
             'review': review,
@@ -337,7 +339,7 @@ def get_reviews_json_lapangan(request, lapangan_id):
             'is_dataset': False,
             'is_own_review': can_edit
         })
-    
+   
     return JsonResponse(all_reviews, safe=False)
 
 #============= UPDATE REVIEW LAPANGAN VIA AJAX =============

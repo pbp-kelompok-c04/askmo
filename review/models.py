@@ -10,9 +10,10 @@ class Review(models.Model):
     gambar = models.URLField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     session_key = models.CharField(max_length=255, blank=True, null=True)
-    
+   
     class Meta:
         ordering = ['-tanggal_dibuat']
+
 
     def __str__(self):
         return f'Review oleh {self.reviewer_name} untuk {self.lapangan.nama} - Rating: {self.rating}'

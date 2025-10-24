@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Coach Management</title>
+    <title>Coach Management - ASKMO Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <style>
         body { 
-            /* FONT DIGANTI */
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 2em;
             background-color: #000;
@@ -19,35 +18,88 @@
             background-color: #1A1A1A;
             border-radius: 12px;
             overflow: hidden;
+            font-size: 0.9em; 
         }
         th, td { 
             border: 1px solid #333;
-            padding: 12px 15px;
+            padding: 10px 12px; 
             text-align: left; 
             border-width: 0 0 1px 0;
+            vertical-align: middle; 
         }
         th { 
             background-color: #2c2c2c;
             font-weight: 600;
+            white-space: nowrap; /* Prevent header wrapping */
         }
         tr:last-child td {
             border-bottom: none;
         }
+        /* Limit width for potentially long fields */
+        td:nth-child(1) { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
+        td:nth-child(3) { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
+        
+        .actions { white-space: nowrap; } /* Prevent action links wrapping */
         .actions a { 
-            margin-right: 10px; 
+            margin-right: 8px; 
             text-decoration: none; 
             font-weight: 500;
-            color: #3498DB;
+            color: #58a6ff; /* Lighter blue */
         }
-        .actions a[style*="color:red"] {
-            color: #E53E3E !important;
+        /* Use class for delete link instead of inline style */
+        .actions a.delete-link {
+            color: #ff7b72; /* Lighter red */
         }
+        .actions a:hover {
+            text-decoration: underline;
+        }
+        .actions i {
+             margin-right: 4px; /* Space between icon and text */
+        }
+        
         .header { 
             display: flex; 
+            flex-wrap: wrap; /* Allow wrapping */
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 20px; 
+            margin-bottom: 25px; /* Increased margin */
+            gap: 15px; /* Space between header items */
         }
+        .header h1 { 
+            margin: 0; 
+            font-size: 1.8em; 
+        }
+
+        /* Styling for Navigation Buttons */
+        .header-nav a.nav-link {
+            padding: 8px 12px;
+            background-color: #333;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 500;
+            text-decoration: none; 
+            transition: background-color 0.2s ease;
+            margin-left: 10px; 
+            font-size: 0.9em; /* Match user info font size */
+        }
+        .header-nav a.nav-link.active { /* Style for the active page button */
+            background-color: #571E88; /* Purple color */
+        }
+        .header-nav a.nav-link:hover { background-color: #444; }
+        .header-nav a.nav-link.active:hover { background-color: #7A3EAA; } /* Lighter purple on hover */
+
+        /* Styling for User Info / Logout */
+        .header-user span, .header-user a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-left: 10px; /* Space between Welcome and Logout */
+        }
+        .logout-btn { 
+            color: #ff7b72; /* Lighter red */
+            font-weight: 500;
+        }
+        .logout-btn:hover { text-decoration: underline; }
 
         .add-btn { 
             background-image: linear-gradient(to right, #06005E, #571E88);
@@ -58,57 +110,75 @@
             font-weight: 500;
             display: inline-block;
             transition: background-image 0.3s ease-in-out;
+            margin-bottom: 20px; /* Space below button */
         }
-
         .add-btn:hover {
             background-image: linear-gradient(to right, #1A107A, #7A3EAA);
         }
+        .add-btn i {
+             margin-right: 6px; /* Space for icon */
+        }
 
-        .logout-btn { 
-            color: #E53E3E;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .header span {
-            color: #ccc;
-        }
+        /* Message Styles */
+        .messages { list-style: none; padding: 0; margin: 0 0 20px 0; }
+        .messages li { padding: 12px 18px; margin-bottom: 10px; border-radius: 6px; color: #fff; font-weight: 500;}
+        .messages li.success { background-color: #2a6a3d; border-left: 5px solid #38c172; }
+        .messages li.error { background-color: #791f2a; border-left: 5px solid #e3342f; }
+        .messages li.warning { background-color: #8c6d1f; border-left: 5px solid #f9d26e; }
+        .messages li.info { background-color: #1f648c; border-left: 5px solid #6cb2eb; }
+
+        /* No Data Message */
+        .no-data { text-align: center; color: #888; padding: 30px 0; }
+
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Coach Management</h1>
-        <div>
+
+        <div class="header-nav">
+            <a href="{% url 'main:lapangan_dashboard' %}" class="nav-link">Manage Lapangan</a>
+            <a href="{% url 'coach:dashboard' %}" class="nav-link active">Manage Coaches</a> 
+            </div>
+        <div class="header-user">
             <span>Welcome, {{ request.user.first_name|default:request.user.username }}!</span> |
             <a href="{% url 'coach:logout' %}" class="logout-btn">Logout</a>
         </div>
     </div>
-    <a href="{% url 'coach:coach_create' %}" class="add-btn">Add New Coach</a>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <a href="{% url 'coach:coach_create' %}" class="add-btn"><i class="fas fa-plus"></i>Tambah Lapangan Baru</a>
     
     <table>
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Sport Branch</th>
-                <th>Location</th>
-                <th>Contact</th>
+                <th>Nama Coach</th>
+                <th>Jenis Olahraga</th>
+                <th>Lokasi</th>
+                <th>Kontak</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for coach in coaches %}
             <tr>
-                <td>{{ coach.name }}</td>
-                <td>{{ coach.sport_branch }}</td>
-                <td>{{ coach.location }}</td>
-                <td>{{ coach.contact }}</td>
+                <td title="{{ coach.name }}">{{ coach.name }}</td>
+                <td>{{ coach.sport_branch|default:"-" }}</td> <td title="{{ coach.location }}">{{ coach.location|default:"-" }}</td>
+                <td>{{ coach.contact|default:"-" }}</td>
                 <td class="actions">
-                    <a href="{% url 'coach:coach_update' coach.pk %}">Edit</a>
-                    <a href="{% url 'coach:coach_delete' coach.pk %}" style="color:red;">Delete</a>
+                    <a href="{% url 'coach:coach_update' coach.pk %}"><i class="fas fa-edit"></i> Edit</a>
+                    <a href="{% url 'coach:coach_delete' coach.pk %}" class="delete-link"><i class="fas fa-trash-alt"></i> Delete</a>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" style="text-align: center; color: #888;">No coaches found.</td>
+                <td colspan="5" class="no-data">No coaches found. Click 'Add New Coach' to start.</td>
             </tr>
             {% endfor %}
         </tbody>

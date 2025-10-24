@@ -1,5 +1,5 @@
 from django.urls import include, path
-from review.views import add_review_lapangan, delete_review, delete_review_coach, edit_review_coach, get_reviews_json, get_reviews_json_lapangan, get_single_review_json, show_edit_review_lapangan, show_feeds_review_lapangan, show_form_review_coach, show_form_review_lapangan, show_review_lapangan, update_review
+from review.views import add_review_lapangan, delete_review, get_reviews_json, get_single_review_json, show_edit_review_lapangan, show_feeds_review_lapangan, show_form_review_lapangan, show_review_lapangan, update_review
 from main.views import login_user, logout_user, register, register_ajax, login_ajax, logout_ajax, show_main
 from django.urls import path
 from main.views import show_main, login_user, register, logout_user
@@ -49,14 +49,6 @@ urlpatterns = [
     path('lapangan/review/update-ajax/<int:review_id>/', update_review, name='update_review'),
     path('json/review/<int:review_id>/', get_single_review_json, name='get_single_review_json'),
     path('lapangan/review/edit/<int:review_id>/', show_edit_review_lapangan, name='show_edit_review_lapangan'),
-    
-    # REVIEW COACH
-    path('review/<int:coach_id>/', show_feeds_review_coach, name='show_feeds_review_coach'),
-    path('review/<int:coach_id>/add/', show_form_review_coach, name='show_form_review_coach'),
-    path('review/edit/<int:review_id>/', edit_review_coach, name='edit_review_coach'),
-    path('review/delete/<int:review_id>/', delete_review_coach, name='delete_review_coach'),
-    path('review/json/<int:coach_id>/', get_reviews_json, name='get_reviews_json_coach'),
-
 
     # === PROFILE ===
     path('profile/', show_profile, name='show_profile'),
@@ -88,4 +80,6 @@ urlpatterns = [
 
     path('get-event-ajax/<uuid:id>/', get_event_detail_ajax, name='get_event_detail_ajax'),
     path('edit-event-ajax/<uuid:id>/', edit_event_ajax, name='edit_event_ajax'),
+
+    path('lapangan/', show_lapangan_dashboard, name='show_lapangan'),
 ]

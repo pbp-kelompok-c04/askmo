@@ -1,7 +1,14 @@
+from django import views
 from django.urls import path
 from . import views
 
-app_name = 'review'
+
+from review.views import show_review_lapangan
+from review.views import add_review_lapangan, delete_review, get_reviews_json, get_single_review_json, show_edit_review_lapangan, show_feeds_review_lapangan, show_form_review_lapangan, update_review
+
+
+# app_name = 'review'
+
 
 urlpatterns = [    
     # REVIEW LAPANGAN
