@@ -115,6 +115,12 @@
         </div>
     </div>
 
+<script>
+  document.addEventListener('event-changed', function() {
+    location.reload();
+  });
+</script>
+
 {% if user.is_authenticated %}
     {% include 'event_modal.html' %}
     {% include 'event_delete_modal.html' %}
