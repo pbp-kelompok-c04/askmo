@@ -423,6 +423,98 @@
 
     </div>
 </div>
+
+<div class="mb-24 py-12">
+    <div class="relative z-10 flex flex-col items-center mb-12 text-center">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            Keuntungan Bergabung
+        </h2>
+        <p class="text-lg text-gray-400 max-w-2xl">
+            Semua yang Anda butuhkan untuk pengalaman olahraga terbaik ada di sini.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <div class="[perspective:1000px] group"> <div x-data="{ flipped: false }" 
+                 x-on:mouseenter="flipped = true" 
+                 x-on:mouseleave="flipped = false"
+                 class="relative w-full h-96 transition-transform duration-700 [transform-style:preserve-3d]"
+                 :class="{'[transform:rotateY(180deg)]': flipped}">
+                
+                <div class="absolute inset-0 [backface-visibility:hidden] p-0.5 rounded-2xl bg-gradient-to-br from-purple-700 via-transparent to-purple-700">
+                    <div class="relative bg-[#2a2a2a] w-full h-full rounded-xl flex flex-col justify-center items-center p-8 text-center">
+                        <i class="fas fa-layer-group text-6xl text-purple-400 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-white">Satu Platform</h3>
+                        <i class="fas fa-sync-alt text-gray-500 absolute bottom-8 right-8 transition-transform duration-300 group-hover:animate-spin"></i>
+                    </div>
+                </div>
+
+                <div class="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] p-0.5 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-400">
+                    <div class="bg-[#353535] w-full h-full rounded-xl flex flex-col justify-start p-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-4">Satu Platform Terintegrasi</h3>
+                            <p class="text-gray-300">Semua kebutuhan olahragamu—lapangan, coach, dan event—ada di satu tempat. Tidak perlu ganti-ganti aplikasi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="[perspective:1000px] group">
+            <div x-data="{ flipped: false }" 
+                 x-on:mouseenter="flipped = true" 
+                 x-on:mouseleave="flipped = false"
+                 class="relative w-full h-96 transition-transform duration-700 [transform-style:preserve-3d]"
+                 :class="{'[transform:rotateY(180deg)]': flipped}">
+                
+                <div class="absolute inset-0 [backface-visibility:hidden] p-0.5 rounded-2xl bg-gradient-to-br from-purple-700 via-transparent to-purple-700">
+                    <div class="relative bg-[#2a2a2a] w-full h-full rounded-xl flex flex-col justify-center items-center p-8 text-center">
+                        <i class="fas fa-map-marked-alt text-6xl text-purple-400 mb-6"></i> 
+                        <h3 class="text-2xl font-bold text-white">Lokasi Akurat</h3>
+                        <i class="fas fa-sync-alt text-gray-500 absolute bottom-8 right-8 transition-transform duration-300 group-hover:animate-spin"></i>
+                    </div>
+                </div>
+
+                <div class="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] p-0.5 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-400">
+                    <div class="bg-[#353535] w-full h-full rounded-xl flex flex-col justify-start p-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-4">Navigasi Mudah ke Lapangan</h3>
+                            <p class="text-gray-300">Tidak perlu bingung mencari lokasi. Lihat peta interaktif di setiap detail lapangan untuk navigasi yang mudah dan akurat langsung ke tujuanmu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="[perspective:1000px] group">
+            <div x-data="{ flipped: false }" 
+                 x-on:mouseenter="flipped = true" 
+                 x-on:mouseleave="flipped = false"
+                 class="relative w-full h-96 transition-transform duration-700 [transform-style:preserve-3d]"
+                 :class="{'[transform:rotateY(180deg)]': flipped}">
+                
+                <div class="absolute inset-0 [backface-visibility:hidden] p-0.5 rounded-2xl bg-gradient-to-br from-purple-700 via-transparent to-purple-700">
+                    <div class="relative bg-[#2a2a2a] w-full h-full rounded-xl flex flex-col justify-center items-center p-8 text-center">
+                        <i class="fas fa-bolt text-6xl text-purple-400 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-white">Kembangkan Skill</h3>
+                        <i class="fas fa-sync-alt text-gray-500 absolute bottom-8 right-8 transition-transform duration-300 group-hover:animate-spin"></i>
+                    </div>
+                </div>
+
+                <div class="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] p-0.5 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-400">
+                    <div class="bg-[#353535] w-full h-full rounded-xl flex flex-col justify-start p-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-4">Kembangkan Skill Anda</h3>
+                            <p class="text-gray-300">Cari coach profesional untuk meningkatkan level permainanmu. Lihat portofolio dan tarif mereka secara transparan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
     <div class="mb-16 bg-[#353535] rounded-2xl overflow-hidden shadow-lg grid grid-cols-1 md:grid-cols-2">
 
       <div class="bg-gradient-to-r from-[#06005E] to-[#571E88] p-12 flex items-center justify-center min-h-[300px] md:min-h-full">
@@ -549,6 +641,82 @@
         </div>
     </div>
   </div>
+
+<div class="mb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="bg-[#1A1A1A] rounded-2xl p-8 md:p-12 ring-2 ring-purple-600/50 shadow-xl relative z-10 overflow-hidden">
+        
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-800 to-transparent opacity-30 rounded-2xl"></div>
+
+        <div class="relative z-20"> <div class="flex flex-col items-center mb-12 text-center">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+                    Pertanyaan Umum (FAQ)
+                </h2>
+                <p class="text-lg text-gray-400 max-w-2xl">
+                    Temukan jawaban untuk pertanyaan yang sering diajukan seputar platform ASKMO.
+                </p>
+            </div>
+
+            <div x-data="{ openFaq: null }" class="max-w-4xl mx-auto space-y-4"> 
+                
+                <div class="bg-[#353535] rounded-lg shadow-lg transition-all duration-300 hover:ring-2 hover:ring-purple-500 focus-within:ring-2 focus-within:ring-purple-500">
+                    <button @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex justify-between items-center text-left p-5 outline-none">
+                        <span class="text-lg font-medium text-white">Apa itu ASKMO?</span>
+                        <svg :class="{'rotate-180': openFaq === 1}" class="w-6 h-6 text-gray-400 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 1" x-collapse class="px-5 pb-5">
+                        <p class="text-gray-300 leading-relaxed">
+                            ASKMO adalah platform digital terintegrasi yang menghubungkan komunitas olahraga. Kami memudahkan Anda untuk mencari dan memesan lapangan, menemukan coach profesional, serta mempublikasikan dan mengikuti event olahraga di sekitar Anda.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-[#353535] rounded-lg shadow-lg transition-all duration-300 hover:ring-2 hover:ring-purple-500 focus-within:ring-2 focus-within:ring-purple-500">
+                    <button @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full flex justify-between items-center text-left p-5 outline-none">
+                        <span class="text-lg font-medium text-white">Bagaimana cara memesan lapangan?</span>
+                        <svg :class="{'rotate-180': openFaq === 2}" class="w-6 h-6 text-gray-400 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 2" x-collapse class="px-5 pb-5">
+                        <p class="text-gray-300 leading-relaxed">
+                            Anda dapat mencari lapangan berdasarkan lokasi, jenis olahraga, dan rating. Setelah menemukan yang cocok, Anda bisa melihat detail fasilitas, harga, dan kontak pemilik lapangan. Saat ini, pemesanan dilakukan dengan menghubungi kontak yang tertera di halaman detail.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-[#353535] rounded-lg shadow-lg transition-all duration-300 hover:ring-2 hover:ring-purple-500 focus-within:ring-2 focus-within:ring-purple-500">
+                    <button @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full flex justify-between items-center text-left p-5 outline-none">
+                        <span class="text-lg font-medium text-white">Apakah saya bisa mendaftar sebagai Coach?</span>
+                        <svg :class="{'rotate-180': openFaq === 3}" class="w-6 h-6 text-gray-400 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 3" x-collapse class="px-5 pb-5">
+                        <p class="text-gray-300 leading-relaxed">
+                            Tentu saja! Jika Anda seorang pelatih profesional, Anda dapat mendaftar di platform kami. Anda bisa membuat profil, mencantumkan keahlian, tarif, dan portofolio Anda agar dapat ditemukan oleh pengguna yang membutuhkan jasa pelatihan.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="bg-[#353535] rounded-lg shadow-lg transition-all duration-300 hover:ring-2 hover:ring-purple-500 focus-within:ring-2 focus-within:ring-purple-500">
+                    <button @click="openFaq = (openFaq === 4 ? null : 4)" class="w-full flex justify-between items-center text-left p-5 outline-none">
+                        <span class="text-lg font-medium text-white">Apakah platform ini gratis?</span>
+                        <svg :class="{'rotate-180': openFaq === 4}" class="w-6 h-6 text-gray-400 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 4" x-collapse class="px-5 pb-5">
+                        <p class="text-gray-300 leading-relaxed">
+                            Ya, penggunaan platform ASKMO untuk mencari informasi lapangan, coach, dan event adalah gratis untuk semua pengguna.
+                        </p>
+                    </div>
+                </div>
+
+            </div> 
+        </div> </div> </div>
 <footer class="w-full mt-24 py-8 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -638,6 +806,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
 
 <script>
 
