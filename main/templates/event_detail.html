@@ -91,6 +91,26 @@
                         {% endif %}
                         </span>
                 </div>
+            </div>
+            {% endif %}
+            <div class="flex items-center col-span-1 sm:col-span-2">
+                <img src="{% static 'image/contact_icon.png' %}" alt="Kontak" class="w-5 h-5 mr-3 object-contain flex-shrink-0">
+                <div>
+                    <span class="text-sm">Kontak</span>
+                    <p class="font-semibold text-white">{{ event.kontak }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="my-4">
+          <span class="text-4xl font-bold text-[#A4B3FF]">
+            {% if event.biaya is not None and event.biaya > 0 %}
+              Rp{{ event.biaya|intcomma }}
+            {% else %}
+              Gratis
+            {% endif %}
+          </span>
+        </div>
 
                 <div class="prose prose-invert max-w-none mt-4">
                     <div class="text-gray-300 leading-relaxed whitespace-pre-line text-base">
