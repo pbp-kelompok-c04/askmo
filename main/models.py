@@ -83,7 +83,7 @@ class Event(models.Model):
     tanggal = models.DateField()
     lokasi = models.CharField(max_length=255)
     kontak = models.CharField(max_length=100)
-    biaya = biaya = models.IntegerField(default=0, blank=True, null=True)
+    biaya = models.PositiveIntegerField(default=0, null=True, blank=True)
     thumbnail = models.URLField(blank=True, null=True)
     jam = models.TimeField(blank=True, null=True)
     
