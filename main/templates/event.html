@@ -355,5 +355,9 @@ function showState({ showLoading = false, showError = false, showEmpty = false, 
 searchForm.addEventListener('submit', (e) => { e.preventDefault(); fetchEvents(); });
 document.addEventListener('event-changed', fetchEvents);
 document.addEventListener('DOMContentLoaded', fetchEvents);
+
+document.addEventListener('event-changed', function() {
+    location.reload();
+  });
 </script>
 {% endblock content %}
