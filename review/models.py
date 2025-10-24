@@ -1,11 +1,6 @@
 from django.db import models
-
-
+from django.contrib.auth.models import User
 from main.models import Lapangan
-
-
-
-
 class Review(models.Model):
     lapangan = models.ForeignKey(Lapangan, on_delete=models.CASCADE, related_name='reviews')
     reviewer_name = models.CharField(max_length=255, default="Anonim")
@@ -13,14 +8,51 @@ class Review(models.Model):
     review_text = models.TextField()
     tanggal_dibuat = models.DateTimeField(auto_now_add=True)
     gambar = models.URLField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     session_key = models.CharField(max_length=255, blank=True, null=True)
-   
+    
     class Meta:
         ordering = ['-tanggal_dibuat']
 
-
     def __str__(self):
         return f'Review oleh {self.reviewer_name} untuk {self.lapangan.nama} - Rating: {self.rating}'
+    
+    def can_edit(self, user, session_key=None):
+        print(f"=== can_edit called ===")
+        print(f"Review User: {self.user}")
+        print(f"Request User: {user}")
+        print(f"Review Session: {self.session_key}")
+        print(f"Request Session: {session_key}")
+    
+        # Jika user login
+        if user and user.is_authenticated:
+            print("User is authenticated")
+            # Cek jika review punya user dan sama dengan user yang request
+            if self.user and self.user == user:
+                print("User matches!")
+                return True
+            # Cek jika staff
+            if user.is_staff:
+                print("User is staff!")
+                return True
+            # Fallback: cek berdasarkan nama reviewer
+            if self.reviewer_name and self.reviewer_name == user.username:
+                print("Reviewer name matches username!")
+                return True
+        
+        # Untuk anonymous user
+        elif session_key and self.session_key:
+            print(f"Checking session: {self.session_key} vs {session_key}")
+            if self.session_key == session_key:
+                print("Session matches!")
+                return True
+        
+        print("No permission")
+        return False
+
+    def can_delete(self, user, session_key=None):
+        """Cek apakah user/session bisa delete review ini"""
+        return self.can_edit(user, session_key)
    
 from django.db import models
 from django.contrib.auth.models import User

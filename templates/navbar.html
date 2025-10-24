@@ -5,10 +5,8 @@
         class="fixed top-4 left-4 z-60 flex items-center h-20"> <img src="{% static 'logo/logo_doang.png' %}" alt="Logo" class="h-full w-auto">
     </a>
 
-      <!-- Desktop -->
       <div class="hidden md:flex justify-center">
-          <div class="flex items-center justify-between px-6 py-2 bg-black/20 backdrop-blur-lg border border-[#9C9C9C] rounded-full">
-            <!-- Sudah Login -->
+          <div class="flex items-center justify-between px-6 py-2 bg-black/20 backdrop-blur-lg border border-white/20 shadow-lg shadow-black/25 rounded-full ring-1 ring-inset ring-white/30">
             {% if user.is_authenticated %} 
                   <div class="flex items-center space-x-8 text-lg">
                       <a href="{% url 'main:show_main' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Beranda</a>
@@ -22,7 +20,6 @@
                       <a href="{% url 'main:logout' %}" class="font-semibold text-[#FF5555] hover:text-red-400 transition-colors duration-300">Logout</a>
                   </div>
                   
-            <!-- Belum Login -->
             {% else %}
                   <div class="flex items-center space-x-8 text-lg">
                       <a href="{% url 'main:show_main' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Beranda</a>
@@ -36,21 +33,19 @@
                       <div class="w-px h-5 bg-[#9C9C9C]/50"></div>
                       <a href="{% url 'main:register' %}" class="bg-[#06005E] text-white font-semibold px-5 py-1.5 rounded-full hover:bg-[#717171] transition-colors duration-300">Daftar</a>
                   </div>
-              {% endif %}
-          </div>
+            {% endif %}
+        </div>
       </div>
   
-      <!-- Mobile -->
       <div class="md:hidden flex w-full justify-end items-center relative">
-          <button id="mobile-menu-button" class="text-[#CFCFCF] p-2">
+          <button id="mobile-menu-button" class="text-[#CFCFCF] p-2 bg-black/20 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg shadow-black/25 ring-1 ring-inset ring-white/30">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
               </svg>
           </button>
           
-          <!-- Dropdown -->
-          <div id="mobile-menu" class="hidden absolute top-full right-0 mt-2 w-auto">
-              <div class="flex flex-col items-end space-y-2">
+          <div id="mobile-menu" class="hidden absolute top-full right-0 mt-2 w-auto bg-black/20 backdrop-blur-lg border border-white/20 rounded-xl shadow-lg shadow-black/25 ring-1 ring-inset ring-white/30 overflow-hidden">
+              <div class="flex flex-col items-end space-y-2 p-3 min-w-[200px]">
                   {% if user.is_authenticated %}
                       <a href="{% url 'main:show_main' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Beranda</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Lapangan</a>

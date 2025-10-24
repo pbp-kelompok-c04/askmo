@@ -126,12 +126,41 @@
             gap: 20px;
         }
        
+/* 1. Ubah .review-card menjadi flex container */
         .review-card {
             background: #222;
-            padding: 25px;
+            padding: 0; 
             border-radius: 12px;
             border-left: 5px solid #571E88;
+            overflow: hidden; 
             transition: transform 0.2s, box-shadow 0.2s;
+            
+            /* TAMBAHKAN INI */
+            display: flex; 
+            align-items: stretch; /* Membuat gambar dan konten sama tinggi */
+        }
+
+/* 2. Ubah style gambar agar menjadi kolom kiri */
+        .review-card-image {
+            /* Tentukan lebar tetap untuk gambar */
+            flex-basis: 200px;  /* Lebar kolom gambar, bisa diubah (cth: 200px) */
+            flex-shrink: 0;   /* Mencegah gambar menyusut */
+            
+            /* Hapus 'width' dan 'height' dari style sebelumnya */
+            
+            object-fit: cover; 
+            display: block; 
+        }
+
+/* 3. Atur konten agar mengisi sisa ruang di kanan */
+        .review-card-content {
+            padding: 25px; 
+            
+            /* TAMBAHKAN INI */
+            flex: 1; /* Membuat div ini mengisi sisa ruang yang tersedia */
+            
+            /* Pastikan bisa menangani teks panjang */
+            min-width: 0; 
         }
        
         .review-card:hover {
@@ -335,6 +364,7 @@
                 </div>
                
                 <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
+                <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
                     <i class="fas fa-edit"></i> Beri Review & Rating
                 </a>
             </div>
@@ -346,13 +376,20 @@
             <div class="loading">Memuat review...</div>
         </div>
     </div>
-
-    <script>
-        // Fungsi untuk memuat review via AJAX
+        <script>
         async function loadReviews() {
             try {
-                const response = await fetch(`{% url 'main:get_reviews_json' lapangan.id %}`);
+                console.log('🔍 1. Mulai loadReviews...');
+                
+                const response = await fetch(`{% url 'main:get_reviews_json_lapangan' lapangan.id %}`);
+                console.log('✅ Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const reviews = await response.json();
+                console.log('📊 Data reviews:', reviews);
                 
                 const container = document.getElementById('review-list-container');
                 container.innerHTML = '';
@@ -366,6 +403,7 @@
                     const reviewCard = document.createElement('div');
                     reviewCard.className = 'review-card';
                     
+                    // ========= PERBAIKAN: GUNAKAN JAVASCRIPT BUKAN DJANGO TEMPLATE =========
                     let actionsHTML = '';
                     if (review.can_edit && review.can_delete) {
                         actionsHTML = `
@@ -384,43 +422,50 @@
                     const datasetBadge = isDataset ? '<span class="dataset-badge">Data Awal</span>' : '';
                     
                     reviewCard.innerHTML = `
-                        <div class="review-meta">
-                            <div class="reviewer-info">
-                                <div class="reviewer-name">
-                                    <strong>${review.reviewer_name}</strong>
-                                    ${datasetBadge}
+                        <div class="review-card-content">
+                            <div class="review-meta">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-name">
+                                        <strong>${review.reviewer_name || 'Anonymous'}</strong>
+                                        ${datasetBadge}
+                                    </div>
+                                    <div class="review-rating">
+                                        <i class="fas fa-star"></i> ${review.rating}/5
+                                    </div>
                                 </div>
-                                <div class="review-rating">
-                                    <i class="fas fa-star"></i> ${review.rating}/5
+                                <div class="review-date">
+                                    ${review.tanggal_dibuat}
                                 </div>
                             </div>
-                            <div class="review-date">
-                                ${review.tanggal_dibuat}
-                            </div>
+                            <div class="review-text">${review.review_text || ''}</div>
+                            ${review.gambar_url ? `<img src="${review.gambar_url}" alt="Review image" class="review-image">` : ''}
+                            ${actionsHTML}
                         </div>
-                        <div class="review-text">${review.review_text}</div>
-                        ${review.gambar ? `<img src="${review.gambar}" alt="Review image" class="review-image">` : ''}
-                        ${actionsHTML}
                     `;
                     
                     container.appendChild(reviewCard);
                 });
                 
+                console.log('✅ Semua review berhasil ditampilkan');
+                
                 // Add event listeners for delete buttons
                 document.querySelectorAll('.btn-delete').forEach(button => {
                     button.addEventListener('click', function() {
                         const reviewId = this.getAttribute('data-review-id');
-                        deleteReview(reviewId);
+                        if (reviewId !== '0') {
+                            deleteReview(reviewId);
+                        }
                     });
                 });
                 
             } catch (error) {
-                console.error('Error loading reviews:', error);
+                console.error('❌ Error loading reviews:', error);
                 document.getElementById('review-list-container').innerHTML = 
                     '<div class="error-message">Gagal memuat review. Silakan refresh halaman.</div>';
             }
         }
 
+        // ⚠️ PASTIKAN FUNCTION DELETE REVIEW ADA
         async function deleteReview(reviewId) {
             if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) {
                 return;
@@ -440,7 +485,7 @@
 
                 if (response.status === 200) {
                     alert(result.message);
-                    loadReviews(); // Reload reviews after deletion
+                    await loadReviews(); // Reload reviews setelah hapus
                 } else {
                     alert('Gagal menghapus review: ' + result.message);
                 }
@@ -450,8 +495,8 @@
             }
         }
 
-        // Load reviews when page loads
         document.addEventListener('DOMContentLoaded', loadReviews);
-    </script>
+</script>
+
 </body>
 </html>

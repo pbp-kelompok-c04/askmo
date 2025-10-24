@@ -92,22 +92,25 @@
 
 
         .btn-submit-full {
-            background: #571E88;
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 600;
-            text-transform: uppercase;
-            width: 100%;
-            font-size: 1rem;
-            margin-top: 10px;
-        }
-        .btn-submit-full:hover {
-            background: #7A3EAA;
-        }
+    background: linear-gradient(to right, #06005E, #571E88);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-transform: uppercase;
+    width: 100%;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.btn-submit-full:hover {
+    background: linear-gradient(to right, #1A107A, #7A3EAA);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(122, 62, 170, 0.3);
+}
 
 
         .errorlist {
@@ -129,10 +132,10 @@
 <body>
     <div class="form-container">
         <div class="header-form">
-            <a href="{% url 'review:show_feeds_review_coach' review.coach.id %}" class="back-link">
+            <a href="{% url 'main:show_feeds_review_lapangan' review.lapangan.id %}" class="back-link">
                 <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Kembali
             </a>
-            <p>Edit Review: {{ review.coach.name }}</p>
+            <p>Edit Review: {{ review.lapangan.nama }}</p>
         </div>
 
 
