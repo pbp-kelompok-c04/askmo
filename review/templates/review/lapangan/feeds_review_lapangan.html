@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review {{ coach.name }} - ASKMO</title>
+    <title>Review {{ lapangan.nama }} - ASKMO</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -191,6 +191,12 @@
             font-size: 0.95rem;
         }
        
+        .review-image {
+            margin-top: 15px;
+            max-width: 200px;
+            border-radius: 8px;
+        }
+       
         /* Tombol Action */
         .review-actions {
             display: flex;
@@ -261,17 +267,24 @@
             border-radius: 8px;
         }
 
-
         .rating-summary .no-rating {
             color: #aaa;
             font-style: italic;
             font-size: 1.1rem;
         }
 
-
         .review-count {
             color: #888;
             font-size: 0.9em;
+        }
+
+        .dataset-badge {
+            background: #374151;
+            color: #9CA3AF;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 10px;
         }
        
         /* Responsive */
@@ -305,30 +318,23 @@
     <div class="review-container">
         <div class="header-review">
             <div class="header-left">
-                <a href="{% url 'coach:coach_detail' coach.pk %}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Detail Coach
+                <a href="{% url 'main:show_lapangan_dashboard' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Lapangan
                 </a>
-                <h1>Review Coach: {{ coach.name }}</h1>
+                <h1>Review Lapangan: {{ lapangan.nama }}</h1>
             </div>
            
             <div class="header-right">
                 <div class="rating-summary">
                     <i class="fas fa-star"></i>
-                    {% if average_rating %}
-                        {{ average_rating|floatformat:1 }}/5.0
+                    {% if lapangan.rating %}
+                        {{ lapangan.rating }}/5.0
                     {% else %}
                         <span class="no-rating">Belum ada rating</span>
                     {% endif %}
-                    <small class="review-count">
-                        {% if total_reviews > 0 %}
-                            ({{ total_reviews }} review)
-                        {% else %}
-                            (Belum ada review)
-                        {% endif %}
-                    </small>
                 </div>
                
-                <a href="{% url 'review:show_form_review_coach' coach.id %}" class="btn-add-review-link">
+                <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
                     <i class="fas fa-edit"></i> Beri Review & Rating
                 </a>
             </div>
@@ -337,71 +343,104 @@
         <h2 class="section-title">Semua Review</h2>
        
         <div class="review-list" id="review-list-container">
-            {% for review in reviews %}
-            <div class="review-card">
-                <div class="review-meta">
-                    <div class="reviewer-info">
-                        <div class="reviewer-name">
-                            <strong>{{ review.reviewer_name }}</strong>
-                        </div>
-                        <div class="review-rating">
-                            <i class="fas fa-star"></i> {{ review.rating }}/5
-                        </div>
-                    </div>
-                    <div class="review-date">
-                        {{ review.created_at|date:"d M Y" }}
-                    </div>
-                </div>
-                <div class="review-text">{{ review.review_text }}</div>
-                <div class="review-actions">
-                    <a href="{% url 'review:edit_review_coach' review.id %}" class="btn-edit">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <button class="btn-delete" data-review-id="{{ review.id }}">
-                        <i class="fas fa-trash"></i> Hapus
-                    </button>
-                </div>
-            </div>
-            {% empty %}
-            <p class="no-reviews">Belum ada review untuk coach ini. Jadilah yang pertama!</p>
-            {% endfor %}
+            <div class="loading">Memuat review...</div>
         </div>
     </div>
 
-
-        <script>
-        // Event delegation untuk handle semua tombol delete
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.btn-delete')) {
-                const button = e.target.closest('.btn-delete');
-                const reviewId = button.getAttribute('data-review-id');
-                deleteReview(reviewId);
+    <script>
+        // Fungsi untuk memuat review via AJAX
+        async function loadReviews() {
+            try {
+                const response = await fetch(`{% url 'main:get_reviews_json' lapangan.id %}`);
+                const reviews = await response.json();
+                
+                const container = document.getElementById('review-list-container');
+                container.innerHTML = '';
+                
+                if (reviews.length === 0) {
+                    container.innerHTML = '<p class="no-reviews">Belum ada review untuk lapangan ini. Jadilah yang pertama!</p>';
+                    return;
+                }
+                
+                reviews.forEach(review => {
+                    const reviewCard = document.createElement('div');
+                    reviewCard.className = 'review-card';
+                    
+                    let actionsHTML = '';
+                    if (review.can_edit && review.can_delete) {
+                        actionsHTML = `
+                            <div class="review-actions">
+                                <a href="/lapangan/review/edit/${review.id}/" class="btn-edit">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <button class="btn-delete" data-review-id="${review.id}">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </div>
+                        `;
+                    }
+                    
+                    const isDataset = review.is_dataset || false;
+                    const datasetBadge = isDataset ? '<span class="dataset-badge">Data Awal</span>' : '';
+                    
+                    reviewCard.innerHTML = `
+                        <div class="review-meta">
+                            <div class="reviewer-info">
+                                <div class="reviewer-name">
+                                    <strong>${review.reviewer_name}</strong>
+                                    ${datasetBadge}
+                                </div>
+                                <div class="review-rating">
+                                    <i class="fas fa-star"></i> ${review.rating}/5
+                                </div>
+                            </div>
+                            <div class="review-date">
+                                ${review.tanggal_dibuat}
+                            </div>
+                        </div>
+                        <div class="review-text">${review.review_text}</div>
+                        ${review.gambar ? `<img src="${review.gambar}" alt="Review image" class="review-image">` : ''}
+                        ${actionsHTML}
+                    `;
+                    
+                    container.appendChild(reviewCard);
+                });
+                
+                // Add event listeners for delete buttons
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const reviewId = this.getAttribute('data-review-id');
+                        deleteReview(reviewId);
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                document.getElementById('review-list-container').innerHTML = 
+                    '<div class="error-message">Gagal memuat review. Silakan refresh halaman.</div>';
             }
-        });
-
+        }
 
         async function deleteReview(reviewId) {
             if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) {
                 return;
             }
 
-
             try {
-                const url = `{% url 'review:delete_review_coach' 0 %}`.replace('0', reviewId);
+                const url = `/lapangan/review/delete-ajax/${reviewId}/`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
                     }
                 });
 
-
                 const result = await response.json();
-
 
                 if (response.status === 200) {
                     alert(result.message);
-                    location.reload();
+                    loadReviews(); // Reload reviews after deletion
                 } else {
                     alert('Gagal menghapus review: ' + result.message);
                 }
@@ -410,7 +449,9 @@
                 alert("Terjadi kesalahan saat menghapus review.");
             }
         }
+
+        // Load reviews when page loads
+        document.addEventListener('DOMContentLoaded', loadReviews);
     </script>
 </body>
 </html>
-
