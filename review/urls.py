@@ -1,5 +1,5 @@
 from django import views
-from django.urls import path
+from django.urls import include, path
 from . import views
 
 app_name = 'review'
@@ -23,4 +23,6 @@ urlpatterns = [
     path('coach/edit/<int:review_id>/', views.edit_review_coach, name='edit_review_coach'),
     path('coach/delete/<int:review_id>/', views.delete_review_coach, name='delete_review_coach'),
     path('coach/json/<int:coach_id>/', views.get_reviews_json, name='get_reviews_json_coach'), 
+
+    path('auth/', include('authentication.urls')),
 ]

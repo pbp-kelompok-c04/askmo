@@ -1,4 +1,8 @@
+{% extends 'base.html' %}
 {% load static %}
+{% block meta %}
+{% include 'navbar.html' %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +31,7 @@
         
         .review-container {
             max-width: 900px;
-            margin: 30px auto;
+            margin: 150px auto;
             padding: 30px;
             background: #1A1A1A;
             border-radius: 15px;
@@ -299,7 +303,7 @@
                 <div class="rating-summary">
                     <i class="fas fa-star"></i>
                     {% if average_rating %}
-                        {{ average_rating|floatformat:1 }}/5.0
+                        {{ average_rating|floatformat:1 }}/5,0
                     {% else %}
                         <span class="no-rating">Belum ada rating</span>
                     {% endif %}
@@ -311,6 +315,13 @@
                         {% endif %}
                     </small>
                 </div>
+                
+                {% if user.is_authenticated %}
+                <div class="fixed top-9 right-9 z-50 hidden md:block"> <a href="{% url 'main:show_profile' %}" class="text-gray-300 hover:text-white text-sm font-medium transition-colors [text-shadow:0_1px_3px_rgb(0_0_0_/_0.7)]">
+                        {{ user.username }}
+                    </a>
+                </div>
+                {% endif %}
                 
                 <a href="{% url 'main:show_form_review_coach' coach.id %}" class="btn-add-review-link">
                     <i class="fas fa-edit"></i> Beri Review & Rating
@@ -404,3 +415,4 @@
     </script>
 </body>
 </html>
+{% endblock meta %}

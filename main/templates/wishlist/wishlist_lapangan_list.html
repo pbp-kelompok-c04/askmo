@@ -35,7 +35,8 @@
     .card-rating { color: #FFD700; margin-top: auto;}
     .card-buttons { display: flex; justify-content: space-between; margin-top: 15px; margin-top: auto}
     .btn { padding: 10px 15px; border-radius: 8px; text-decoration: none; font-weight: 600; cursor: pointer; transition: background-color 0.2s; border: none; }
-    .btn-secondary { background-color: gray; color: white; }
+    /* Make secondary buttons an outline variant to match dark theme */
+    .btn-secondary { background: transparent; color: white; border: 1px solid #6B7280; border-radius: 8px; }
     .btn-primary { background-color: #571E88; color: white; }
     .btn-primary:hover { background-color: #7A3EAA; }
     .no-data-message { color: #888; font-size: 1.2em; text-align: center; width: 100%; margin-top: 50px; grid-column: 1 / -1; }
@@ -150,20 +151,22 @@
         white-space: pre-wrap; 
     }
 
+    /* Modal contact button: outline gray to match site buttons */
     #modal-kontak-btn {
         display: inline-block;
         text-decoration: none;
         padding: 12px 20px;
-        background: #571E88; 
+        background: transparent;
         color: #fff;
         font-weight: 600;
         border-radius: 10px;
-         text-align: center;
+        text-align: center;
         margin-top: 10px;
-        transition: background 0.2s;
+        transition: background 0.15s, color 0.15s;
+        border: 1px solid #6B7280;
     }
     #modal-kontak-btn:hover {
-        background: #7A3EAA;
+        background: rgba(255,255,255,0.03);
     }
 </style>
 {% endblock meta %}

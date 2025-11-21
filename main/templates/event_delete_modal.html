@@ -64,7 +64,8 @@
             
             if (result.status === 'success') {
                 hideDeleteEventModal();
-                document.dispatchEvent(new CustomEvent('event-changed'));
+                // Redirect to events list page instead of refreshing
+                window.location.href = "{% url 'main:show_event' %}";
             } else {
                 hideDeleteEventModal();
                 alert(result.message || 'Gagal menghapus event.');

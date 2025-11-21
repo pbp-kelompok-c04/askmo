@@ -95,4 +95,5 @@ urlpatterns = [
     path('lapangan/dashboard/<uuid:pk>/update/', lapangan_update_view, name='lapangan_update_view'),
     path('lapangan/dashboard/<uuid:pk>/delete/', lapangan_delete_view, name='lapangan_delete_view'),
     
+    path('auth/', include('authentication.urls')),
 ]

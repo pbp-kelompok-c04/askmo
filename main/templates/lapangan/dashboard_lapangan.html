@@ -122,20 +122,22 @@
             white-space: pre-wrap; 
         }
         
+        /* Modal contact button: outline gray to match dark theme */
         #modal-kontak-btn {
             display: inline-block;
             text-decoration: none;
             padding: 12px 20px;
-            background: #571E88; 
+            background: transparent;
             color: #fff;
             font-weight: 600;
             border-radius: 10px;
             text-align: center;
             margin-top: 10px;
-            transition: background 0.2s;
+            transition: background 0.15s, color 0.15s;
+            border: 1px solid #6B7280;
         }
         #modal-kontak-btn:hover {
-            background: #7A3EAA;
+            background: rgba(255,255,255,0.03);
         }
         .is-saved {
             color: #efdf84 !important;
@@ -159,16 +161,17 @@
             border-radius: 10px;
             text-align: center;
             margin-top: 5px;
-            transition: background 0.2s;
+            transition: background 0.15s, color 0.15s;
         }
 
         #modal-kontak-btn {
-            background: #571E88; 
+            background: transparent; 
             color: #fff;
             margin-bottom: 5px;
+            border: 1px solid #6B7280;
         }
         #modal-kontak-btn:hover {
-            background: #7A3EAA;
+            background: rgba(255,255,255,0.03);
         }
 
         .btn-review-modal {

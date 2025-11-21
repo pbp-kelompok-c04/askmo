@@ -1,5 +1,5 @@
 # coach/urls.py
-from django.urls import path
+from django.urls import include, path
 from . import views
 
 app_name = 'coach'
@@ -21,4 +21,5 @@ urlpatterns = [
     path('add-to-wishlist/<int:pk>/', views.add_to_wishlist_view, name='add_to_coach_list'),
     path('wishlist/', views.coach_wishlist_list_view, name='coach_wishlist_list'),
     path('coach_detail/<int:pk>/', views.coach_detail_view, name='coach_detail_view'),
+    path('auth/', include('authentication.urls')),
 ]
