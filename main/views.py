@@ -26,6 +26,7 @@ from django.contrib.auth import authenticate, login, logout
 
 import datetime
 import json
+import requests
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -623,37 +624,37 @@ def get_events_json(request):
     event_list = []
     for event in event_objects:
         event_list.append({
-            'id': event.id,
+            'id': str(event.id),
             'nama': event.nama,
             'olahraga': event.get_olahraga_display(), 
             'deskripsi': event.deskripsi,
             'tanggal': event.tanggal.strftime('%Y-%m-%d'),
             'lokasi': event.lokasi,
             'kontak': event.kontak,
-            'biaya': event.biaya,
-            'thumbnail': event.thumbnail,
-            'jam': event.jam.strftime('%H:%M:%S') if event.jam else None, 
-            'user_id': event.user.id
+            'biaya': event.biaya if event.biaya else 0,
+            'thumbnail': event.thumbnail if event.thumbnail else '', 
+            'jam': event.jam.strftime('%H:%M') if event.jam else '',
+            'user_id': event.user.id if event.user else None,
+            'user_name': event.user.username if event.user else 'Anonymous'
         })
-        
-    return JsonResponse({'events': event_list})
+    
+    return JsonResponse({'events': event_list}, safe=False)
 
 @login_required(login_url='/login/')
 def get_event_detail_ajax(request, id):
     try:
         event = get_object_or_404(Event, pk=id)
         
-        # Kirim data event sebagai JSON
         data = {
-            'id': event.id,
+            'id': str(event.id), 
             'nama': event.nama,
-            'olahraga': event.olahraga, # Kirim value (e.g., 'sepakbola')
+            'olahraga': event.olahraga,
             'deskripsi': event.deskripsi,
             'tanggal': event.tanggal.strftime('%Y-%m-%d'),
             'lokasi': event.lokasi,
             'kontak': event.kontak,
-            'biaya': event.biaya,
-            'thumbnail': event.thumbnail,
+            'biaya': event.biaya if event.biaya else 0,
+            'thumbnail': event.thumbnail if event.thumbnail else '',  
             'jam': event.jam.strftime('%H:%M') if event.jam else '',
         }
         return JsonResponse({'status': 'success', 'data': data})
@@ -663,24 +664,51 @@ def get_event_detail_ajax(request, id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-@login_required(login_url='/login/') # 1. Tambahkan ini
 @csrf_exempt
 def add_event_ajax(request):
-    if request.method == 'POST':
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "error", "message": "Anda harus login terlebih dahulu."},
+            status=401,
+        )
+
+    if request.method != 'POST':
+        return JsonResponse(
+            {"status": "error", "message": "Metode permintaan tidak valid."},
+            status=405,
+        )
+
+    try:
+        data = json.loads(request.body)
+        form = EventForm(data)
+    except json.JSONDecodeError:
+        # Fallback ke POST data jika bukan JSON
         form = EventForm(request.POST)
-        if form.is_valid():
-            new_event = form.save(commit=False) 
-            if new_event.biaya is None:
-                new_event.biaya = 0
-            new_event.user = request.user 
-            
-            new_event.save() 
-            
-            return JsonResponse({"status": "success", "message": "Event berhasil ditambahkan!"}, status=201)
-        else:
-            return JsonResponse({"status": "error", "errors": form.errors}, status=400)
     
-    return JsonResponse({"status": "error", "message": "Metode permintaan tidak valid."}, status=405)
+    if form.is_valid():
+        new_event = form.save(commit=False)
+        if new_event.biaya is None:
+            new_event.biaya = 0
+        new_event.user = request.user
+        new_event.save()
+        
+        return JsonResponse(
+            {
+                "status": "success", 
+                "message": "Event berhasil ditambahkan!",
+                "event": {
+                    'id': str(new_event.id),
+                    'nama': new_event.nama,
+                    'thumbnail': new_event.thumbnail if new_event.thumbnail else ''
+                }
+            },
+            status=201,
+        )
+
+    return JsonResponse(
+        {"status": "error", "errors": form.errors},
+        status=400,
+    )
 
 @login_required(login_url='/login/')
 @csrf_exempt
@@ -842,3 +870,37 @@ def lapangan_delete_view(request, pk):
     }
     # Render template konfirmasi hapus
     return render(request, 'lapangan_admin/lapangan_confirm_delete.html', context)
+
+# ==============================================================================
+# PROXY ENDPOINT UNTUK MENGATASI CORS IMAGE LOADING
+# ==============================================================================
+
+@csrf_exempt
+def proxy_image(request):
+    """
+    Proxy endpoint untuk mengambil gambar eksternal dan mengatasi CORS.
+    Flutter akan memanggil endpoint ini dengan parameter 'url'.
+    """
+    image_url = request.GET.get('url', '')
+    
+    if not image_url:
+        return JsonResponse({'error': 'URL parameter is required'}, status=400)
+    
+    try:
+        # Fetch gambar dari URL eksternal dengan timeout
+        response = requests.get(image_url, timeout=10, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        })
+        
+        if response.status_code == 200:
+            # Return gambar dengan content type yang sesuai
+            content_type = response.headers.get('Content-Type', 'image/jpeg')
+            return HttpResponse(response.content, content_type=content_type)
+        else:
+            return HttpResponse(status=response.status_code)
+    
+    except requests.exceptions.Timeout:
+        return JsonResponse({'error': 'Request timeout'}, status=408)
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'error': str(e)}, status=500)
+

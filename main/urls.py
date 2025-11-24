@@ -14,6 +14,7 @@ from main.views import show_xml, show_json, show_xml_by_id, show_json_by_id, sho
 from main.views import add_event_ajax, show_main, login_user, register, logout_user
 from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax, delete_event_ajax
 from main.views import show_event, show_event_detail, get_events_json, get_event_detail_ajax, edit_event_ajax, lapangan_dashboard_view, lapangan_create_view, lapangan_delete_view, lapangan_update_view
+from main.views import proxy_image
 from review import views as review_views
 from review.views import show_feeds_review_coach
 import review.views as review_views
@@ -94,6 +95,9 @@ urlpatterns = [
     path('lapangan/dashboard/create/', lapangan_create_view, name='lapangan_create_view'),
     path('lapangan/dashboard/<uuid:pk>/update/', lapangan_update_view, name='lapangan_update_view'),
     path('lapangan/dashboard/<uuid:pk>/delete/', lapangan_delete_view, name='lapangan_delete_view'),
+    
+    # Proxy untuk gambar eksternal (mengatasi CORS)
+    path('proxy-image/', proxy_image, name='proxy_image'),
     
     path('auth/', include('authentication.urls')),
 ]
