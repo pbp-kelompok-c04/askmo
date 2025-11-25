@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* (Semua CSS Anda ada di sini, tidak berubah) */
         * {
             margin: 0;
             padding: 0;
@@ -192,7 +191,6 @@
             font-size: 0.95rem;
         }
         
-        /* Tombol Action */
         .review-actions {
             display: flex;
             gap: 10px;
@@ -358,39 +356,38 @@
 
 
     <script>
-        // === PERBAIKAN 4: JavaScript untuk "Hapus" ===
         document.addEventListener('click', function(e) {
             if (e.target.closest('.btn-delete')) {
                 const button = e.target.closest('.btn-delete');
                 const reviewId = button.getAttribute('data-review-id');
-                const url = button.getAttribute('data-url'); // Ambil URL dari tombol
+                const url = button.getAttribute('data-url'); 
                 
                 if (url) {
-                    deleteReview(reviewId, url); // Kirim URL ke fungsi
+                    deleteReview(reviewId, url);
                 } else {
                     console.error("Delete URL not found on button.");
                 }
             }
         });
 
-        // Terima 'url' sebagai parameter
+       
         async function deleteReview(reviewId, url) { 
             if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) {
                 return;
             }
 
             try {
-                // Hapus baris 'const url = ...' yang lama
-                const response = await fetch(url, { // Gunakan 'url' dari parameter
+                
+                const response = await fetch(url, { 
                     method: 'POST',
                     headers: {
-                        'X-CSRFToken': '{{ csrf_token }}', // Pastikan CSRF token ada
+                        'X-CSRFToken': '{{ csrf_token }}', 
                     }
                 });
 
                 const result = await response.json();
 
-                if (response.ok) { // Cek jika status 200-299
+                if (response.ok) { 
                     alert(result.message || 'Review berhasil dihapus.');
                     location.reload();
                 } else {

@@ -36,7 +36,6 @@ class Review(models.Model):
             if user.is_staff:
                 print("User is staff!")
                 return True
-            # Fallback: cek berdasarkan nama reviewer
             if self.reviewer_name and self.reviewer_name == user.username:
                 print("Reviewer name matches username!")
                 return True
