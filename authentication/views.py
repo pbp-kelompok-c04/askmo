@@ -14,9 +14,11 @@ def login(request):
         if user.is_active:
             auth_login(request, user)
             return JsonResponse({
-                "username": user.username,
-                "status": True,
-                "message": "Login successful!"
+            'username': user.username,
+            'is_staff': user.is_staff,
+            'is_superuser': user.is_superuser,
+            'status': True,
+            'message': 'Login successful!'
             }, status=200)
         else:
             return JsonResponse({

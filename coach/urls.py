@@ -22,4 +22,6 @@ urlpatterns = [
     path('wishlist/', views.coach_wishlist_list_view, name='coach_wishlist_list'),
     path('coach_detail/<int:pk>/', views.coach_detail_view, name='coach_detail_view'),
     path('auth/', include('authentication.urls')),
+    path('json/', views.show_json, name='show_json'),
+    path('create-flutter/', views.create_coach_flutter, name='create_coach_flutter'),
 ]
