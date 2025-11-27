@@ -23,16 +23,19 @@ User = get_user_model()
 @csrf_exempt
 def create_coach_flutter(request):
     if request.method == 'POST':
-        # 1. Cek apakah user sudah login
         if not request.user.is_authenticated:
             return JsonResponse({"status": "error", "message": "Anda harus login terlebih dahulu."}, status=401)
         
-        # 2. Cek apakah user adalah admin/staff
         if not request.user.is_staff:
             return JsonResponse({"status": "error", "message": "Hanya admin yang boleh menambahkan coach!"}, status=403)
 
         try:
             data = json.loads(request.body)
+            
+            # DEBUG: Print semua data yang diterima
+            print(f"DEBUG: Received data: {data}")
+            print(f"DEBUG: Photo value: {data.get('photo', 'NOT FOUND')}")
+            
             new_coach = Coach.objects.create(
                 name=data["name"],
                 sport_branch=data["sport_branch"],
@@ -41,10 +44,15 @@ def create_coach_flutter(request):
                 experience=data["experience"],
                 certifications=data["certifications"],
                 service_fee=data["service_fee"],
+                photo=data.get("photo", ""),  # Pastikan ini ada
             )
             new_coach.save()
+            
+            print(f"DEBUG: Coach created with photo: {new_coach.photo}")
+            
             return JsonResponse({"status": "success"}, status=200)
         except Exception as e:
+            print(f"DEBUG: Error: {str(e)}")
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
             
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
