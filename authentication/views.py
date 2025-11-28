@@ -3,7 +3,12 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 import json
+import requests
 from django.views.decorators.csrf import csrf_exempt
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 @csrf_exempt
 def login(request):
@@ -113,3 +118,121 @@ def logout(request):
             "status": False,
             "message": "Logout failed."
         }, status=401)
+
+GOOGLE_CLIENT_ID = "312722822760-ddcvk4fbt7sm7mefo8hb812lukfsb6ff.apps.googleusercontent.com"
+@csrf_exempt
+def google_login(request):
+    if request.method != "POST":
+        return JsonResponse(
+            {"status": False, "error": "Metode tidak diizinkan"},
+            status=405,
+        )
+
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except Exception:
+        data = request.POST
+
+    mode = data.get("mode", "login")  # "login" atau "register"
+
+    id_token_str = data.get("id_token")
+    access_token = data.get("access_token")
+
+    if not id_token_str and not access_token:
+        return JsonResponse(
+            {"status": False, "error": "Token Google tidak ditemukan"},
+            status=400,
+        )
+
+    try:
+        email = None
+        name = None
+
+        if id_token_str:
+            idinfo = id_token.verify_oauth2_token(
+                id_token_str,
+                google_requests.Request(),
+                GOOGLE_CLIENT_ID,
+            )
+            email = idinfo.get("email")
+            name = idinfo.get("name") or email.split("@")[0]
+
+        elif access_token:
+            userinfo_resp = requests.get(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                headers={"Authorization": f"Bearer {access_token}"},
+                timeout=5,
+            )
+            if userinfo_resp.status_code != 200:
+                return JsonResponse(
+                    {
+                        "status": False,
+                        "error": "Gagal mengambil data user dari Google",
+                    },
+                    status=400,
+                )
+            userinfo = userinfo_resp.json()
+            email = userinfo.get("email")
+            name = userinfo.get("name") or email.split("@")[0]
+
+        if not email:
+            return JsonResponse(
+                {
+                    "status": False,
+                    "error": "Tidak bisa mendapatkan email dari akun Google",
+                },
+                status=400,
+            )
+
+        user, created = User.objects.get_or_create(
+            username=email,
+            defaults={
+                "email": email,
+                "first_name": name,
+            },
+        )
+
+        # Bedakan perilaku tergantung mode
+        if mode == "register":
+            if not created:
+                return JsonResponse(
+                    {
+                        "status": False,
+                        "error": "Akun dengan email ini sudah terdaftar. Silakan login.",
+                    },
+                    status=400,
+                )
+            # kalau register dan user baru, langsung login sekalian
+            auth_login(request, user)
+
+        else:  # mode == "login"
+            if created:
+                # akun baru kebuat karena belum ada
+                # kalau kamu tidak mau auto register di login, balikin error
+                return JsonResponse(
+                    {
+                        "status": False,
+                        "error": "Akun Google ini belum terdaftar. Silakan daftar dulu.",
+                    },
+                    status=400,
+                )
+            auth_login(request, user)
+
+        return JsonResponse(
+            {
+                "status": True,
+                "username": user.username,
+                "is_staff": user.is_staff,
+                "created": created,
+                "mode": mode,
+            }
+        )
+
+    except Exception as e:
+        return JsonResponse(
+            {
+                "status": False,
+                "error": str(e),
+            },
+            status=400,
+        )
