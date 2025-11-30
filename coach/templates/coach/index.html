@@ -131,6 +131,13 @@
         <h1 style="margin-top: 70px; font-size: 40px; margin-bottom: 15px; text-align: center;"><b>COACH</b></h1>
         <p style="margin-bottom: 15px">Temukan pelatih olahraga di sekitarmu!</p>
 
+        <div style="text-align: center; margin-bottom: 18px;">
+            {% if user.is_authenticated and (user.is_staff or user.is_superuser) %}
+                <a href="{% url 'coach:coach_create' %}" class="inline-block bg-[#06005E] hover:bg-[#1A107A] text-white font-semibold py-2 px-4 rounded-md">
+                    Tambah Coach
+                </a>
+            {% endif %}
+        </div>
         <div class="bg-[#353535] rounded-xl p-4 mb-8">
             <form class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center" method="GET" action="{% url 'coach:coach_list' %}">
                 

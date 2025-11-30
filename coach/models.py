@@ -11,7 +11,7 @@ class Coach(models.Model):
     experience = models.TextField(blank=True, help_text="Deskripsikan pengalaman Coach")
     certifications = models.TextField(blank=True, help_text="Sertifikat yang dimiliki oleh Coach, dipisah oleh koma")
     service_fee = models.CharField(max_length=100, blank=True, help_text="Contoh : RP 300,000 / Jam")
-    photo = models.ImageField(upload_to='coach_photos/', blank=True, null=True)
+    photo = models.CharField(max_length=500, blank=True, null=True)  # Ganti ImageField dengan CharField
 
 
     def __str__(self):

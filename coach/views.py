@@ -6,12 +6,76 @@ from .models import Coach, CoachWishlist
 from main.models import Collection
 from .forms import CoachForm
 from django.db import models
+from django.http import HttpResponse
+from django.core import serializers
+from .models import Coach
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.http import JsonResponse
+import datetime
 
 User = get_user_model()
 
 # ==============================================================================
 # VIEW UNTUK HALAMAN PUBLIK
 # ==============================================================================
+
+@csrf_exempt
+def create_coach_flutter(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return JsonResponse({"status": "error", "message": "Anda harus login terlebih dahulu."}, status=401)
+        
+        if not request.user.is_staff:
+            return JsonResponse({"status": "error", "message": "Hanya admin yang boleh menambahkan coach!"}, status=403)
+
+        try:
+            data = json.loads(request.body)
+            
+            # DEBUG: Print semua data yang diterima
+            print(f"DEBUG: Received data: {data}")
+            print(f"DEBUG: Photo value: {data.get('photo', 'NOT FOUND')}")
+            
+            new_coach = Coach.objects.create(
+                name=data["name"],
+                sport_branch=data["sport_branch"],
+                location=data["location"],
+                contact=data["contact"],
+                experience=data["experience"],
+                certifications=data["certifications"],
+                service_fee=data["service_fee"],
+                photo=data.get("photo", ""),  # Pastikan ini ada
+            )
+            new_coach.save()
+            
+            print(f"DEBUG: Coach created with photo: {new_coach.photo}")
+            
+            return JsonResponse({"status": "success"}, status=200)
+        except Exception as e:
+            print(f"DEBUG: Error: {str(e)}")
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+            
+    return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
+
+def show_json(request):
+    data = Coach.objects.all()
+
+    # Ambil parameter dari URL (query params)
+    search_name = request.GET.get('name', '')
+    search_location = request.GET.get('location', '')
+    search_sport = request.GET.get('sport_branch', '')
+
+    # Logika Filter (Sama seperti di website)
+    if search_name:
+        data = data.filter(name__icontains=search_name)
+    
+    if search_location:
+        data = data.filter(location__icontains=search_location)
+
+    if search_sport:
+        data = data.filter(sport_branch__icontains=search_sport)
+
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def coach_list_view(request):
     coaches_list = Coach.objects.all().order_by('name')
@@ -78,6 +142,29 @@ def coach_detail_view(request, pk):
 # ==============================================================================
 # VIEW UNTUK OTENTIKASI ADMIN KUSTOM
 # ==============================================================================
+@csrf_exempt
+def login_ajax(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            
+            # UPDATE BAGIAN INI: Tambahkan 'is_staff' dan 'username'
+            response = JsonResponse({
+                'status': 'success', 
+                'message': 'Login berhasil!',
+                'username': user.username,
+                'is_staff': user.is_staff,  # <-- PENTING: Kirim status admin
+            })
+            
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Username atau password salah.'}, status=401)
+    return JsonResponse({"status": "error", "message": "Metode permintaan tidak valid."}, status=405)
 
 def login_view(request):
     """
