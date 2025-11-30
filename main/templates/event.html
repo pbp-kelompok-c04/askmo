@@ -348,7 +348,7 @@ function createEventCard(event) {
 
   const thumbnailHtml = event.thumbnail 
     ? `<img src="${event.thumbnail}" alt="${event.nama}" class="w-48 h-48 object-cover rounded-xl flex-shrink-0">` 
-    : `<div class="w-48 h-48 bg-[#4F4F4F] rounded-xl flex items-center justify-center text-gray-500 flex-shrink-0">No Image</div>`;
+    : `<div class="w-48 h-48 bg-[#4F4F4F] rounded-xl flex items-center justify-center text-gray-500 flex-shrink-0">Foto tidak tersedia</div>`;
   
   const detailUrl = `{% url 'main:show_event_detail' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', event.id);
 
@@ -471,5 +471,9 @@ function showState({ showLoading = false, showError = false, showEmpty = false, 
 searchForm.addEventListener('submit', (e) => { e.preventDefault(); fetchEvents(); });
 document.addEventListener('event-changed', fetchEvents);
 document.addEventListener('DOMContentLoaded', fetchEvents);
+
+document.addEventListener('event-changed', function() {
+    location.reload();
+  });
 </script>
 {% endblock content %}

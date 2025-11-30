@@ -243,7 +243,7 @@
       <h2 class="text-3xl font-bold text-white mb-2">Temui Coach</h2>
       <p class="text-lg text-gray-400 mb-6">Temukan coach yang terbaik untuk Anda</p>
       <div class="relative">
-        <button type="button" id="coach-scroll(111, 7, 50)-left-btn" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -ml-4">
+        <button type="button" id="coach-scroll-left-btn" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -ml-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
         </button>
         <button type="button" id="coach-scroll-right-btn" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full shadow-md hover:bg-black/70 transition-all opacity-0 disabled:opacity-0 -mr-4">
@@ -614,7 +614,7 @@
       <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Statistik ASKMO</h2>
     </div>
 
-    <div id="stats-viewport" x-data="statsComponent()" x-intersect:enter="animateCounters()">
+    <div id="stats-viewport" x-data="statsComponent()" x-intersect="animateCounters">
       <div id="stats-track">
         
         <div class="stat-card">
@@ -817,9 +817,10 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<!-- Alpine plugins must be loaded BEFORE Alpine.js core -->
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 <script>
 
@@ -1004,7 +1005,7 @@ document.addEventListener('alpine:init', () => {
             console.log("Animate counters triggered!"); // debug log
             const counters = document.querySelectorAll('#count-lapangan, #count-coach, #count-event');
             counters.forEach(counterEl => {
-                animateCountUp(counterEl);
+                this.animateCountUp(counterEl);  // Use 'this' to call the method within Alpine component
               });
             }
         }));

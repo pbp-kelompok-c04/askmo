@@ -12,6 +12,7 @@ class Command(BaseCommand):
             {'name': 'Matthew Wijaya'},
             {'name': 'Nisrina Alya Nabilah'},
             {'name': 'Farrell Zidane'}, # Asdos keren
+            {'name': 'Ezar Surahman'}, # Asdos keren
         ]
 
         password = 'askmopasswordc04' 

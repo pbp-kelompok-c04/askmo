@@ -29,6 +29,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('coach/', include('coach.urls', namespace='coach')),
+    path('auth/', include('authentication.urls')),
 ]
 
 # Konfigurasi ini PENTING untuk menampilkan gambar yang di-upload (seperti foto coach)

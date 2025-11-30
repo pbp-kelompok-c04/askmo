@@ -276,23 +276,21 @@ def get_reviews_json_lapangan(request, lapangan_id):
    
     all_reviews = []
    
-    # 1. Tambahkan review dari dataset CSV
-    dataset_has_review = bool(lapangan.review and lapangan.review.strip())
-    if dataset_has_review:
-        all_reviews.append({
-            'id': 0,
-            'reviewer_name': 'Pengguna Lain',
-            'rating': float(lapangan.rating) if lapangan.rating else 0,
-            'review_text': lapangan.review,
-            'tanggal_dibuat': 'Data Awal',
-            'gambar': None,
-            'gambar_url': None,
-            'can_edit': False,
-            'can_delete': False,
-            'is_dataset': True
-        })
+    # SELALU kirim 1 entry dataset (original_rating) ke frontend
+    all_reviews.append({
+        'id': 0,
+        'reviewer_name': 'Pengguna Lain',
+        'rating': float(lapangan.original_rating),
+        'review_text': lapangan.review or '',
+        'tanggal_dibuat': 'Data Awal',
+        'gambar': None,
+        'gambar_url': None,
+        'can_edit': False,
+        'can_delete': False,
+        'is_dataset': True,
+        'is_own_review': False,
+    })
    
-    # tambahin review dari model Review (yang baru)
     for review in reviews_from_model:
         gambar_url = None
         if review.gambar:
@@ -301,16 +299,13 @@ def get_reviews_json_lapangan(request, lapangan_id):
             else:
                 gambar_url = str(review.gambar)
         
-        # ========= SOLUSI SEDERHANA YANG PASTI BEKERJA =========
         can_edit = False
         can_delete = False
         
-        # User login: cek username sama dengan reviewer_name
         if request.user.is_authenticated:
             if review.reviewer_name == request.user.username:
                 can_edit = True
                 can_delete = True
-            # Atau jika review punya user object yang match
             elif review.user and review.user == request.user:
                 can_edit = True
                 can_delete = True
@@ -319,7 +314,6 @@ def get_reviews_json_lapangan(request, lapangan_id):
                 can_edit = True
                 can_delete = True
         
-        # Admin bisa edit semua
         if request.user.is_staff:
             can_edit = True
             can_delete = True
@@ -335,7 +329,7 @@ def get_reviews_json_lapangan(request, lapangan_id):
             'can_edit': can_edit,
             'can_delete': can_delete,
             'is_dataset': False,
-            'is_own_review': can_edit
+            'is_own_review': can_edit,
         })
    
     return JsonResponse(all_reviews, safe=False)

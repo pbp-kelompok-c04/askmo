@@ -29,7 +29,7 @@
                     </div>
                 {% else %}
                     <div class="aspect-[3/4] w-full bg-[#4F4F4F] rounded-lg flex items-center justify-center">
-                        <span class="text-gray-400">No Image</span>
+                        <span class="text-gray-400">Foto tidak tersedia</span>
                     </div>
                 {% endif %}
             </div>
@@ -89,16 +89,10 @@
                         {% else %}
                             Gratis
                         {% endif %}
-                        </span>
+                    </span>
                 </div>
 
-                <div class="prose prose-invert max-w-none mt-4">
-                    <div class="text-gray-300 leading-relaxed whitespace-pre-line text-base">
-                        {{ event.deskripsi }}
-                    </div>
-                </div>
-
-                <div class="mt-auto pt-8">
+                <div class="mt-auto pt-8 w-full">
                     {% if user.is_authenticated and event.user == user %}
                         <div class="flex justify-end space-x-4">
                             <button onclick="showEditEventModal('{{ event.id }}')" class="px-4 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-sm font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">

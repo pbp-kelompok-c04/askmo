@@ -57,8 +57,8 @@
                   {% else %}
                       <a href="{% url 'main:show_main' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Beranda</a>
                       <a href="{% url 'main:show_lapangan_dashboard' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Lapangan</a>
-                      <a href="{% url 'coach:coach_list' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Coach</a>
-                      <a href="{% url 'main:show_event' %}" class="text-[#CFCFCF] hover:text-white transition-colors duration-300">Event</a>
+                      <a href="{% if user.is_authenticated %}{% url 'coach:coach_list' %}{% else %}{% url 'main:login' %}{% endif %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Coach</a>
+                      <a href="{% url 'main:show_event' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Event</a>
                       <div class="w-full border-t border-gray-700 my-1"></div>
                       <a href="{% url 'main:login' %}" class="block px-4 py-2 text-base text-[#CFCFCF] hover:text-white">Masuk</a>
                       <a href="{% url 'main:register' %}" class="block text-center mt-2 w-full bg-[#06005E] text-white font-semibold px-5 py-1.5 rounded-full hover:bg-[#717171]">Daftar</a>

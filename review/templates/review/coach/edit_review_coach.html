@@ -1,4 +1,8 @@
+{% extends 'base.html' %}
+
 {% load static %}
+
+{% block meta %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,6 +142,13 @@
 
         <h3 style="margin-bottom: 20px; color: #fff;">Edit Review Anda</h3>
 
+        {% if user.is_authenticated %}
+        <div class="fixed top-9 right-9 z-50 hidden md:block"> <a href="{% url 'main:show_profile' %}" class="text-gray-300 hover:text-white text-sm font-medium transition-colors [text-shadow:0_1px_3px_rgb(0_0_0_/_0.7)]">
+                {{ user.username }}
+            </a>
+        </div>
+        {% endif %}
+
 
         <form method="POST">
             {% csrf_token %}
@@ -166,3 +177,4 @@
     </div>
 </body>
 </html>
+{% endblock meta %}
