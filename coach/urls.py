@@ -24,4 +24,6 @@ urlpatterns = [
     path('auth/', include('authentication.urls')),
     path('json/', views.show_json, name='show_json'),
     path('create-flutter/', views.create_coach_flutter, name='create_coach_flutter'),
+    path('edit-coach-flutter/<int:pk>/', views.edit_coach_flutter, name='edit_coach_flutter'),
+    path('delete-coach-ajax/<int:pk>/', views.delete_coach_flutter, name='delete_coach_flutter'),
 ]
