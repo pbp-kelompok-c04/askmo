@@ -19,11 +19,12 @@ def login(request):
         if user.is_active:
             auth_login(request, user)
             return JsonResponse({
-            'username': user.username,
-            'is_staff': user.is_staff,
-            'is_superuser': user.is_superuser,
-            'status': True,
-            'message': 'Login successful!'
+                'user_id': user.id,
+                'username': user.username,
+                'is_staff': user.is_staff,
+                'is_superuser': user.is_superuser,
+                'status': True,
+                'message': 'Login successful!'
             }, status=200)
         else:
             return JsonResponse({
@@ -120,29 +121,27 @@ def logout(request):
         }, status=401)
 
 GOOGLE_CLIENT_ID = "312722822760-ddcvk4fbt7sm7mefo8hb812lukfsb6ff.apps.googleusercontent.com"
+
 @csrf_exempt
 def google_login(request):
     if request.method != "POST":
-        return JsonResponse(
-            {"status": False, "error": "Metode tidak diizinkan"},
-            status=405,
-        )
+        return JsonResponse({"status": False, "message": "Invalid request method."}, status=400)
 
+    data = {}
     try:
-        data = json.loads(request.body.decode("utf-8"))
+        if request.body:
+            data = json.loads(request.body.decode("utf-8"))
     except Exception:
-        data = request.POST
+        data = {}
 
-    mode = data.get("mode", "login")  # "login" atau "register"
+    if not data:
+        data = request.POST
 
     id_token_str = data.get("id_token")
     access_token = data.get("access_token")
 
     if not id_token_str and not access_token:
-        return JsonResponse(
-            {"status": False, "error": "Token Google tidak ditemukan"},
-            status=400,
-        )
+        return JsonResponse({"status": False, "message": "Token Google tidak ditemukan"}, status=400)
 
     try:
         email = None
@@ -155,84 +154,41 @@ def google_login(request):
                 GOOGLE_CLIENT_ID,
             )
             email = idinfo.get("email")
-            name = idinfo.get("name") or email.split("@")[0]
-
-        elif access_token:
+            name = idinfo.get("name") or (email.split("@")[0] if email else "")
+        else:
             userinfo_resp = requests.get(
                 "https://www.googleapis.com/oauth2/v3/userinfo",
                 headers={"Authorization": f"Bearer {access_token}"},
                 timeout=5,
             )
             if userinfo_resp.status_code != 200:
-                return JsonResponse(
-                    {
-                        "status": False,
-                        "error": "Gagal mengambil data user dari Google",
-                    },
-                    status=400,
-                )
+                return JsonResponse({"status": False, "message": "Gagal mengambil data user dari Google"}, status=400)
+
             userinfo = userinfo_resp.json()
             email = userinfo.get("email")
-            name = userinfo.get("name") or email.split("@")[0]
+            name = userinfo.get("name") or (email.split("@")[0] if email else "")
 
         if not email:
+            return JsonResponse({"status": False, "message": "Tidak bisa mendapatkan email dari akun Google"}, status=400)
+
+        try:
+            user = User.objects.get(username=email)
+        except User.DoesNotExist:
             return JsonResponse(
-                {
-                    "status": False,
-                    "error": "Tidak bisa mendapatkan email dari akun Google",
-                },
-                status=400,
+                {"status": False, "message": "Login failed, please check your username or password."},
+                status=401,
             )
 
-        user, created = User.objects.get_or_create(
-            username=email,
-            defaults={
-                "email": email,
-                "first_name": name,
-            },
-        )
+        auth_login(request, user)
 
-        # Bedakan perilaku tergantung mode
-        if mode == "register":
-            if not created:
-                return JsonResponse(
-                    {
-                        "status": False,
-                        "error": "Akun dengan email ini sudah terdaftar. Silakan login.",
-                    },
-                    status=400,
-                )
-            # kalau register dan user baru, langsung login sekalian
-            auth_login(request, user)
-
-        else:  # mode == "login"
-            if created:
-                # akun baru kebuat karena belum ada
-                # kalau kamu tidak mau auto register di login, balikin error
-                return JsonResponse(
-                    {
-                        "status": False,
-                        "error": "Akun Google ini belum terdaftar. Silakan daftar dulu.",
-                    },
-                    status=400,
-                )
-            auth_login(request, user)
-
-        return JsonResponse(
-            {
-                "status": True,
-                "username": user.username,
-                "is_staff": user.is_staff,
-                "created": created,
-                "mode": mode,
-            }
-        )
+        return JsonResponse({
+            "user_id": user.id,
+            "username": user.username,
+            "is_staff": user.is_staff,
+            "is_superuser": user.is_superuser,
+            "status": True,
+            "message": "Login successful!"
+        }, status=200)
 
     except Exception as e:
-        return JsonResponse(
-            {
-                "status": False,
-                "error": str(e),
-            },
-            status=400,
-        )
+        return JsonResponse({"status": False, "message": str(e)}, status=400)
