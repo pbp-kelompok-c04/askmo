@@ -366,7 +366,8 @@
             <div class="loading">Memuat review...</div>
         </div>
     </div>
-        <script>
+
+    <script>
         async function loadReviews() {
             try {
                 console.log(' 1. Mulai loadReviews...');
@@ -378,8 +379,13 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const reviews = await response.json();
-                console.log('Data reviews:', reviews);
+                // AMBIL SEMUA DATA DARI BACKEND
+                const rawReviews = await response.json();
+                console.log('Data reviews (raw):', rawReviews);
+
+                // 🔴 FILTER: HILANGKAN REVIEW DATASET AWAL (is_dataset === true)
+                const reviews = rawReviews.filter(r => !r.is_dataset);
+                console.log('Data reviews (tanpa dataset awal):', reviews);
                 
                 const container = document.getElementById('review-list-container');
                 container.innerHTML = '';
@@ -458,7 +464,6 @@
                 return;
             }
 
-
             try {
                 const url = `/lapangan/review/delete-ajax/${reviewId}/`;
                 const response = await fetch(url, {
@@ -469,9 +474,7 @@
                     }
                 });
 
-
                 const result = await response.json();
-
 
                 if (response.status === 200) {
                     alert(result.message);
@@ -486,8 +489,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadReviews);
-</script>
+    </script>
 
 </body>
 </html>
-
