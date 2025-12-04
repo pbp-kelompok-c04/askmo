@@ -297,3 +297,35 @@ def coach_wishlist_list_view(request):
         'coach_list': coaches_in_wishlist
     }
     return render(request, 'wishlist/wishlist_coach_list.html', context)
+
+@csrf_exempt
+def edit_coach_flutter(request, pk):
+    if request.method == 'POST':
+        try:
+            coach = get_object_or_404(Coach, pk=pk)
+            data = json.loads(request.body)
+            
+            coach.name = data.get("name", coach.name)
+            coach.sport_branch = data.get("sport_branch", coach.sport_branch)
+            coach.location = data.get("location", coach.location)
+            coach.contact = data.get("contact", coach.contact)
+            coach.service_fee = data.get("service_fee", coach.service_fee)
+            coach.experience = data.get("experience", coach.experience)
+            coach.certifications = data.get("certifications", coach.certifications)
+            
+            coach.save()
+            return JsonResponse({"status": "success", "message": "Coach updated successfully!"}, status=200)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=401)
+
+@csrf_exempt
+def delete_coach_flutter(request, pk):
+    if request.method == 'POST':
+        try:
+            coach = get_object_or_404(Coach, pk=pk)
+            coach.delete()
+            return JsonResponse({"status": "success", "message": "Coach deleted successfully!"}, status=200)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=401)
