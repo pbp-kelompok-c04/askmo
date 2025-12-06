@@ -1,93 +1,66 @@
 from django.db import models
 from django.contrib.auth.models import User
 from main.models import Lapangan
+
+
 class Review(models.Model):
     lapangan = models.ForeignKey(Lapangan, on_delete=models.CASCADE, related_name='reviews')
     reviewer_name = models.CharField(max_length=255, default="Anonim")
-    rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0) # 0.0 - 5.0
+    rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)  # 0.0 - 5.0
     review_text = models.TextField()
     tanggal_dibuat = models.DateTimeField(auto_now_add=True)
     gambar = models.URLField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     session_key = models.CharField(max_length=255, blank=True, null=True)
-   
+
     class Meta:
         ordering = ['-tanggal_dibuat']
 
-
     def __str__(self):
         return f'Review oleh {self.reviewer_name} untuk {self.lapangan.nama} - Rating: {self.rating}'
-    
+
     def can_edit(self, user, session_key=None):
-        print(f"=== can_edit called ===")
-        print(f"Review User: {self.user}")
-        print(f"Request User: {user}")
-        print(f"Review Session: {self.session_key}")
-        print(f"Request Session: {session_key}")
-    
-        # Jika user login
         if user and user.is_authenticated:
-            print("User is authenticated")
-            # Cek jika review punya user dan sama dengan user yang request
+            # Hanya pemilik akun atau admin
             if self.user and self.user == user:
-                print("User matches!")
                 return True
-            # Cek jika staff
             if user.is_staff:
-                print("User is staff!")
                 return True
-            # Fallback: cek berdasarkan nama reviewer
-            if self.reviewer_name and self.reviewer_name == user.username:
-                print("Reviewer name matches username!")
-                return True
-        
-        # Untuk anonymous user
-        elif session_key and self.session_key:
-            print(f"Checking session: {self.session_key} vs {session_key}")
-            if self.session_key == session_key:
-                print("Session matches!")
-                return True
-        
-        print("No permission")
+            return False
+
+        if session_key and self.session_key and self.session_key == session_key:
+            return True
+
         return False
 
     def can_delete(self, user, session_key=None):
-        """Cek apakah user/session bisa delete review ini"""
         return self.can_edit(user, session_key)
+
    
 from django.db import models
 from django.contrib.auth.models import User
 from coach.models import Coach
 
-
 class ReviewCoach(models.Model):
-    RATING_CHOICES = [
-        (1, '1 - Sangat Buruk'),
-        (2, '2 - Buruk'),
-        (3, '3 - Cukup'),
-        (4, '4 - Baik'),
-        (5, '5 - Sangat Baik'),
-    ]
-   
     coach = models.ForeignKey(Coach, on_delete=models.CASCADE, related_name='reviews')
     reviewer_name = models.CharField(max_length=100)
-    rating = models.IntegerField(choices=RATING_CHOICES, default=5)
+    rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
     review_text = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-   
+
     class Meta:
         ordering = ['-created_at']
-   
+
     def __str__(self):
         return f"Review for {self.coach.name} by {self.reviewer_name}"
-   
+
     def can_edit(self, user):
         if not user or not user.is_authenticated:
             return False
         return self.user == user or user.is_staff
-   
+
     def can_delete(self, user):
         if not user or not user.is_authenticated:
             return False
