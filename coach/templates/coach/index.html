@@ -132,7 +132,7 @@
         <p style="margin-bottom: 15px">Temukan pelatih olahraga di sekitarmu!</p>
 
         <div style="text-align: center; margin-bottom: 18px;">
-            {% if user.is_authenticated and (user.is_staff or user.is_superuser) %}
+            {% if user.is_authenticated and user.is_staff or user.is_superuser %}
                 <a href="{% url 'coach:coach_create' %}" class="inline-block bg-[#06005E] hover:bg-[#1A107A] text-white font-semibold py-2 px-4 rounded-md">
                     Tambah Coach
                 </a>
