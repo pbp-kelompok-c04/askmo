@@ -6,3 +6,6 @@ requests
 urllib3
 python-dotenv
 django-cors-headers
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
