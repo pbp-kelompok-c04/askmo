@@ -30,6 +30,7 @@ urlpatterns = [
     path('', include('main.urls')),
     path('coach/', include('coach.urls', namespace='coach')),
     path('auth/', include('authentication.urls')),
+    path('review/', include('review.urls')),
 ]
 
 # Konfigurasi ini PENTING untuk menampilkan gambar yang di-upload (seperti foto coach)
