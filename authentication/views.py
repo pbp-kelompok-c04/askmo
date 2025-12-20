@@ -120,7 +120,7 @@ def logout(request):
             "message": "Logout failed."
         }, status=401)
 
-GOOGLE_CLIENT_ID = "312722822760-3n44rotrtmttqdbqu8l78f3ddhhtcdms.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "990231107870-uheikav6hi1qovpmgfbspecru0h4hbou.apps.googleusercontent.com"
 
 @csrf_exempt
 def google_login(request):
