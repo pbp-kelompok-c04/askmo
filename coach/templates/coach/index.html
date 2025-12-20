@@ -13,6 +13,18 @@
         gap: 20px; 
     }
 
+    .main-content {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    @media (min-width: 768px) {
+        .main-content {
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+    }
+
     @media (min-width: 620px) {
         .card-container {
             grid-template-columns: repeat(auto-fit, 300px); 
@@ -149,7 +161,7 @@
     color: #CFCFCF;
     max-width: 1000px;
     padding: 0 20px;
-    position: relative; /* protects from weird global positioning rules */
+    position: relative;
     z-index: 10;
   }
 </style>
@@ -167,7 +179,7 @@
         </div>
     </a>
     </div>
-    <main class="flex-1 relative z-10">
+    <main class="flex-1 relative z-10 main-content">
         <h1 class="page-title"><b>COACH</b></h1>
         <p class="page-subtitle">Temukan pelatih olahraga di sekitarmu!</p>
 
