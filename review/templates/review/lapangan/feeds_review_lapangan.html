@@ -1,12 +1,14 @@
 {% load static %}
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Review {{ lapangan.nama }} - ASKMO</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
    
     <style>
@@ -15,347 +17,463 @@
             padding: 0;
             box-sizing: border-box;
         }
-       
+
         body {
-            background: #121212;
+            background-color: #000;
             color: #E0E0E0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             padding: 20px;
             min-height: 100vh;
         }
-       
+
+        .background-aura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-aura-container::before,
+        .background-aura-container::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            filter: blur(100px);
+            animation: pulseAura 15s infinite alternate ease-in-out;
+        }
+
+        .background-aura-container::before {
+            background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0));
+            width: 700px;
+            height: 700px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .background-aura-container::after {
+            background: radial-gradient(circle at center, rgba(111, 7, 50, 0.75), rgba(87, 30, 136, 0));
+            width: 800px;
+            height: 800px;
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 7.5s;
+        }
+
+        @keyframes pulseAura {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        .review-container,
+        .header-review,
+        .review-list,
+        .section-title {
+            position: relative;
+            z-index: 1;
+        }
+
         .review-container {
             max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: #1A1A1A;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin: 18px auto;
+            padding: 18px;
+
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
         }
-       
+
         .header-review {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 25px;
+            gap: 16px;
             flex-wrap: wrap;
-            gap: 15px;
+
+            padding: 18px;
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+            border-bottom: none;
+            margin-bottom: 18px;
         }
-       
+
         .header-left {
             flex: 1;
-            min-width: 300px;
+            min-width: 0;
         }
-       
+
         .back-link {
             text-decoration: none;
-            color: #CFCFCF;
+            color: rgba(255,255,255,0.85);
             transition: color 0.3s;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             font-size: 0.95rem;
         }
         .back-link:hover {
-            color: #7A3EAA;
+            color: #C9B6FF;
         }
-       
+
         .header-review h1 {
-            font-size: 1.8rem;
+            display: block;
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 999px;
+            font-size: 1.55rem;
             font-weight: 700;
             color: #fff;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        }
-       
-        .header-right {
-            text-align: right;
-            min-width: 200px;
-        }
-       
-        .rating-summary {
-            font-size: 1.3rem;
-            color: #FFD700;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-       
-        .rating-summary small {
-            font-size: 0.8rem;
-            color: #aaa;
-            display: block;
-            font-weight: normal;
-            margin-top: 5px;
-        }
-       
-        .btn-add-review-link {
-            background: #571E88;
-            color: white;
-            padding: 12px 24px;
+            line-height: 1.2;
+            margin-top: 8px;
+
+            background: rgba(255, 255, 255, 0.08);
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 500;
-            text-decoration: none;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .header-right {
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .rating-row {
+            width: 220px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+
+            padding: 12px 14px;
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .rating-summary {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #FFD54A;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.95rem;
+            white-space: nowrap;
         }
-        .btn-add-review-link:hover {
-            background: #7A3EAA;
-            transform: translateY(-2px);
-        }
-       
-        .section-title {
-            margin: 30px 0 20px 0;
-            color: #fff;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            font-size: 1.4rem;
+
+        .rating-summary .no-rating {
+            color: rgba(255,255,255,0.65);
+            font-style: italic;
+            font-size: 1.05rem;
             font-weight: 600;
         }
-       
+
+        .review-count-pill {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.80);
+            white-space: nowrap;
+        }
+
+        .btn-add-review-link {
+            width: 220px;
+            justify-content: center;
+
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background: #571E88;
+            border: none;
+            box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .btn-add-review-link:hover {
+            transform: translateY(-2px);
+            background: #7A3EAA;
+        }
+
+        .section-title {
+            margin: 18px 0 14px 0;
+            color: rgba(255,255,255,0.90);
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 8px 2px;
+        }
+
         .review-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-        }
-       
-        .review-card {
-            background: #222;
-            padding: 0; 
-            border-radius: 12px;
-            border-left: 5px solid #571E88;
-            overflow: hidden; 
-            transition: transform 0.2s, box-shadow 0.2s;
-            
-            display: flex; 
-            align-items: stretch; 
+            gap: 14px;
         }
 
-        .review-card-image {
-            flex-basis: 200px;  
-            flex-shrink: 0;  
-            
-            
-            object-fit: cover; 
-            display: block; 
+        .review-card {
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.28);
+
+            display: flex;
+            align-items: stretch;
         }
 
         .review-card-content {
-            padding: 25px; 
-            
-            flex: 1; 
-            
-            min-width: 0; 
+            padding: 18px;
+            flex: 1;
+            min-width: 0;
         }
-       
+
         .review-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 16px 34px rgba(0,0,0,0.35);
         }
-       
+
         .review-meta {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
             gap: 10px;
         }
-       
+
         .reviewer-info {
             display: flex;
             flex-direction: column;
             flex: 1;
         }
-       
+
         .reviewer-name {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
         }
-       
+
         .reviewer-info strong {
             color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.05rem;
+            font-weight: 700;
         }
-       
+
         .review-rating {
-            color: #FFD700;
-            font-size: 1.1rem;
-            margin: 8px 0;
+            color: #FFD54A;
+            font-size: 1.05rem;
+            margin: 6px 0;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            font-weight: 700;
         }
-       
+
         .review-date {
-            color: #aaa;
+            color: rgba(255,255,255,0.70);
             font-size: 0.9em;
             text-align: right;
             min-width: 120px;
         }
-       
+
         .review-text {
-            margin-top: 15px;
+            margin-top: 10px;
             line-height: 1.6;
-            color: #CFCFCF;
+            color: rgba(255,255,255,0.82);
             white-space: pre-wrap;
             font-size: 0.95rem;
         }
-       
+
         .review-image {
-            margin-top: 15px;
+            margin-top: 12px;
             max-width: 200px;
-            border-radius: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.14);
         }
-       
+
         .review-actions {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 14px;
             flex-wrap: wrap;
         }
-       
-        .btn-edit {
-            background: #571E88;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
+
+        .btn-edit, .btn-delete {
+            padding: 9px 14px;
+            border-radius: 999px;
             font-size: 0.85rem;
+            font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.14);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.2s ease, background 0.2s ease;
         }
-        .btn-edit:hover {
-            background: #7A3EAA;
-            transform: translateY(-1px);
-        }
-       
-        .btn-delete {
-            background: #b91c1c;
-            color: white;
-            padding: 8px 16px;
+
+        .btn-edit {
+            background: linear-gradient(135deg, #6D28D9, #7C3AED);
+            color: #fff;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 500;
+            box-shadow: 0 10px 24px rgba(109,40,217,0.45);
         }
-        .btn-delete:hover {
-            background: #dc2626;
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #7C3AED, #8B5CF6);
             transform: translateY(-1px);
         }
-       
+
+
+        .btn-delete {
+            background: linear-gradient(135deg, #DC2626, #EF4444);
+            color: #fff;
+            border: none;
+            box-shadow: 0 10px 24px rgba(220,38,38,0.45);
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #EF4444, #F87171);
+            transform: translateY(-1px);
+        }
+
+
         .no-reviews {
             text-align: center;
-            color: #999;
-            margin: 40px 0;
+            color: rgba(255,255,255,0.75);
+            margin: 30px 0;
             font-style: italic;
+
+            padding: 18px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
-       
+
         .loading {
             text-align: center;
-            color: #999;
-            margin: 30px 0;
-            font-size: 1.1rem;
+            color: rgba(255,255,255,0.75);
+            margin: 24px 0;
+            font-size: 1.05rem;
+
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
-       
+
         .error-message {
             text-align: center;
-            color: #dc2626;
-            margin: 30px 0;
-            padding: 15px;
-            background: rgba(220, 38, 38, 0.1);
-            border-radius: 8px;
-        }
-
-        .rating-summary .no-rating {
-            color: #aaa;
-            font-style: italic;
-            font-size: 1.1rem;
-        }
-
-        .review-count {
-            color: #888;
-            font-size: 0.9em;
+            color: #ff6b6b;
+            margin: 24px 0;
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(220, 38, 38, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
 
         .dataset-badge {
-            background: #374151;
-            color: #9CA3AF;
-            padding: 4px 8px;
-            border-radius: 4px;
+            background: rgba(255,255,255,0.10);
+            color: rgba(255,255,255,0.75);
+            padding: 4px 10px;
+            border-radius: 999px;
             font-size: 0.75rem;
-            margin-left: 10px;
+            border: 1px solid rgba(255,255,255,0.14);
         }
-       
+
         @media (max-width: 768px) {
-            .review-container {
-                padding: 20px;
-                margin: 15px auto;
-            }
-           
+            body { padding: 16px; }
+
+            .review-container { padding: 18px; }
+
             .header-review {
                 flex-direction: column;
-                text-align: left;
+                align-items: stretch;
             }
-           
+
             .header-right {
-                text-align: left;
+                align-items: stretch;
+                min-width: 0;
+            }
+
+            .rating-row,
+            .btn-add-review-link {
                 width: 100%;
-            }
-           
-            .review-meta {
-                flex-direction: column;
-            }
-           
-            .review-date {
-                text-align: left;
             }
         }
     </style>
 </head>
+
 <body>
+    <!-- Aura -->
+    <div class="background-aura-container"></div>
+
     <div class="review-container">
         <div class="header-review">
             <div class="header-left">
                 <a href="{% url 'main:show_lapangan_dashboard' %}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Lapangan
+                    <i class="fas fa-arrow-left"></i> Kembali ke halaman sebelumnya
                 </a>
                 <h1>Review Lapangan : {{ lapangan.nama }}</h1>
             </div>
            
             <div class="header-right">
-                <div class="rating-summary">
-                    <i class="fas fa-star"></i>
-                    {% if lapangan.rating %}
-                        {{ lapangan.rating }}/5.0
-                    {% else %}
-                        <span class="no-rating">Belum ada rating</span>
+                <div class="rating-row">
+                    <div class="rating-summary">
+                        <i class="fas fa-star"></i>
+                        {% if total_reviews > 0 and average_rating %}
+                            {{ average_rating }}/5.0
+                        {% else %}
+                            <span class="no-rating">Belum ada rating</span>
+                        {% endif %}
+                    </div>
+
+                    {% if total_reviews > 0 %}
+                    <div class="review-count-pill">
+                        <span id="review-count">{{ total_reviews }}</span> review
+                    </div>
                     {% endif %}
                 </div>
-               
 
                 <a href="{% url 'main:show_form_review_lapangan' lapangan.id %}" class="btn-add-review-link">
-                    <i class="fas fa-edit"></i> Beri Review & Rating
+                    <i class="fas fa-plus"></i> Tambah Review
                 </a>
             </div>
         </div>
@@ -370,28 +488,21 @@
     <script>
         async function loadReviews() {
             try {
-                console.log(' 1. Mulai loadReviews...');
-                
                 const response = await fetch(`{% url 'main:get_reviews_json_lapangan' lapangan.id %}`);
-                console.log(' Response status:', response.status);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                // AMBIL SEMUA DATA DARI BACKEND
                 const rawReviews = await response.json();
-                console.log('Data reviews (raw):', rawReviews);
 
-                // 🔴 FILTER: HILANGKAN REVIEW DATASET AWAL (is_dataset === true)
                 const reviews = rawReviews.filter(r => !r.is_dataset);
-                console.log('Data reviews (tanpa dataset awal):', reviews);
-                
+
+                const countEl = document.getElementById('review-count');
+                if (countEl) countEl.textContent = reviews.length;
+
                 const container = document.getElementById('review-list-container');
                 container.innerHTML = '';
                 
                 if (reviews.length === 0) {
-                    container.innerHTML = '<p class="no-reviews">Belum ada review untuk lapangan ini. Jadilah yang pertama!</p>';
+                    container.innerHTML = '<p class="no-reviews">Belum ada review. Jadilah yang pertama!</p>';
                     return;
                 }
                 
@@ -441,28 +552,21 @@
                     container.appendChild(reviewCard);
                 });
                 
-                console.log('Semua review berhasil ditampilkan');
-                
                 document.querySelectorAll('.btn-delete').forEach(button => {
                     button.addEventListener('click', function() {
                         const reviewId = this.getAttribute('data-review-id');
-                        if (reviewId !== '0') {
-                            deleteReview(reviewId);
-                        }
+                        if (reviewId !== '0') deleteReview(reviewId);
                     });
                 });
                 
             } catch (error) {
-                console.error('Error loading reviews:', error);
                 document.getElementById('review-list-container').innerHTML = 
                     '<div class="error-message">Gagal memuat review. Silakan refresh halaman.</div>';
             }
         }
 
         async function deleteReview(reviewId) {
-            if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) {
-                return;
-            }
+            if (!confirm("Apakah Anda yakin ingin menghapus review ini?")) return;
 
             try {
                 const url = `/lapangan/review/delete-ajax/${reviewId}/`;
@@ -478,12 +582,11 @@
 
                 if (response.status === 200) {
                     alert(result.message);
-                    await loadReviews(); 
+                    await loadReviews();
                 } else {
                     alert('Gagal menghapus review: ' + result.message);
                 }
             } catch (error) {
-                console.error("Error deleting review:", error);
                 alert("Terjadi kesalahan saat menghapus review.");
             }
         }

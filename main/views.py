@@ -1,6 +1,8 @@
 import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
+
+from review.models import Review
 from .models import UserProfile, Avatar
 from main.models import Collection
 from django.contrib.auth.decorators import login_required
@@ -226,30 +228,45 @@ def show_xml_by_id(request, lapangan_id):
     except Lapangan.DoesNotExist:
         return HttpResponse(status=404)
 
-# In main/views.py
-
+from django.db.models import Avg, Count
+from review.models import Review
+#maaf add baru, ini buat revuew syafiq ya
 def show_json_by_id(request, lapangan_id):
     try:
         lapangan = Lapangan.objects.get(pk=lapangan_id)
+
+        agg = Review.objects.filter(lapangan=lapangan).aggregate(
+            review_count=Count('id'),
+            avg_rating=Avg('rating')
+        )
+
+        review_count = agg['review_count'] or 0
+        avg_rating = agg['avg_rating']
+
         data = {
             'id': str(lapangan.id),
             'nama': lapangan.nama,
             'deskripsi': lapangan.deskripsi,
-            'olahraga': lapangan.get_olahraga_display(), 
+            'olahraga': lapangan.get_olahraga_display(),
             'thumbnail': lapangan.thumbnail,
             'rating': lapangan.rating,
             'refund': lapangan.refund,
             'tarif_per_sesi': str(lapangan.tarif_per_sesi),
             'kontak': lapangan.kontak,
             'alamat': lapangan.alamat,
-            'kecamatan': lapangan.kecamatan, 
+            'kecamatan': lapangan.kecamatan,
             'review': lapangan.review,
             'peraturan': lapangan.peraturan,
             'fasilitas': lapangan.fasilitas,
+
+            'review_count': int(review_count),
+            'avg_rating': float(avg_rating) if avg_rating is not None else None,
         }
         return JsonResponse(data)
+
     except Lapangan.DoesNotExist:
         return JsonResponse({'detail': 'Not found'}, status=404)
+
 
 def show_lapangan_by_alamat_xml(request, alamat):
     lapangan_list = Lapangan.objects.filter(alamat__icontains=alamat)
@@ -313,7 +330,10 @@ def show_lapangan_dashboard(request):
     search_kecamatan = request.GET.get('kecamatan', '')
     search_olahraga = request.GET.get('olahraga', '')
 
-    lapangan_list = Lapangan.objects.all()
+    lapangan_list = Lapangan.objects.annotate(
+    review_count=Count('reviews', distinct=True),
+    avg_rating=Avg('reviews__rating'),
+    )
 
     wishlist_collection, created = Collection.objects.get_or_create(
         user=request.user, 

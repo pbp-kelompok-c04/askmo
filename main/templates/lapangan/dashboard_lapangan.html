@@ -243,6 +243,13 @@
             50% { transform: scale(1.05); opacity: 0.7; }
             100% { transform: scale(1); opacity: 0.6; }
         }
+        .rating-empty {
+            font-style: italic;
+            font-weight: 400;               /* JANGAN bold */
+            color: rgba(255,255,255,0.55);  /* kalem */
+            letter-spacing: 0.2px;
+        }
+
         /* === BATAS KODE AURA === */
 
     </style>
@@ -443,10 +450,14 @@
                 <h3>{{ lapangan.nama }}</h3>
                 <p> {{lapangan.kecamatan}} </p>
                 <p class="card-rating">
-                    <i class="fas fa-star" style="margin-right: 5px;"></i> 
-                    {{ lapangan.rating|floatformat:1 }}
+                    <i class="fas fa-star" style="margin-right: 5px;"></i>
+                    {% if lapangan.review_count > 0 and lapangan.avg_rating %}
+                        {{ lapangan.avg_rating|floatformat:1 }}
+                        <span style="opacity:.75; font-size:.9em;">({{ lapangan.review_count }} ulasan)</span>
+                    {% else %}
+                        <span class="rating-empty">Belum ada rating</span>
+                    {% endif %}
                 </p>
-
                 <div class="card-buttons">
                     <button 
                         style="background-color: #333;"
@@ -617,8 +628,14 @@
                 modalNama.textContent = data.nama;
                 modalAlamat.textContent = data.alamat || 'Tidak ada info alamat.';
                 modalKecamatan.textContent = data.kecamatan || 'Tidak ada info kecamatan.';
-                modalRating.textContent = `${data.rating}`;
-                modalOlahraga.textContent = data.olahraga;
+               const avg = parseFloat(data.avg_rating);
+                const count = parseInt(data.review_count);
+
+                modalRating.textContent =
+                    (count > 0 && !isNaN(avg))
+                        ? `${avg.toFixed(1)}`
+                        : 'Belum ada rating';
+
                 
                 const tarif = parseFloat(data.tarif_per_sesi);
                 modalTarif.textContent = `Rp ${tarif.toLocaleString('id-ID') || 'N/A'}`;
