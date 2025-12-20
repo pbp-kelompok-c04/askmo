@@ -111,6 +111,23 @@
     }
     /* === BATAS KODE AURA === */
 
+    .page-title {
+    margin-top: 70px;
+    margin-bottom: 15px;
+    font-size: 40px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .page-subtitle {
+    margin: 0 auto 15px auto;
+    text-align: center;
+    color: #CFCFCF;
+    max-width: 1000px;
+    padding: 0 20px;
+    position: relative; /* protects from weird global positioning rules */
+    z-index: 10;
+  }
 </style>
 {% endblock meta %}
 
@@ -128,8 +145,8 @@
     </a>
     </div>
     <main class="flex-1 relative z-10">
-        <h1 style="margin-top: 70px; font-size: 40px; margin-bottom: 15px; text-align: center;"><b>COACH</b></h1>
-        <p style="margin-bottom: 15px">Temukan pelatih olahraga di sekitarmu!</p>
+        <h1 class="page-title"><b>COACH</b></h1>
+        <p class="page-subtitle">Temukan pelatih olahraga di sekitarmu!</p>
 
         <div style="text-align: center; margin-bottom: 18px;">
             {% if user.is_authenticated and user.is_staff or user.is_superuser %}
