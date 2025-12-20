@@ -164,6 +164,20 @@
     position: relative;
     z-index: 10;
   }
+
+  .search-container {
+        background-color: #353535;
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 32px;
+    }
+
+    @media (min-width: 768px) {
+        .search-container {
+            padding: 16px 40px;
+        }
+    }
+
 </style>
 {% endblock meta %}
 
@@ -190,8 +204,8 @@
                 </a>
             {% endif %}
         </div>
-        <div class="bg-[#353535] rounded-xl p-4 mb-8">
-            <form class="grid grid-cols-1 md:grid-cols-7 gap-4 items-center" method="GET" action="{% url 'coach:coach_list' %}">
+        <div class="search-container">
+            <form class="search-form" method="GET" action="{% url 'coach:coach_list' %}">
                 
                 <div class="relative md:col-span-2">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
