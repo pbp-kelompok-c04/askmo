@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Review {{ lapangan.nama }} - ASKMO</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #000;
+            color: #E0E0E0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .background-aura-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-aura-container::before,
+        .background-aura-container::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            filter: blur(100px);
+            animation: pulseAura 15s infinite alternate ease-in-out;
+        }
+
+        .background-aura-container::before {
+            background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0));
+            width: 700px; height: 700px;
+            top: -150px; left: -150px;
+            animation-delay: 0s;
+        }
+
+        .background-aura-container::after {
+            background: radial-gradient(circle at center, rgba(111, 7, 50, 0.75), rgba(87, 30, 136, 0));
+            width: 800px; height: 800px;
+            bottom: -200px; right: -200px;
+            animation-delay: 7.5s;
+        }
+
+        @keyframes pulseAura {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        .form-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .form-container {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+            padding: 22px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            margin-bottom: 14px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: rgba(255,255,255,0.85);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .back-link:hover { color: #C9B6FF; }
+
+        .lapangan-pill {
+            color: #FFD54A;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 62%;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 12px 0 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.85);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.35);
+            color: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: rgba(201,182,255,0.9);
+            box-shadow: 0 0 0 3px rgba(87, 30, 136, 0.25);
+        }
+
+        textarea { resize: vertical; min-height: 120px; }
+
+        .btn-submit-full {
+            width: 100%;
+            padding: 13px 16px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            background: #571E88;
+            box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+            transition: transform 0.2s ease, background 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-submit-full:hover {
+            transform: translateY(-2px);
+            background: #7A3EAA;
+        }
+
+        .errorlist {
+            color: #ff6b6b;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            padding: 0;
+            list-style: none;
+            font-size: 0.9em;
+        }
+
+        small.help {
+            color: rgba(255,255,255,0.60);
+            font-size: 0.8rem;
+            margin-top: -10px;
+            display: block;
+            margin-bottom: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-aura-container"></div>
+
+    <div class="form-wrap">
+        <div class="form-container">
+            <div class="topbar">
+                <a href="{% url 'review:show_feeds_review_lapangan' lapangan.id %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
+                <div class="lapangan-pill">Lapangan: {{ lapangan.nama }}</div>
+            </div>
+
+            <div class="title">Bagikan pengalaman Anda!</div>
+
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in review_form %}
+                    <div class="form-group">
+                        {{ field.errors }}
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                            {% if field.field.required %}<span style="color:#FFD54A;">*</span>{% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="help">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn-submit-full">
+                    <i class="fas fa-paper-plane" style="margin-right:8px;"></i> Kirim Review
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
