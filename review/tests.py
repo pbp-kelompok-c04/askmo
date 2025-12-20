@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # review/test_tests.py
 from django.test import TestCase
 from decimal import Decimal
@@ -53,7 +52,6 @@ class UpdateLapanganRatingTests(TestCase):
         new_rating = update_lapangan_rating(self.lapangan)
         self.assertIsInstance(new_rating, float)
         self.assertAlmostEqual(new_rating, expected, places=6)
-=======
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -1085,4 +1083,3 @@ class ReviewFormsTestCase(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('reviewer_name', form.errors)
         self.assertIn('rating', form.errors)
->>>>>>> 98b0be0343b2e19fed7462e7dd8e6bb1ceb63039
