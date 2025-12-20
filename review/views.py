@@ -215,6 +215,7 @@ def add_review_lapangan(request, lapangan_id):
             errors = dict(form.errors.items())
             return JsonResponse({'status': 'error', 'errors': errors}, status=400)
    
+   
     return JsonResponse({'status': 'error', 'message': 'Metode permintaan tidak valid.'}, status=405)
 
 #============= FUNGSI UPDATE RATING LAPANGAN =============
