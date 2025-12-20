@@ -221,3 +221,4 @@ def google_login(request):
 
     except Exception as e:
         return JsonResponse({"status": False, "message": str(e)}, status=400)
+
