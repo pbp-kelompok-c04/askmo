@@ -46,21 +46,21 @@ def register(request):
         password1 = data['password1']
         password2 = data['password2']
 
-        # check kalopassword cocok
+        # check jika password cocok
         if password1 != password2:
             return JsonResponse({
                 "status": False,
                 "message": "Passwords do not match."
             }, status=400)
         
-        # check kalo username sudah dipake
+        # check jika username sudah dipakai (sudah tidak tersedia)
         if User.objects.filter(username=username).exists():
             return JsonResponse({
                 "status": False,
                 "message": "Username already exists."
             }, status=400)
         
-        # check kalo password mirip sama username
+        # check jika password mirip sama username
         if username.lower() in password1.lower() or password1.lower() in username.lower():
             return JsonResponse({
                 "status": False,
@@ -81,7 +81,7 @@ def register(request):
                 "message": "Password must contain at least one uppercase letter."
             }, status=400)
         
-        # check kalo password mengandung minimal satu angka
+        # check password mengandung minimal satu angka
         if not any(char.isdigit() for char in password1):
             return JsonResponse({
                 "status": False,

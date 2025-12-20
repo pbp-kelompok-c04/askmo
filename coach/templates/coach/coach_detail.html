@@ -5,7 +5,6 @@
     <title>Detail {{ coach.name }} - ASKMO</title>
     <link rel="stylesheet" href="{% static 'coach/style.css' %}">
     <style>
-        /* Style sederhana untuk halaman detail */
         body {
             background-color: #000;
             color: #fff;
@@ -14,11 +13,11 @@
         }
 
 
-        /* CSS UNTUK TOMBOL KEMBALI (POSISI BARU) */
+        /* css back button */
         .back-link-container {
             width: 100%;
-            max-width: 800px; /* Samakan dengan lebar card */
-            margin: 0 auto 20px auto; /* Posisikan di atas card */
+            max-width: 800px;
+            margin: 0 auto 20px auto;
             text-align: left;
         }
         .back-link {
@@ -34,21 +33,19 @@
         .back-link:hover {
             background-color: #1a157a;
         }
-        /* AKHIR CSS TOMBOL KEMBALI */
-
 
         .detail-container {
             max-width: 800px;
-            margin: 0 auto 20px auto; /* Hapus margin atas */
+            margin: 0 auto 20px auto;
             background-color: #1A1A1A;
             border-radius: 20px;
             padding: 30px;
             display: flex;
             gap: 30px;
-            flex-wrap: wrap; /* Agar responsif di layar kecil */
+            flex-wrap: wrap;
         }
         .detail-photo {
-            flex-basis: 200px; /* Lebar dasar untuk foto */
+            flex-basis: 200px;
             flex-shrink: 0;
             text-align: center;
         }
@@ -61,28 +58,25 @@
         }
         .detail-info {
             flex-grow: 1;
-            flex-basis: 400px; /* Lebar dasar untuk info */
+            flex-basis: 400px;
         }
         .detail-info h1 {
             font-size: 2.5em;
             margin-top: 0;
             margin-bottom: 10px;
-            letter-spacing: 0; /* Reset letter-spacing dari style.css */
+            letter-spacing: 0;
         }
-
 
         .coach-name-detail {
-          color: #fff; /* Memastikan warna default tetap putih */
-          cursor: pointer; /* Kursor berubah jadi tangan saat di-hover */
-          user-select: none; /* Mencegah teks ter-highlight saat diklik */
-          transition: color 0.2s ease-in-out; /* Transisi perubahan warna */
+          color: #fff; 
+          cursor: pointer;
+          user-select: none;
+          transition: color 0.2s ease-in-out;
         }
-
 
         .coach-name-detail:active {
-          color: purple; /* 🎨 WARNA UNGU SAAT DITEKAN */
+          color: purple
         }
-
 
         .detail-info p, .detail-info h3 {
             font-size: 1.1em;
@@ -106,15 +100,12 @@
             line-height: 1.6;
         }
 
-
-        /* PERBAIKAN: Style untuk rating yang benar */
         .rating-container {
             display: flex;
             align-items: center;
             gap: 8px;
             margin: 8px 0;
         }
-
 
         .rating-label {
             font-weight: bold;
@@ -124,24 +115,20 @@
             gap: 8px;
         }
 
-
         .rating-value {
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-
         .rating-stars {
-            color: #FFD700; /* Warna emas untuk bintang */
+            color: #FFD700;
         }
-
 
         .no-rating {
             color: #aaa !important;
             font-style: italic;
         }
-
 
         .review-count {
             color: #888;
@@ -149,21 +136,18 @@
             margin-left: 5px;
         }
 
-
-        /* STYLE BARU UNTUK TOMBOL AKSI */
         .action-buttons {
             display: flex;
-            flex-wrap: wrap; /* Izinkan tombol melipat ke baris baru */
-            justify-content: space-between; /* Spasi antar tombol */
-            gap: 10px; /* Jarak antara baris dan kolom */
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
             margin-top: 25px;
             margin-bottom: 10px;
-            margin-right: 0; /* Jarak sebelum 'Pengalaman' */
+            margin-right: 0;
         }
         .action-btn {
-            /* flex-grow: 1; */
             flex: 1 1 calc(50% - 5px); 
-            max-width: calc(50% - 5px); /* Batasi lebar agar dua tombol pas */
+            max-width: calc(50% - 5px); 
             text-decoration: none;
             color: #fff;
             padding: 12px 15px;
@@ -180,31 +164,28 @@
             margin-right: 8px;
         }
         .action-btn.whatsapp {
-            background-color: #25D366; /* Warna WhatsApp */
+            background-color: #25D366;
         }
         .action-btn.save {
-            background-color: gray; /* Warna abu */
+            background-color: gray;
         }
         .action-btn.save i {
-            color: rgb(255, 255, 255); /* Default color */
+            color: rgb(255, 255, 255);
             transition: color 0.2s;
         }
         .action-btn.save.is-saved i {
-            color: #FFD700 !important; /* Warna Kuning saat sudah disimpan */
+            color: #FFD700 !important;
         }
         .action-btn.phone {
-            background-color: #571E88; /* Warna biru telepon */
+            background-color: #571E88;
         }
         .action-btn.review {
-            background-color: #571E88; /* Warna ungu untuk review */
+            background-color: #571E88;
         }
 
-
-        /* Info sections untuk pengalaman dan sertifikasi */
         .info-sections {
             margin-top: 30px;
         }
-
 
         .info-section {
             background: #222;
@@ -214,7 +195,6 @@
             border-left: 4px solid #571E88;
         }
 
-
         .info-section h3 {
             color: #fff;
             margin-top: 0;
@@ -222,22 +202,18 @@
             font-size: 1.2em;
         }
 
-
         .info-section p {
             color: #ccc;
             line-height: 1.6;
             margin: 0;
         }
 
-
-        /* Style untuk info lokasi, kontak, dan tarif */
         .info-item {
             display: flex;
             align-items: center;
             gap: 8px;
             margin: 8px 0;
         }
-
 
         .info-item strong {
             color: #ccc;
@@ -254,6 +230,7 @@
         }
 
     </style>
+
 {% include 'navbar.html' %}
 <div class="bg-black text-white w-full min-h-screen font-['Plus_Jakarta_Sans'] pt-16">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -281,7 +258,7 @@
             <p class="sport">{{ coach.sport_branch }}</p>
 
 
-            <!-- PERBAIKAN: Rating dengan bintang di samping -->
+            <!-- Rating dengan bintang di samping -->
             <div class="rating-container">
                 <span class="rating-label">
                     <i class="fas fa-star"></i>Rating:
@@ -300,7 +277,6 @@
                 </span>
             </div>
            
-            <!-- Info lainnya dengan layout yang konsisten -->
             <div class="info-item">
                 <strong><i class="fas fa-map-marker-alt"></i>Lokasi:</strong>
                 <span>{{ coach.location }}</span>
@@ -347,7 +323,7 @@
             </div>
             {% endif %}
            
-            <!-- Pengalaman & Sertifikasi DALAM CARD -->
+            <!-- Pengalaman & Sertifikasi -->
             <div class="info-sections">
                 <div class="info-section">
                     <h3><i class="fas fa-briefcase" style="margin-right: 8px;"></i>Pengalaman</h3>

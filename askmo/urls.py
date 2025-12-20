@@ -25,7 +25,6 @@ from django.conf.urls.static import static
 app_name = 'main'
 
 urlpatterns = [
-    # URL default untuk panel admin bawaan Django (tidak kita gunakan, tapi baik untuk ada)
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('coach/', include('coach.urls', namespace='coach')),
@@ -33,7 +32,5 @@ urlpatterns = [
     path('review/', include('review.urls')),
 ]
 
-# Konfigurasi ini PENTING untuk menampilkan gambar yang di-upload (seperti foto coach)
-# saat mode DEBUG (pengembangan) aktif.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
