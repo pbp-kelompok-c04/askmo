@@ -1,54 +1,82 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block meta %}
 <title>Coach Finder - ASKMO</title>
 <link rel="stylesheet" href="{% static 'coach/style.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-    .card {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        justify-content: flex-start;
+    .card-container { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px; 
     }
-    .card img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
+
+    @media (min-width: 620px) {
+        .card-container {
+            grid-template-columns: repeat(auto-fit, 300px); 
+            justify-content: center; 
+        }
+    }
+    
+    .card-link { 
+        text-decoration: none; 
+        color: inherit; 
+        display: block; 
+        height: 100%; 
+    }
+
+    .card { 
+        padding: 20px; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
+        justify-content: flex-start; 
+        background-color: #1A1A1A; 
+        border-radius: 12px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        min-height: 280px; 
+        transition: transform 0.2s; 
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+    }
+    
+    .card img { 
+        width: 120px; 
+        height: 120px; 
+        border-radius: 50%; 
+        object-fit: cover; 
+        margin-bottom: 15px; 
+        border: 2px solid #571E88;
+    }
+    .card h3 { margin: 10px 0 5px; font-size: 1.25em; color: white;}
+    .card p { margin: 2px 0; color: #aaa; font-size: 0.9em; }
+    
+    .card p .fas { 
+        color: #571E88; 
+    }
+    .card-cabor { 
+        font-weight: bold; 
+        color: #ddd; 
         margin-bottom: 15px;
-        border: 2px solid #333;
     }
-    .card h3 {
-        margin: 10px 0 5px;
-        font-size: 1.25em;
+    .no-coach-message { 
+        color: #888; 
+        font-size: 1.2em; 
+        text-align: center; 
+        width: 100%; 
+        margin-top: 50px; 
     }
-    .card p {
-        margin: 2px 0;
-        color: #aaa;
-        font-size: 0.9em;
-    }
-    .card-cabor {
-        font-weight: bold;
-        color: #ddd;
-    }
-    .no-coach-message {
-        color: #888;
-        font-size: 1.2em;
-        text-align: center;
-        width: 100%;
-    }
+
     .rating-no-review {
         color: #888;
         font-style: italic;
         font-size: 0.85em;
     }
-
 
     .rating-with-review {
         display: flex;
@@ -56,7 +84,6 @@
         justify-content: center;
         gap: 5px;
     }
-
 
     .rating-count {
         color: #666;
@@ -127,7 +154,6 @@
   }
 </style>
 {% endblock meta %}
-
 
 {% block content %}
 <div class="background-aura-container"></div> {% include 'navbar.html' %}
