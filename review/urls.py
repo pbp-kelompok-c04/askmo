@@ -53,7 +53,6 @@ urlpatterns = [
         views.show_edit_review_lapangan,
         name='show_edit_review_lapangan',
     ),
-    # alias tambahan ini sebenarnya redundant, tapi kalau kamu pakai di tempat lain boleh dipertahankan
     path(
         'lapangan/<int:lapangan_id>/reviews/',
         views.get_reviews_json_lapangan,
@@ -77,12 +76,12 @@ urlpatterns = [
     path('coach/json/<int:coach_id>/', review_views.get_reviews_json,
          name='get_reviews_json_coach'),
 
-    # TAMBAH: endpoint AJAX khusus Flutter
+    # endpoint AJAX khusus Flutter
     path('coach/add-ajax/<int:coach_id>/',
          csrf_exempt(review_views.add_review_coach_ajax),
          name='add_review_coach_ajax'),
 
-    # TAMBAH: endpoint update review khusus Flutter
+    # endpoint update review khusus Flutter
     path('coach/edit-ajax/<int:review_id>/',
          review_views.edit_review_coach_ajax,
          name='edit_review_coach_ajax'),

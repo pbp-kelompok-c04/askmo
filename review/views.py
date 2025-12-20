@@ -72,31 +72,27 @@ def show_review_lapangan(request, lapangan_id):
 
 #============= NAMPILIN SEMUA REVIEW LAPANGAN =============
 def show_feeds_review_lapangan(request, lapangan_id):
-    #ngambil lapangan by id dan rviewnya juga
     try:
         lapangan = Lapangan.objects.get(pk=lapangan_id)
     except Lapangan.DoesNotExist:
         return HttpResponse("Lapangan tidak ditemukan.", status=404)
-    
-    #kalkulasi reviewnya
+
     reviews = Review.objects.filter(lapangan=lapangan).order_by('-tanggal_dibuat')
     total_reviews = reviews.count()
 
     if total_reviews > 0:
         average_rating = update_lapangan_rating(lapangan)
     else:
-        average_rating = lapangan.original_rating
- 
+        average_rating = None  
+
     context = {
         'lapangan': lapangan,
         'reviews': reviews,
         'average_rating': average_rating,
         'total_reviews': total_reviews,
     }
-    #kirim semua datanya ke html
     return render(request, 'review/lapangan/feeds_review_lapangan.html', context)
 
-#============= MENAMPILKAN FORM TAMBAH REVIEW LAPANGAN =============
 #============= MENAMPILKAN FORM TAMBAH REVIEW LAPANGAN =============
 def show_form_review_lapangan(request, lapangan_id):
     try:
@@ -104,25 +100,20 @@ def show_form_review_lapangan(request, lapangan_id):
     except Lapangan.DoesNotExist:
         return HttpResponse("Lapangan tidak ditemukan.", status=404)
 
-    #Handle POST request: validasi form, simpan review, update rating, redirect
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             new_review = form.save(commit=False)
             new_review.lapangan = lapangan
             
-            # ========= PERBAIKAN: JANGAN GANTI reviewer_name DENGAN USERNAME =========
             if request.user.is_authenticated:
                 new_review.user = request.user
-                # HANYA set reviewer_name ke username jika formnya kosong
                 if not new_review.reviewer_name: 
                     new_review.reviewer_name = request.user.username
             else:
-                # Untuk user anonymous, gunakan session key
                 if not request.session.session_key:
                     request.session.create()
                 new_review.session_key = request.session.session_key
-                # Untuk anonymous, pastikan ada nama reviewer
                 if not new_review.reviewer_name:
                     new_review.reviewer_name = "Anonim"
             
@@ -164,7 +155,6 @@ def show_edit_review_lapangan(request, review_id):
     try:
         review = Review.objects.get(pk=review_id)
 
-        # pakai helper di model, bukan cek manual
         can_edit = review.can_edit(request.user, request.session.session_key)
         if not can_edit:
             return HttpResponseForbidden("Anda tidak memiliki izin untuk mengedit review ini.")
@@ -229,26 +219,18 @@ def add_review_lapangan(request, lapangan_id):
 
 #============= FUNGSI UPDATE RATING LAPANGAN =============
 def update_lapangan_rating(lapangan):
-    new_reviews = Review.objects.filter(lapangan=lapangan)
-   
-    # kalo gak ada review baru, ya pake yang original rating awal
-    if new_reviews.count() == 0:
-        lapangan.rating = lapangan.original_rating
-        lapangan.save()
-        return lapangan.rating
-   
-    # rating awal diitung sebagai satu kesatuan
-    total_rating = lapangan.original_rating
-    total_reviews = 1
-   #kalkulasu rating
-    for review in new_reviews:
-        total_rating += float(review.rating)
-        total_reviews += 1
-   
-    new_rating = round(total_rating / total_reviews, 1)
+    qs = Review.objects.filter(lapangan=lapangan)
+    avg = qs.aggregate(avg=Avg('rating'))['avg']
+
+    if avg is None:
+        lapangan.rating = 0.0
+        lapangan.save(update_fields=["rating"])
+        return None
+
+
+    new_rating = round(float(avg), 1)
     lapangan.rating = new_rating
-    lapangan.save()
-   
+    lapangan.save(update_fields=["rating"])
     return new_rating
 
 #============= MENDAPATKAN SEMUA REVIEW LAPANGAN (JSON) =============
@@ -258,28 +240,9 @@ def get_reviews_json_lapangan(request, lapangan_id):
     except Lapangan.DoesNotExist:
         return JsonResponse({'detail': 'Lapangan not found'}, status=404)
 
-    reviews_from_model = Review.objects.filter(
-        lapangan=lapangan
-    ).order_by('-tanggal_dibuat')
+    reviews_from_model = Review.objects.filter(lapangan=lapangan).order_by('-tanggal_dibuat')
 
     all_reviews = []
-
-    # 1. SELALU tambahkan 1 entry dataset (original_rating)
-    all_reviews.append({
-        'id': 0,
-        'reviewer_name': 'Rating awal',
-        'rating': float(lapangan.original_rating),  
-        'review_text': lapangan.review or '',
-        'tanggal_dibuat': 'Data Awal',
-        'gambar': None,
-        'gambar_url': None,
-        'can_edit': False,
-        'can_delete': False,
-        'is_dataset': True,
-        'is_own_review': False,
-    })
-
-    # 2. Tambahkan review user biasa
     for review in reviews_from_model:
         gambar_url = None
         if review.gambar:
@@ -306,6 +269,7 @@ def get_reviews_json_lapangan(request, lapangan_id):
         })
 
     return JsonResponse(all_reviews, safe=False)
+
 
 
 #============= UPDATE REVIEW LAPANGAN VIA AJAX =============
@@ -352,6 +316,22 @@ def delete_review(request, review_id):
         return JsonResponse({'status': 'success', 'message': 'Review berhasil dihapus.'}, status=200)
     except Review.DoesNotExist: 
         return JsonResponse({'status': 'error', 'message': 'Review tidak ditemukan.'}, status=404)
+
+from django.db.models import Avg, Count 
+def show_lapangan_dashboard(request):
+    lapangans = (
+        Lapangan.objects
+        .annotate(
+            review_count=Count('reviews'),
+            avg_rating=Avg('reviews__rating'),
+        )
+    )
+
+    context = {
+        'lapangans': lapangans,
+    }
+    return render(request, 'main/lapangan_dashboard.html', context)
+    
 #=================================================================================================
 #====================================REVIW BUAT COACH=============================================
 #===================================================================================================
@@ -488,7 +468,6 @@ def add_review_coach_ajax(request, coach_id):
             if not review.reviewer_name:
                 review.reviewer_name = request.user.username
         else:
-            # anonymous → pakai "Anonim" kalau kosong
             if not review.reviewer_name:
                 review.reviewer_name = "Anonim"
 
