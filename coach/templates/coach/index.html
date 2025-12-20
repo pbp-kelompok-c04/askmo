@@ -380,12 +380,11 @@
             {% for coach in coaches %}
             <a href="{% url 'coach:coach_detail_view' coach.pk %}" class="card-link">
                 <div class="card bg-[#1A1A1A] rounded-2xl shadow-md">
-                    {% if coach.photo.url %}
-                        <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">
+                    {% if coach.photo %}
+                        <img src="{{ coach.photo }}" alt="Foto {{ coach.name }}">
                     {% else %}
-                        <img src="https://via.placeholder.com/120" alt="Foto tidak tersedia">
+                        <img src="https://via.placeholder.com/200" alt="Foto tidak tersedia">
                     {% endif %}
-                    
                     <h3>{{ coach.name }}</h3>
                     <p class="card-cabor">{{ coach.sport_branch }}</p>
                     
