@@ -325,37 +325,34 @@
             </form>
         </div>
 
-
         <div class="card-container">
             {% for coach in coaches %}
             <a href="{% url 'coach:coach_detail_view' coach.pk %}" class="card-link">
-                <div class="card">
-                    {% if coach.photo %}
+                <div class="card bg-[#1A1A1A] rounded-2xl shadow-md">
+                    {% if coach.photo.url %}
                         <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">
                     {% else %}
                         <img src="https://via.placeholder.com/120" alt="Foto tidak tersedia">
                     {% endif %}
+                    
                     <h3>{{ coach.name }}</h3>
                     <p class="card-cabor">{{ coach.sport_branch }}</p>
+                    
                     <p>
-                        <i class="fas fa-star" style="margin-right: 5px;"></i>
+                        <i class="fas fa-star" style="color: #efdf84; margin-right: 5px;"></i>
                         {% if coach.calculate_average_rating %}
-                            <span class="rating-with-review">
-                                {{ coach.get_average_rating_display }}/5
-                                <span class="rating-count">({{ coach.get_total_reviews_display }})</span>
-                            </span>
+                            <span>{{ coach.get_average_rating_display }}/5 ({{ coach.get_total_reviews_display }})</span>
                         {% else %}
-                            <span class="rating-no-review">Belum ada rating</span>
+                            <span class="opacity-50 italic">Belum ada rating</span>
                         {% endif %}
                     </p>
-
 
                     <p><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i> {{ coach.location }}</p>
                     <p><i class="fas fa-phone" style="margin-right: 5px;"></i> {{ coach.contact }}</p>
                 </div>
             </a>
             {% empty %}
-                <p class="no-coach-message">Belum ada data coach yang ditambahkan.</p>
+                <p class="text-center text-gray-500 w-full py-10">Belum ada data coach yang ditambahkan.</p>
             {% endfor %}
         </div>
     </main>
