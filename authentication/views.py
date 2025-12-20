@@ -120,7 +120,23 @@ def logout(request):
             "message": "Logout failed."
         }, status=401)
 
-GOOGLE_CLIENT_ID = "990231107870-uheikav6hi1qovpmgfbspecru0h4hbou.apps.googleusercontent.com"
+# --- Google OAuth: create-or-login ---
+
+GOOGLE_WEB_CLIENT_ID = "990231107870-uheikav6hi1qovpmgfbspecru0h4hbou.apps.googleusercontent.com"
+
+ALLOWED_AUDIENCES = {
+    GOOGLE_WEB_CLIENT_ID,
+    "990231107870-jfeuksfhs309v6k217pqo87a379logcp.apps.googleusercontent.com"
+}
+
+def _name_to_first_last(full_name: str):
+    full_name = (full_name or "").strip()
+    if not full_name:
+        return ("", "")
+    parts = full_name.split()
+    first = parts[0]
+    last = " ".join(parts[1:]) if len(parts) > 1 else ""
+    return (first[:150], last[:150])
 
 @csrf_exempt
 def google_login(request):
@@ -145,47 +161,60 @@ def google_login(request):
 
     try:
         email = None
-        name = None
+        full_name = None
 
         if id_token_str:
             idinfo = id_token.verify_oauth2_token(
                 id_token_str,
                 google_requests.Request(),
-                GOOGLE_CLIENT_ID,
+                audience=None,
             )
+
+            aud = idinfo.get("aud")
+            if aud not in ALLOWED_AUDIENCES:
+                return JsonResponse(
+                    {"status": False, "message": f"Invalid token audience (aud): {aud}"},
+                    status=400,
+                )
+
             email = idinfo.get("email")
-            name = idinfo.get("name") or (email.split("@")[0] if email else "")
+            full_name = idinfo.get("name")
+
         else:
+            # Access token path
             userinfo_resp = requests.get(
-                "https://www.googleapis.com/oauth2/v3/userinfo",
+                "https://openidconnect.googleapis.com/v1/userinfo",
                 headers={"Authorization": f"Bearer {access_token}"},
-                timeout=5,
+                timeout=8,
             )
             if userinfo_resp.status_code != 200:
                 return JsonResponse({"status": False, "message": "Gagal mengambil data user dari Google"}, status=400)
 
             userinfo = userinfo_resp.json()
             email = userinfo.get("email")
-            name = userinfo.get("name") or (email.split("@")[0] if email else "")
+            full_name = userinfo.get("name")
 
         if not email:
             return JsonResponse({"status": False, "message": "Tidak bisa mendapatkan email dari akun Google"}, status=400)
 
-        try:
-            user = User.objects.get(username=email)
-        except User.DoesNotExist:
-            return JsonResponse(
-                {"status": False, "message": "Login failed, please check your username or password."},
-                status=401,
-            )
+        user = User.objects.filter(username=email).first() or User.objects.filter(email=email).first()
 
-        auth_login(request, user)
+        created = False
+        if user is None:
+            first, last = _name_to_first_last(full_name or "")
+            user = User(username=email, email=email, first_name=first, last_name=last)
+            user.set_unusable_password()
+            user.save()
+            created = True
+
+        auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
 
         return JsonResponse({
             "user_id": user.id,
             "username": user.username,
             "is_staff": user.is_staff,
             "is_superuser": user.is_superuser,
+            "created": created,
             "status": True,
             "message": "Login successful!"
         }, status=200)
