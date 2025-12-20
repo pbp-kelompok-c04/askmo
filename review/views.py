@@ -42,6 +42,17 @@ from .models import ReviewCoach
 from .models import ReviewCoach
 from coach.models import Coach  
 
+from datetime import timezone as dt_timezone, timedelta
+
+WIB = dt_timezone(timedelta(hours=7))
+
+def to_wib(dt):
+    if not dt:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=dt_timezone.utc)
+    return dt.astimezone(WIB)
+
 
 #=================================================================================================
 #===================================REVIW BUAT LAPANGAN=============================================
@@ -255,12 +266,15 @@ def get_reviews_json_lapangan(request, lapangan_id):
         can_edit = review.can_edit(request.user, request.session.session_key)
         can_delete = review.can_delete(request.user, request.session.session_key)
 
+        dt_wib = to_wib(review.tanggal_dibuat)
+        tanggal_str = dt_wib.strftime("%Y-%m-%d %H:%M") if dt_wib else ""
+
         all_reviews.append({
             'id': review.id,
             'reviewer_name': review.reviewer_name or 'Anonymous',
             'rating': float(review.rating),
             'review_text': review.review_text or '',
-            'tanggal_dibuat': review.tanggal_dibuat.strftime("%Y-%m-%d %H:%M"),
+            'tanggal_dibuat': tanggal_str,
             'gambar': review.gambar,
             'gambar_url': gambar_url,
             'can_edit': can_edit,
@@ -270,6 +284,7 @@ def get_reviews_json_lapangan(request, lapangan_id):
         })
 
     return JsonResponse(all_reviews, safe=False)
+
 
 
 
@@ -345,6 +360,10 @@ def show_feeds_review_coach(request, coach_id):
     reviews = coach.reviews.all()
     total_reviews = reviews.count()
 
+    for r in reviews:
+        dt_wib = to_wib(r.created_at)
+        r.created_at_wib_str = dt_wib.strftime("%Y-%m-%d %H:%M") if dt_wib else ""
+
     if total_reviews > 0:
         average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
         average_rating = round(float(average_rating), 1) if average_rating is not None else None
@@ -359,6 +378,7 @@ def show_feeds_review_coach(request, coach_id):
     }
 
     return render(request, 'review/coach/feeds_review_coach.html', context)
+
 
 
 def show_form_review_coach(request, coach_id):
@@ -430,6 +450,9 @@ def get_reviews_json(request, coach_id):
         can_edit = review.can_edit(request.user)
         can_delete = review.can_delete(request.user)
 
+        dt_wib = to_wib(review.created_at)
+        tanggal_str = dt_wib.strftime('%Y-%m-%d %H:%M') if dt_wib else ""
+
         reviews_data.append({
             'id': review.id,
             'reviewer_name': review.reviewer_name if review.reviewer_name else (
@@ -437,13 +460,14 @@ def get_reviews_json(request, coach_id):
             ),
             'rating': float(review.rating),
             'review_text': review.review_text,
-            'tanggal_dibuat': review.created_at.strftime('%Y-%m-%d %H:%M'),
+            'tanggal_dibuat': tanggal_str,
             'user_id': review.user.id if review.user else None,
             'can_edit': can_edit,
             'can_delete': can_delete,
         })
 
     return JsonResponse(reviews_data, safe=False)
+
 
 
 # ====== ENDPOINT KHUSUS AJAX BUAT FLUTTER ======
@@ -523,3 +547,4 @@ def edit_review_coach_ajax(request, review_id):
         },
         status=400
     )
+#tes123
