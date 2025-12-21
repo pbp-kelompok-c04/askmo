@@ -97,10 +97,10 @@
     <main>
         <div class="card-container">
             {% for coach in coach_list %}
-            <a href="{% url 'coach:coach_detail' coach.pk %}" class="card-link">
+            <a href="{% url 'coach:coach_detail_view' coach.pk %}" class="card-link">
                 <div class="card">
-                    {% if coach.photo.url %} 
-                        <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}">
+                    {% if coach.photo %} 
+                        <img src="{{ coach.photo }}" alt="Foto {{ coach.name }}">
                     {% else %}
                         <img src="https://via.placeholder.com/120" alt="Foto tidak tersedia">
                     {% endif %}
