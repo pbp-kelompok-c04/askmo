@@ -1,3 +1,5 @@
+<!-- EVENT DELETE -->
+
 <div id="delete-event-modal" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 font-['Plus_Jakarta_Sans']">
     <div class="bg-[#353535] rounded-lg shadow-lg w-11/12 sm:w-1/3">
       <div class="p-6 text-center">
@@ -64,7 +66,6 @@
             
             if (result.status === 'success') {
                 hideDeleteEventModal();
-                // Redirect to events list page instead of refreshing
                 window.location.href = "{% url 'main:show_event' %}";
             } else {
                 hideDeleteEventModal();

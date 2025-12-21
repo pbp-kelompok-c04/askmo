@@ -1,3 +1,4 @@
+/* style coach */
 body {
     background-color: #000000;
     color: #ffffff;
@@ -8,10 +9,10 @@ body {
 
 header {
     display: flex;
-    justify-content: space-between; /* Untuk menempatkan nav dan user-profile di ujung */
+    justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    position: relative; /* Penting untuk penempatan absolut nav */
+    position: relative;
 }
 
 nav ul {
@@ -82,7 +83,7 @@ h1 {
     width: 100%;
     max-width: 1200px;
     justify-content: center;
-    flex-wrap: wrap; /* Agar responsif */
+    flex-wrap: wrap;
 }
 
 .search-input {
@@ -92,7 +93,7 @@ h1 {
     display: flex;
     align-items: center;
     flex-grow: 1;
-    min-width: 200px; /* Lebar minimum untuk input */
+    min-width: 200px;
 }
 
 .search-input i {
@@ -133,7 +134,7 @@ h1 {
     width: 100%;
     max-width: 1200px;
     justify-content: center;
-    flex-wrap: wrap; /* Menambahkan wrap agar rapi */
+    flex-wrap: wrap;
 }
 
 .card {
@@ -142,19 +143,15 @@ h1 {
     width: 300px;
     height: 400px;
     flex-shrink: 0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transisi untuk hover */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* !!! CSS BARU DITAMBAHKAN DI SINI !!! */
-
-/* Menghilangkan dekorasi link pada kartu */
 .card-link {
-    text-decoration: none; /* Menghilangkan garis bawah link */
-    color: inherit; /* Mewarisi warna teks (putih) */
-    display: block; /* Membuat link berperilaku sebagai block */
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
-/* Efek hover opsional agar lebih interaktif */
 .card-link:hover .card {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 8px 25px rgba(6, 0, 94, 0.3);

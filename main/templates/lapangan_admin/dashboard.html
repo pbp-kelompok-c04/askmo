@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- management lapangan yang hanya diakses oleh admin -->
     <meta charset="UTF-8">
     <title>{{ page_title|default:"Lapangan Management" }} - ASKMO Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -35,13 +36,12 @@
         tr:last-child td {
             border-bottom: none;
         }
-        /* Style untuk membatasi lebar kolom & ellipsis */
         td:nth-child(1) { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
         td:nth-child(3) { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
         td:nth-child(4) { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
-        td:nth-child(5) { text-align: right; white-space: nowrap; } /* Tarif */
-        td:nth-child(6) { text-align: center; white-space: nowrap; } /* Rating */
-        td:nth-child(7) { text-align: center; } /* Refund */
+        td:nth-child(5) { text-align: right; white-space: nowrap; }
+        td:nth-child(6) { text-align: center; white-space: nowrap; }
+        td:nth-child(7) { text-align: center; }
         
         .actions a { 
             margin-right: 8px; 
@@ -77,13 +77,11 @@
             font-weight: 500;
             transition: background-color 0.2s ease;
          }
-         .header-nav a.nav-link.active { /* Style untuk link aktif */
-            background-color: #571E88; /* Warna ungu */
+         .header-nav a.nav-link.active {
+            background-color: #571E88;
          }
          .header-nav a.nav-link:hover { background-color: #444; }
          .header-nav a.nav-link.active:hover { background-color: #7A3EAA; }
-
-
         .add-btn { 
             background-image: linear-gradient(to right, #06005E, #571E88);
             color: white; 
@@ -100,7 +98,6 @@
         .logout-btn { color: #ff7b72; font-weight: 500; }
         .logout-btn:hover { text-decoration: underline; }
         
-        /* Message Styles */
         .messages { list-style: none; padding: 0; margin: 0 0 20px 0; }
         .messages li { padding: 12px 18px; margin-bottom: 10px; border-radius: 6px; color: #fff; font-weight: 500;}
         .messages li.success { background-color: #2a6a3d; border-left: 5px solid #38c172; }
@@ -108,12 +105,9 @@
         .messages li.warning { background-color: #8c6d1f; border-left: 5px solid #f9d26e; }
         .messages li.info { background-color: #1f648c; border-left: 5px solid #6cb2eb; }
 
-        /* Boolean Icon Styles */
         .boolean-icon { font-size: 1.2em; }
-        .true { color: #38c172; } /* Green */
-        .false { color: #e3342f; } /* Red */
-        
-        /* No Data Message */
+        .true { color: #38c172; }
+        .false { color: #e3342f; }
         .no-data { text-align: center; color: #888; padding: 30px 0; }
     </style>
 </head>

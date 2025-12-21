@@ -6,11 +6,7 @@ from django.urls import path
 from main.views import show_main, login_user, register, logout_user
 from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax
 from . import views
-
-
 from main.views import show_xml, show_json, show_xml_by_id, show_json_by_id, show_lapangan_by_alamat_xml, show_lapangan_by_alamat_json, show_lapangan_by_kecamatan_xml, show_lapangan_by_kecamatan_json, show_lapangan_dashboard
-
-
 from main.views import add_event_ajax, show_main, login_user, register, logout_user
 from main.views import register_ajax, login_ajax, logout_ajax, show_profile, update_profile_ajax, delete_event_ajax
 from main.views import show_event, show_event_detail, get_events_json, get_event_detail_ajax, edit_event_ajax, lapangan_dashboard_view, lapangan_create_view, lapangan_delete_view, lapangan_update_view
@@ -41,9 +37,8 @@ urlpatterns = [
     path('xml/kecamatan/<str:kecamatan>/', show_lapangan_by_kecamatan_xml, name='show_lapangan_by_kecamatan_xml'),
     path('json/kecamatan/<str:kecamatan>/', show_lapangan_by_kecamatan_json, name='show_lapangan_by_kecamatan_json'),
     path('lapangan/', show_lapangan_dashboard, name='show_lapangan_dashboard'),
-    #=============================================
+
     #=== REVIEW LAPANGAN & COACH ===
-    #=============================================
     path('lapangan/review/<uuid:lapangan_id>/', show_review_lapangan, name='show_review_lapangan'),
     path('lapangan/review/add-ajax/<uuid:lapangan_id>/', add_review_lapangan, name='add_review_lapangan'),
     path('lapangan/review/json/<uuid:lapangan_id>/', get_reviews_json_lapangan, name='get_reviews_json_lapangan'),  # ⚠️ NAMA BARU
@@ -54,22 +49,21 @@ urlpatterns = [
     path('json/review/<int:review_id>/', get_single_review_json, name='get_single_review_json'),
     path('lapangan/review/edit/<int:review_id>/', show_edit_review_lapangan, name='show_edit_review_lapangan'),
 
-    # === PROFILE ===
+    # === PROFILE & WISHLIST ===
     path('profile/', show_profile, name='show_profile'),
     path('profile/update/', update_profile_ajax, name='update_profile_ajax'),
+    path('wishlist/', views.show_wishlist_lapangan, name='show_user_collections'),
+    path('wishlist/lapangan/', views.show_wishlist_lapangan, name='lapangan_wishlist_list'),
+    path('wishlist/coach/', views.show_wishlist_coach, name='coach_wishlist_list'),
 
-
+    # === COACH ===
     path('coach/<int:coach_id>/', review_views.show_feeds_review_coach, name='show_feeds_review_coach'),
     path('coach/<int:coach_id>/add/', review_views.show_form_review_coach, name='show_form_review_coach'),
     path('coach/edit/<int:review_id>/', review_views.edit_review_coach, name='edit_review_coach'),
     path('coach/delete/<int:review_id>/', review_views.delete_review_coach, name='delete_review_coach'),
     path('coach/json/<int:coach_id>/', review_views.get_reviews_json, name='get_reviews_json_coach'),
-    # === WISHLIST / KOLEKSI ===
-    # Wishlist Default: Arahkan ke daftar Lapangan
-    path('wishlist/', views.show_wishlist_lapangan, name='show_user_collections'), # Digunakan sebagai default/link Lapangan di profile
-    path('wishlist/lapangan/', views.show_wishlist_lapangan, name='lapangan_wishlist_list'),
-    path('wishlist/coach/', views.show_wishlist_coach, name='coach_wishlist_list'),
-   
+    path('coach/add_to_wishlist/<uuid:coach_id>/', views.add_to_coach_list, name='add_to_coach_list'),
+
     # URL AJAX
     path('api/wishlist/create/', views.create_collection_ajax, name='create_collection_ajax'),
     path('api/collections/status/<str:item_type>/<uuid:item_id>/', views.get_user_collections_for_item_ajax, name='get_collections_status_ajax'),
@@ -78,26 +72,21 @@ urlpatterns = [
     path('api/wishlist/edit/', views.edit_collection_name_ajax, name='edit_collection_name_ajax'),
     path('wishlist/toggle/', views.toggle_wishlist, name='toggle_wishlist'),
    
-    # Coach Add (Mengarahkan ke modal/collections)
-    path('coach/add_to_wishlist/<uuid:coach_id>/', views.add_to_coach_list, name='add_to_coach_list'),
+    # === EVENT ===
     path('event/', show_event, name='show_event'),
     path('event/<uuid:id>/', show_event_detail, name='show_event_detail'),
-   
-    path('get-events-json/', get_events_json, name='get_events_json'), # <-- THIS IS THE REQUIRED URL
+    path('get-events-json/', get_events_json, name='get_events_json'),
     path('add-event-ajax/', add_event_ajax, name='add_event_ajax'),
     path('delete-event-ajax/<uuid:id>/', delete_event_ajax, name='delete_event_ajax'),
-
-
     path('get-event-ajax/<uuid:id>/', get_event_detail_ajax, name='get_event_detail_ajax'),
     path('edit-event-ajax/<uuid:id>/', edit_event_ajax, name='edit_event_ajax'),
 
+    # === LAPANGAN ===
     path('lapangan/dashboard/', lapangan_dashboard_view, name='lapangan_dashboard_view'),
     path('lapangan/dashboard/create/', lapangan_create_view, name='lapangan_create_view'),
     path('lapangan/dashboard/<uuid:pk>/update/', lapangan_update_view, name='lapangan_update_view'),
     path('lapangan/dashboard/<uuid:pk>/delete/', lapangan_delete_view, name='lapangan_delete_view'),
     
-    # Proxy untuk gambar eksternal (mengatasi CORS)
     path('proxy-image/', proxy_image, name='proxy_image'),
-    
     path('auth/', include('authentication.urls')),
 ]

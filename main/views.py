@@ -1,7 +1,6 @@
 import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
-
 from review.models import Review
 from .models import UserProfile, Avatar
 from main.models import Collection
@@ -9,13 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core import serializers
-
 from main import models
 from coach.models import CoachWishlist
 from main.forms import LapanganForm, CoachForm, EventForm
 from main.models import Lapangan, Coach, Event, Collection
 from django.db.models import Q
-
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
@@ -25,7 +22,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
-
 import datetime
 import json
 import requests
@@ -37,7 +33,6 @@ from django.utils.html import strip_tags;
 from .models import UserProfile, Avatar 
 from coach.models import Coach 
 from .models import Lapangan, Event, UserProfile, Avatar
-
 from django.contrib.auth.models import User 
 from django.contrib.auth.decorators import login_required, user_passes_test 
 from django.contrib import messages 
@@ -295,7 +290,6 @@ def show_lapangan_by_alamat_json(request, alamat):
     ]
     return JsonResponse(data, safe=False)
 
-#ini buat filter by kecamatannya
 def show_lapangan_by_kecamatan_xml(request, kecamatan):
     lapangan_list = Lapangan.objects.filter(kecamatan__iexact=kecamatan)
     xml_data = serializers.serialize("xml", lapangan_list)
@@ -429,11 +423,9 @@ def create_collection_ajax(request):
         if Collection.objects.filter(user=request.user, name=collection_name).exists():
             return JsonResponse({'status': 'error', 'message': f'Koleksi bernama "{collection_name}" sudah ada.'}, status=400)
 
-        # Buat objek Collection baru (tanpa is_public/is_shared)
         new_collection = Collection.objects.create(
             user=request.user,
             name=collection_name,
-            # is_public dan is_shared tidak dimasukkan
         )
         
         return JsonResponse({
@@ -466,9 +458,9 @@ def get_user_collections_for_item_ajax(request, item_type, item_id):
 
     for collection in collections:
         if item_type == 'lapangan':
-            is_saved = collection.lapangan.filter(pk=item_id).exists() # Menggunakan ManyToManyField 'lapangan'
+            is_saved = collection.lapangan.filter(pk=item_id).exists()
         elif item_type == 'coach':
-            is_saved = collection.coach.filter(pk=item_id).exists() # <--- TAMBAH INI (Menggunakan ManyToManyField 'coach')
+            is_saved = collection.coach.filter(pk=item_id).exists()
 
         collections_data.append({
             'id': collection.id,
@@ -522,7 +514,6 @@ def toggle_save_item_to_collection_ajax(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Gagal memproses permintaan: {str(e)}'}, status=500)
     
-# main/views.py (sekitar baris 417)
 @login_required
 @require_POST
 def toggle_wishlist(request):
@@ -546,9 +537,6 @@ def toggle_wishlist(request):
             else:
                 collection.lapangan.add(lapangan)
                 return JsonResponse({'status': 'added', 'message': 'Berhasil ditambahkan ke wishlist'})
-        
-        # ... (Anda bisa menambahkan logika coach di sini jika ingin menggunakan URL yang sama)
-
         return JsonResponse({'status': 'error', 'message': 'Invalid item type'}, status=400)
     except Lapangan.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Lapangan not found'}, status=404)
@@ -702,7 +690,6 @@ def add_event_ajax(request):
         data = json.loads(request.body)
         form = EventForm(data)
     except json.JSONDecodeError:
-        # Fallback ke POST data jika bukan JSON
         form = EventForm(request.POST)
     
     if form.is_valid():
@@ -736,19 +723,15 @@ def add_event_ajax(request):
 def edit_event_ajax(request, id):
     try:
         event = get_object_or_404(Event, pk=id)
-        
-        # Pastikan hanya pembuat event yang bisa meng-edit
         if event.user != request.user:
             return HttpResponseForbidden(JsonResponse({'status': 'error', 'message': 'Anda tidak punya izin untuk meng-edit event ini.'}))
         
-        # Muat form dengan data dari POST dan instance event yang ada
         form = EventForm(request.POST, instance=event)
         
         if form.is_valid():
-            form.save() # Simpan perubahan
+            form.save()
             return JsonResponse({"status": "success", "message": "Event berhasil diperbarui!"}, status=200)
         else:
-            # Kirim error validasi form ke frontend
             return JsonResponse({"status": "error", "errors": form.errors}, status=400)
 
     except Event.DoesNotExist:
@@ -793,17 +776,13 @@ def staff_required(view_func):
     Decorator ensures only logged-in staff users can access the view.
     Redirects non-staff users to the admin login page.
     """
-    @login_required(login_url='coach:login') # Redirect ke login admin coach
+    @login_required(login_url='coach:login')
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_staff:
             messages.error(request, "Anda tidak punya akses ke halaman admin.")
-            return redirect('coach:login') # Redirect kembali ke login jika bukan staff
+            return redirect('coach:login')
         return view_func(request, *args, **kwargs)
     return _wrapped_view
-
-# ==============================================================================
-# VIEW UNTUK PANEL ADMIN LAPANGAN (CRUD) - TAMBAHKAN INI DI AKHIR
-# ==============================================================================
 
 @staff_required
 def lapangan_dashboard_view(request):
@@ -813,9 +792,8 @@ def lapangan_dashboard_view(request):
     lapangan_list = Lapangan.objects.all().order_by('nama')
     context = {
         'lapangan_list': lapangan_list,
-        'page_title': 'Lapangan Management' # Judul Halaman
+        'page_title': 'Lapangan Management'
     }
-    # Render template dari folder lapangan_admin
     return render(request, 'lapangan_admin/dashboard.html', context) 
 
 @staff_required
@@ -824,52 +802,44 @@ def lapangan_create_view(request):
     Menangani pembuatan data Lapangan baru. (Create)
     """
     if request.method == 'POST':
-        # Tambahkan request.FILES jika model Lapangan punya ImageField/FileField
         form = LapanganForm(request.POST) 
         if form.is_valid():
             form.save()
             messages.success(request, 'Lapangan baru berhasil ditambahkan.')
-            # Redirect ke dashboard Lapangan setelah berhasil
             return redirect('main:lapangan_dashboard') 
         else:
-            # Jika form tidak valid, tampilkan pesan error
             messages.error(request, 'Terjadi kesalahan. Mohon periksa kembali isian form.')
     else:
-        # Jika GET request, tampilkan form kosong
         form = LapanganForm()
     
     context = {
         'form': form, 
-        'title': 'Tambah Lapangan Baru' # Judul untuk template form
+        'title': 'Tambah Lapangan Baru'
     }
-    # Render template form dari folder lapangan_admin
     return render(request, 'lapangan_admin/lapangan_form.html', context)
 
 @staff_required
-def lapangan_update_view(request, pk): # Gunakan 'pk' karena ID Lapangan adalah UUID
+def lapangan_update_view(request, pk):
     """
     Menangani pembaruan data Lapangan yang sudah ada. (Update)
     """
-    lapangan_instance = get_object_or_404(Lapangan, pk=pk) # Dapatkan objek Lapangan atau 404
+    lapangan_instance = get_object_or_404(Lapangan, pk=pk)
     if request.method == 'POST':
-        # Muat form dengan data POST dan instance yang ada
-        form = LapanganForm(request.POST, instance=lapangan_instance) # Tambahkan request.FILES jika perlu
+        form = LapanganForm(request.POST, instance=lapangan_instance)
         if form.is_valid():
-            form.save() # Simpan perubahan
+            form.save()
             messages.success(request, f'Data lapangan "{lapangan_instance.nama}" berhasil diperbarui.')
-            return redirect('main:lapangan_dashboard') # Redirect ke dashboard
+            return redirect('main:lapangan_dashboard')
         else:
             messages.error(request, 'Terjadi kesalahan. Mohon periksa kembali isian form.')
     else:
-        # Jika GET request, tampilkan form dengan data instance yang ada
         form = LapanganForm(instance=lapangan_instance)
         
     context = {
         'form': form, 
-        'title': f'Edit {lapangan_instance.nama}', # Judul dinamis
-        'lapangan': lapangan_instance # Kirim instance jika perlu info tambahan di template
+        'title': f'Edit {lapangan_instance.nama}',
+        'lapangan': lapangan_instance
     }
-    # Render template form
     return render(request, 'lapangan_admin/lapangan_form.html', context)
 
 @staff_required
@@ -877,23 +847,16 @@ def lapangan_delete_view(request, pk):
     """
     Menangani penghapusan data Lapangan setelah konfirmasi. (Delete)
     """
-    lapangan_instance = get_object_or_404(Lapangan, pk=pk) # Dapatkan objek
+    lapangan_instance = get_object_or_404(Lapangan, pk=pk)
     if request.method == 'POST':
-        lapangan_name = lapangan_instance.nama # Simpan nama untuk pesan
-        lapangan_instance.delete() # Hapus objek
+        lapangan_name = lapangan_instance.nama
+        lapangan_instance.delete()
         messages.success(request, f'Lapangan "{lapangan_name}" berhasil dihapus.')
-        return redirect('main:lapangan_dashboard') # Redirect ke dashboard
-        
-    # Jika GET request, tampilkan halaman konfirmasi
+        return redirect('main:lapangan_dashboard')
     context = {
         'lapangan': lapangan_instance 
     }
-    # Render template konfirmasi hapus
     return render(request, 'lapangan_admin/lapangan_confirm_delete.html', context)
-
-# ==============================================================================
-# PROXY ENDPOINT UNTUK MENGATASI CORS IMAGE LOADING
-# ==============================================================================
 
 @csrf_exempt
 def proxy_image(request):
@@ -905,15 +868,11 @@ def proxy_image(request):
     
     if not image_url:
         return JsonResponse({'error': 'URL parameter is required'}, status=400)
-    
     try:
-        # Fetch gambar dari URL eksternal dengan timeout
         response = requests.get(image_url, timeout=10, headers={
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         })
-        
         if response.status_code == 200:
-            # Return gambar dengan content type yang sesuai
             content_type = response.headers.get('Content-Type', 'image/jpeg')
             return HttpResponse(response.content, content_type=content_type)
         else:

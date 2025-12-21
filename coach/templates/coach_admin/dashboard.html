@@ -30,47 +30,43 @@
         th { 
             background-color: #2c2c2c;
             font-weight: 600;
-            white-space: nowrap; /* Prevent header wrapping */
+            white-space: nowrap;
         }
         tr:last-child td {
             border-bottom: none;
         }
-        /* Limit width for potentially long fields */
         td:nth-child(1) { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
         td:nth-child(3) { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } 
         
-        .actions { white-space: nowrap; } /* Prevent action links wrapping */
+        .actions { white-space: nowrap; }
         .actions a { 
             margin-right: 8px; 
             text-decoration: none; 
             font-weight: 500;
-            color: #58a6ff; /* Lighter blue */
+            color: #58a6ff;
         }
-        /* Use class for delete link instead of inline style */
         .actions a.delete-link {
-            color: #ff7b72; /* Lighter red */
+            color: #ff7b72;
         }
         .actions a:hover {
             text-decoration: underline;
         }
         .actions i {
-             margin-right: 4px; /* Space between icon and text */
+             margin-right: 4px;
         }
         
         .header { 
             display: flex; 
-            flex-wrap: wrap; /* Allow wrapping */
+            flex-wrap: wrap;
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 25px; /* Increased margin */
-            gap: 15px; /* Space between header items */
+            margin-bottom: 25px;
+            gap: 15px;
         }
         .header h1 { 
             margin: 0; 
             font-size: 1.8em; 
         }
-
-        /* Styling for Navigation Buttons */
         .header-nav a.nav-link {
             padding: 8px 12px;
             background-color: #333;
@@ -80,23 +76,22 @@
             text-decoration: none; 
             transition: background-color 0.2s ease;
             margin-left: 10px; 
-            font-size: 0.9em; /* Match user info font size */
+            font-size: 0.9em;
         }
-        .header-nav a.nav-link.active { /* Style for the active page button */
-            background-color: #571E88; /* Purple color */
+        .header-nav a.nav-link.active {
+            background-color: #571E88;
         }
         .header-nav a.nav-link:hover { background-color: #444; }
-        .header-nav a.nav-link.active:hover { background-color: #7A3EAA; } /* Lighter purple on hover */
+        .header-nav a.nav-link.active:hover { background-color: #7A3EAA; }
 
-        /* Styling for User Info / Logout */
         .header-user span, .header-user a {
             color: #ccc;
             text-decoration: none;
             font-size: 0.9em;
-            margin-left: 10px; /* Space between Welcome and Logout */
+            margin-left: 10px;
         }
         .logout-btn { 
-            color: #ff7b72; /* Lighter red */
+            color: #ff7b72;
             font-weight: 500;
         }
         .logout-btn:hover { text-decoration: underline; }
@@ -110,16 +105,15 @@
             font-weight: 500;
             display: inline-block;
             transition: background-image 0.3s ease-in-out;
-            margin-bottom: 20px; /* Space below button */
+            margin-bottom: 20px;
         }
         .add-btn:hover {
             background-image: linear-gradient(to right, #1A107A, #7A3EAA);
         }
         .add-btn i {
-             margin-right: 6px; /* Space for icon */
+             margin-right: 6px;
         }
 
-        /* Message Styles */
         .messages { list-style: none; padding: 0; margin: 0 0 20px 0; }
         .messages li { padding: 12px 18px; margin-bottom: 10px; border-radius: 6px; color: #fff; font-weight: 500;}
         .messages li.success { background-color: #2a6a3d; border-left: 5px solid #38c172; }
@@ -127,11 +121,12 @@
         .messages li.warning { background-color: #8c6d1f; border-left: 5px solid #f9d26e; }
         .messages li.info { background-color: #1f648c; border-left: 5px solid #6cb2eb; }
 
-        /* No Data Message */
         .no-data { text-align: center; color: #888; padding: 30px 0; }
 
     </style>
 </head>
+
+<!-- dashboard coach yang hanya bisa diakses oleh user dengan role admin -->
 <body>
     <div class="header">
         <h1>Coach Management</h1>

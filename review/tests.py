@@ -60,7 +60,6 @@ from django.http import HttpResponseForbidden
 import uuid
 import json
 from decimal import Decimal
-
 from main.models import Lapangan
 from coach.models import Coach
 from review.models import Review, ReviewCoach

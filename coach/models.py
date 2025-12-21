@@ -10,8 +10,8 @@ class Coach(models.Model):
     contact = models.CharField(max_length=50, help_text="Nomor Telepon atau Email")
     experience = models.TextField(blank=True, help_text="Deskripsikan pengalaman Coach")
     certifications = models.TextField(blank=True, help_text="Sertifikat yang dimiliki oleh Coach, dipisah oleh koma")
-    service_fee = models.CharField(max_length=100, blank=True, help_text="Contoh : RP 300,000 / Jam")
-    photo = models.CharField(max_length=500, blank=True, null=True)  # Ganti ImageField dengan CharField
+    service_fee = models.CharField(max_length=100, blank=True, help_text="Contoh : 300000")
+    photo = models.CharField(max_length=500, blank=True, null=True)
 
 
     def __str__(self):
@@ -22,13 +22,12 @@ class Coach(models.Model):
         if reviews.count() > 0:
             avg = sum(review.rating for review in reviews) / reviews.count()
             return round(avg, 1)
-        return None  # Return None jika belum ada review
+        return None
    
     def get_average_rating_display(self):
         avg = self.calculate_average_rating()
         if avg is None:
             return "Belum ada review"
-        # Ganti titik dengan koma
         return str(avg).replace('.', ',')
    
     def get_total_reviews(self):

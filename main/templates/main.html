@@ -1,3 +1,5 @@
+<!-- MAIN DASHBOARD -->
+
 {% extends 'base.html' %}
 {% load static %}
 {% load humanize %} 
@@ -9,7 +11,6 @@
   html {
     scroll-behavior: smooth;
   }
-  /* Style Slideshow */
   .hero-slideshow { position: absolute; inset: 0; }
   .hero-slide {
     position: absolute; inset: 0; width: 100%; height: 100%;
@@ -42,7 +43,7 @@
   }
   #modal-close-btn {
       position: absolute; top: 15px; right: 20px; background: none; border: none;
-      color: #888; font-size: 1.8rem; cursor: pointer; transition: color 0.2s; line-height: 1; /* Tambah line-height */
+      color: #888; font-size: 1.8rem; cursor: pointer; transition: color 0.2s; line-height: 1;
   }
   #modal-close-btn:hover { color: #fff; }
   #modal-image {
@@ -51,12 +52,12 @@
   .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 15px; }
   #modal-nama { font-size: 2rem; font-weight: 700; line-height: 1.2; }
   .modal-priority-info { display: flex; flex-direction: column; gap: 10px; font-size: 1rem; color: #CFCFCF; }
-  .modal-priority-info p { display: flex; align-items: center; gap: 10px; margin: 0; /* Reset margin */ }
+  .modal-priority-info p { display: flex; align-items: center; gap: 10px; margin: 0; }
   .modal-priority-info i { width: 20px; text-align: center; color: #888; }
   .modal-divider { border: 0; height: 1px; background: #333; margin: 10px 0; }
   .modal-details { display: flex; flex-direction: column; gap: 10px; }
-  .modal-details h4 { font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 0; /* Reset margin */ }
-  .modal-details p { font-size: 0.95rem; color: #CFCFCF; line-height: 1.6; white-space: pre-wrap; margin: 0; /* Reset margin */ }
+  .modal-details h4 { font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 0; }
+  .modal-details p { font-size: 0.95rem; color: #CFCFCF; line-height: 1.6; white-space: pre-wrap; margin: 0; }
   #modal-kontak-btn {
       display: inline-block; text-decoration: none; padding: 12px 20px; background: #571E88; 
       color: #fff; font-weight: 600; border-radius: 10px; text-align: center; margin-top: 10px; transition: background 0.2s;
@@ -93,16 +94,15 @@
     box-sizing: border-box; 
   }
 
-/* Style untuk background aura */
     .background-aura-container {
-        position: fixed; /* Membuat aura tetap di viewport */
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden; /* Memastikan aura tidak meluap keluar */
-        pointer-events: none; /* Memastikan aura tidak mengganggu interaksi mouse */
-        z-index: 0; /* Pastikan di bawah semua konten */
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0; 
     }
 
     .background-aura-container::before,
@@ -110,39 +110,35 @@
         content: '';
         position: absolute;
         border-radius: 50%;
-        opacity: 0.6; /* Sesuaikan tingkat transparansi */
-        filter: blur(100px); /* Semakin besar nilai blur, semakin halus auranya */
-        animation: pulseAura 15s infinite alternate ease-in-out; /* Animasi berdenyut */
+        opacity: 0.6;
+        filter: blur(100px);
+        animation: pulseAura 15s infinite alternate ease-in-out;
     }
 
-    /* Aura pertama: Lebih dominan ungu */
     .background-aura-container::before {
-        background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0)); /* Ungu tua ke transparan */
+        background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0));
         width: 700px;
         height: 700px;
-        top: -150px; /* Posisikan sedikit di atas dan kiri */
+        top: -150px;
         left: -150px;
         animation-delay: 0s;
     }
 
-    /* Aura kedua: Sedikit lebih terang atau berbeda posisi */
     .background-aura-container::after {
-        background: radial-gradient(circle at center, rgba(111, 7, 50), rgba(87, 30, 136, 0)); /* Ungu yang lebih terang ke transparan */
+        background: radial-gradient(circle at center, rgba(111, 7, 50), rgba(87, 30, 136, 0));
         width: 800px;
         height: 800px;
-        bottom: -200px; /* Posisikan sedikit di bawah dan kanan */
+        bottom: -200px;
         right: -200px;
-        animation-delay: 7.5s; /* Mulai animasi sedikit tertunda dari yang pertama */
+        animation-delay: 7.5s;
     }
 
-    /* Keyframes untuk animasi denyut (opsional) */
     @keyframes pulseAura {
         0% { transform: scale(1); opacity: 0.6; }
         50% { transform: scale(1.05); opacity: 0.7; }
         100% { transform: scale(1); opacity: 0.6; }
     }
 
-    /* Pastikan background utama div tetap hitam agar aura terlihat */
     body {
         background-color: black;
     }
@@ -309,9 +305,7 @@
         </button>
         <div id="event-scroll-container" class="flex overflow-x-scroll space-x-6 pb-4 no-scrollbar scroll-smooth">
           {% for event in event_list %}
-          <!-- KARTU HORIZONTAL BARU (LEBIH LEBAR) -->
           <div class="flex-shrink-0 w-[28rem] bg-[#353535] rounded-2xl overflow-hidden shadow-lg flex p-4 gap-4">
-              <!-- Bagian Gambar (Kiri) -->
               <div class="w-32 h-full flex-shrink-0 bg-[#4F4F4F] rounded-lg overflow-hidden">
                   {% if event.thumbnail %}
                       <img src="{{ event.thumbnail }}" alt="Foto {{ event.nama }}" class="w-full h-full object-cover">
@@ -320,11 +314,9 @@
                   {% endif %}
               </div>
 
-              <!-- Bagian Konten (Kanan) -->
               <div class="flex-1 flex flex-col justify-between min-w-0">
                   <div>
                       <h3 class="text-lg font-bold text-white mb-2 truncate">{{ event.nama }}</h3>
-                      
                       <div class="flex flex-col space-y-1 text-xs text-gray-300 mb-3">
                           <div class="flex items-center">
                               <img src="{% static 'image/calendar_icon.png' %}" alt="Tanggal" class="w-3 h-3 mr-2 object-contain flex-shrink-0">
@@ -817,7 +809,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-<!-- Alpine plugins must be loaded BEFORE Alpine.js core -->
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -825,7 +816,7 @@
 <script>
 
 function animateCountUp(el) {
-        if (el.dataset.animating === 'true') return; // Jangan animasikan jika sudah berjalan
+        if (el.dataset.animating === 'true') return;
         
         let start = 0;
         const end = parseInt(el.dataset.target, 10);
@@ -835,10 +826,10 @@ function animateCountUp(el) {
             return; 
         }
 
-        el.dataset.animating = 'true'; // Set flag
+        el.dataset.animating = 'true';
         
-        const duration = 1500; // milliseconds
-        const frameRate = 1000 / 60; // 60fps
+        const duration = 1500;
+        const frameRate = 1000 / 60;
         const totalFrames = Math.round(duration / frameRate);
         const increment = end / totalFrames;
         let current = 0;
@@ -851,15 +842,13 @@ function animateCountUp(el) {
             if (frame >= totalFrames) {
                 clearInterval(counter);
                 el.textContent = end.toLocaleString('id-ID');
-                el.dataset.animating = 'false'; // Reset flag
+                el.dataset.animating = 'false';
             } else {
                 el.textContent = Math.round(current).toLocaleString('id-ID');
             }
         }, frameRate);
     }
 
-  // 2. Definisikan `statsSlider` di scope global AGAR BISA DIAKSES
-  //    oleh 'x-data'
   function statsSlider() {
     return {
         animationFrameId: null,
@@ -868,7 +857,6 @@ function animateCountUp(el) {
         cardObserver: null, 
         
         init() {
-            // 'this.$refs' adalah cara AlpineJS mendapatkan elemen 'x-ref'
             const track = this.$refs.sliderTrack; 
             if (!track) {
                 console.error("Alpine Error: sliderTrack ref not found!"); 
@@ -881,13 +869,12 @@ function animateCountUp(el) {
             }
             console.log("statsSlider init() called. Track and container found."); 
 
-            // --- KLONING ---
             const originalItems = Array.from(track.children);
             if (originalItems.length === 0) return;
             
             originalItems.forEach(item => {
                 const clone = item.cloneNode(true);
-                clone.setAttribute('aria-hidden', 'true'); // Tandai klon
+                clone.setAttribute('aria-hidden', 'true');
                 
                 const counterEl = clone.querySelector('[data-target]');
                 if (counterEl) {
@@ -903,37 +890,32 @@ function animateCountUp(el) {
             const observerOptions = { 
                 root: container, 
                 rootMargin: '0px',
-                threshold: 0.1   // Picu saat 10% kartu terlihat
+                threshold: 0.1
             };
 
             this.cardObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.target.hasAttribute('aria-hidden')) {
-                        return; // Abaikan klon
+                        return; 
                     }
 
                     if (entry.isIntersecting) {
-                        // KARTU MASUK: Panggil fungsi 'animateCountUp'
                         console.log("Card ENTERED, animating:", entry.target.querySelector('[data-target]').dataset.target);
                         const counterEl = entry.target.querySelector('[data-target]');
                         if (counterEl) {
-                            animateCountUp(counterEl); // Panggil fungsi global
+                            animateCountUp(counterEl);
                         }
                     }
                 });
             }, observerOptions);
 
-            // Amati kartu-kartu ASLI
             const originalCards = track.querySelectorAll('.flex-shrink-0:not([aria-hidden="true"])');
             originalCards.forEach(card => {
                 this.cardObserver.observe(card);
             });
-            // --- BATAS LOGIKA OBSERVER ---
 
-            // Mulai animasi scroll
             this.startAutoScroll();
 
-            // Berhenti saat hover
             container.addEventListener('mouseenter', () => this.stopAutoScroll()); 
             container.addEventListener('mouseleave', () => this.startAutoScroll()); 
         },
@@ -946,7 +928,7 @@ function animateCountUp(el) {
             this.currentTranslateX -= this.speed; 
             
             if (Math.abs(this.currentTranslateX) >= resetPoint) {
-                this.currentTranslateX = 0; // Lompat kembali ke awal
+                this.currentTranslateX = 0;
             }
 
             track.style.transform = `translateX(${this.currentTranslateX}px)`;
@@ -1005,7 +987,7 @@ document.addEventListener('alpine:init', () => {
             console.log("Animate counters triggered!"); // debug log
             const counters = document.querySelectorAll('#count-lapangan, #count-coach, #count-event');
             counters.forEach(counterEl => {
-                this.animateCountUp(counterEl);  // Use 'this' to call the method within Alpine component
+                this.animateCountUp(counterEl);
               });
             }
         }));
@@ -1031,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (container && leftBtn && rightBtn) {
       function scrollItems(direction) {
-        const scrollAmount = 344; // w-80 (320px) + space-x-6 (24px)
+        const scrollAmount = 344;
         container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
       }
       leftBtn.addEventListener('click', () => scrollItems(-1));
@@ -1119,7 +1101,7 @@ if (testimonialSlider && testimonialPrevBtn && testimonialNextBtn && testimonial
 }
 
   async function showDetail(lapanganId) {
-    console.log("showDetail called with ID:", lapanganId); // debug log
+    console.log("showDetail called with ID:", lapanganId);
     if (!modalOverlay) {
         console.error("Modal overlay element not found!");
         alert("Error displaying details.");
@@ -1171,13 +1153,12 @@ if (testimonialSlider && testimonialPrevBtn && testimonialNextBtn && testimonial
       }
 
       modalOverlay.style.display = 'flex'; 
-      console.log("Modal should be visible now."); // debug log
+      console.log("Modal should be visible now.");
 
     } catch (error) { 
         console.error("Error in showDetail:", error); 
         modalOverlay.innerHTML = `<div style="color:white; padding: 20px; text-align: center;">Error: ${error.message}<br/><button onclick="hideDetail()" style="margin-top: 10px; padding: 5px 10px;">Close</button></div>`;
         modalOverlay.style.display = 'flex'; 
-        // alert("Gagal memuat detail lapangan. Cek console (F12)."); 
     }
   }
 

@@ -1,4 +1,4 @@
-
+/* GLOBAL CSS */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
 * {
   -webkit-font-smoothing: antialiased;
@@ -9,7 +9,6 @@ body {
   margin: 0px;
   height: 100%;
 }
-/* a blue color as a generic focus style */
 button:focus-visible {
   outline: 2px solid #4a90e2 !important;
   outline: -webkit-focus-ring-color auto 5px !important;
@@ -72,7 +71,6 @@ body {
   margin: 0px;
   height: 100%;
 }
-/* a blue color as a generic focus style */
 button:focus-visible {
   outline: 2px solid #4a90e2 !important;
   outline: -webkit-focus-ring-color auto 5px !important;
@@ -89,14 +87,13 @@ body {
   margin: 0px;
   height: 100%;
 }
-/* a blue color as a generic focus style */
 button:focus-visible {
   outline: 2px solid #4a90e2 !important;
   outline: -webkit-focus-ring-color auto 5px !important;
 }
 
 .edit-profile-container {
-    background-color: #1a1a1a; /* Dark background */
+    background-color: #1a1a1a;
     color: white;
     padding: 30px;
     border-radius: 8px;
@@ -122,7 +119,7 @@ h2 {
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    background-color: #555; /* Placeholder color */
+    background-color: #555;
     border: 3px solid #571E88;
 }
 
@@ -143,7 +140,7 @@ h2 {
     background-color: #2a2a2a;
     padding: 20px;
     border-radius: 10px;
-    width: 45%; /* Adjust as needed */
+    width: 45%;
     box-sizing: border-box;
 }
 
@@ -154,7 +151,7 @@ h3 {
 
 .avatar-selection-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 avatars per row */
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
     margin-bottom: 30px;
 }
@@ -170,7 +167,7 @@ h3 {
 }
 
 .avatar-item.selected {
-    border-color: #007bff; /* Highlight selected avatar */
+    border-color: #007bff;
 }
 
 .avatar-item:hover {
@@ -191,7 +188,7 @@ h3 {
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    border: 2px solid transparent; /* For selected state */
+    border: 2px solid transparent;
 }
 
 .sport-item:hover {
@@ -199,11 +196,11 @@ h3 {
 }
 
 .sport-item.selected {
-    border-color: #571E88; /* Highlight selected sport */
+    border-color: #571E88;
     background-color: #4c4c4c;
 }
 
-.sport-item i { /* For font-awesome icons */
+.sport-item i {
     margin-right: 15px;
     font-size: 1.5em;
     color: #a0a0a0;
@@ -215,17 +212,17 @@ h3 {
 }
 
 .sport-item .check-icon {
-    color: #571E88; /* Purple checkmark */
+    color: #571E88; 
     font-size: 1.2em;
-    display: none; /* Hide by default */
+    display: none; 
 }
 
 .sport-item.selected .check-icon {
-    display: inline-block; /* Show when selected */
+    display: inline-block;
 }
 
 button {
-    background-color: #571E88; /* Purple button */
+    background-color: #571E88;
     color: white;
     border: none;
     padding: 12px 25px;

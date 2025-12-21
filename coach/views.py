@@ -16,9 +16,7 @@ import datetime
 
 User = get_user_model()
 
-# ==============================================================================
-# VIEW UNTUK HALAMAN PUBLIK
-# ==============================================================================
+# views untuk public view
 
 @csrf_exempt
 def create_coach_flutter(request):
@@ -31,11 +29,6 @@ def create_coach_flutter(request):
 
         try:
             data = json.loads(request.body)
-            
-            # DEBUG: Print semua data yang diterima
-            print(f"DEBUG: Received data: {data}")
-            print(f"DEBUG: Photo value: {data.get('photo', 'NOT FOUND')}")
-            
             new_coach = Coach.objects.create(
                 name=data["name"],
                 sport_branch=data["sport_branch"],
@@ -44,12 +37,9 @@ def create_coach_flutter(request):
                 experience=data["experience"],
                 certifications=data["certifications"],
                 service_fee=data["service_fee"],
-                photo=data.get("photo", ""),  # Pastikan ini ada
+                photo=data.get("photo", ""),
             )
-            new_coach.save()
-            
-            print(f"DEBUG: Coach created with photo: {new_coach.photo}")
-            
+            new_coach.save()            
             return JsonResponse({"status": "success"}, status=200)
         except Exception as e:
             print(f"DEBUG: Error: {str(e)}")
@@ -60,12 +50,10 @@ def create_coach_flutter(request):
 def show_json(request):
     data = Coach.objects.all()
 
-    # Ambil parameter dari URL (query params)
     search_name = request.GET.get('name', '')
     search_location = request.GET.get('location', '')
     search_sport = request.GET.get('sport_branch', '')
 
-    # Logika Filter (Sama seperti di website)
     if search_name:
         data = data.filter(name__icontains=search_name)
     
@@ -80,12 +68,10 @@ def show_json(request):
 def coach_list_view(request):
     coaches_list = Coach.objects.all().order_by('name')
 
-    # Ambil nilai dari parameter GET di URL untuk filter
     search_name = request.GET.get('name', '')
     search_location = request.GET.get('location', '')
     search_sport = request.GET.get('sport_branch', '')
 
-    # Lakukan filter pada daftar jika ada parameter pencarian yang diisi
     if search_name:
         coaches_list = coaches_list.filter(name__icontains=search_name)
     
@@ -95,10 +81,9 @@ def coach_list_view(request):
     if search_sport:
         coaches_list = coaches_list.filter(sport_branch__icontains=search_sport)
 
-    # Kirim data 'coaches' yang sudah difilter (atau semua data jika tidak ada filter) ke template
     context = {
         'coaches': coaches_list,
-        'search_values': request.GET  # Untuk mengisi kembali value di form pencarian
+        'search_values': request.GET 
     }
     
     return render(request, 'coach/index.html', context)
@@ -139,9 +124,7 @@ def coach_detail_view(request, pk):
     return render(request, 'coach/coach_detail.html', context)
 
 
-# ==============================================================================
-# VIEW UNTUK OTENTIKASI ADMIN KUSTOM
-# ==============================================================================
+# view untuk autentikasi admin
 @csrf_exempt
 def login_ajax(request):
     if request.method == 'POST':
@@ -152,12 +135,11 @@ def login_ajax(request):
         if user is not None:
             login(request, user)
             
-            # UPDATE BAGIAN INI: Tambahkan 'is_staff' dan 'username'
             response = JsonResponse({
                 'status': 'success', 
                 'message': 'Login berhasil!',
                 'username': user.username,
-                'is_staff': user.is_staff,  # <-- PENTING: Kirim status admin
+                'is_staff': user.is_staff,
             })
             
             response.set_cookie('last_login', str(datetime.datetime.now()))
@@ -171,7 +153,7 @@ def login_view(request):
     Menangani proses login untuk admin (pengguna dengan status 'is_staff').
     """
     if request.user.is_authenticated and request.user.is_staff:
-        return redirect('coach:dashboard') # Jika sudah login sebagai staff, langsung ke dashboard
+        return redirect('coach:dashboard')
 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -180,7 +162,6 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             
-            # Verifikasi bahwa user ada dan merupakan seorang staff
             if user is not None and user.is_staff:
                 login(request, user)
                 return redirect('coach:dashboard')
@@ -196,30 +177,19 @@ def logout_view(request):
     Menangani proses logout untuk admin.
     """
     logout(request)
-    return redirect('coach:login') # Redirect ke halaman login setelah logout
-
-
-# ==============================================================================
-# DECORATOR UNTUK KEAMANAN PANEL ADMIN
-# ==============================================================================
+    return redirect('coach:login')
 
 def staff_required(view_func):
     """
-    Decorator yang memastikan hanya pengguna yang login dan berstatus 'staff'
-    yang dapat mengakses view yang dilindunginya.
+    Decorator yang memastikan hanya pengguna yang login dan berstatus 'staff' yang dapat mengakses view yang dilindunginya.
     """
     decorated_view_func = login_required(user_passes_test(lambda u: u.is_staff)(view_func))
     return decorated_view_func
 
-
-# ==============================================================================
-# VIEW UNTUK PANEL ADMIN KUSTOM (CRUD)
-# ==============================================================================
-
 @staff_required
 def dashboard_view(request):
     """
-    Menampilkan halaman utama panel admin dengan daftar semua coach. (Read)
+    Menampilkan halaman utama panel admin dengan daftar semua coach.
     """
     coaches = Coach.objects.all().order_by('name')
     return render(request, 'coach_admin/dashboard.html', {'coaches': coaches})
@@ -243,7 +213,7 @@ def coach_create_view(request):
 @staff_required
 def coach_update_view(request, pk):
     """
-    Menangani pembaruan data coach yang sudah ada berdasarkan Primary Key (pk). (Update)
+    Menangani pembaruan data coach yang sudah ada berdasarkan Primary Key (pk).
     """
     coach = get_object_or_404(Coach, pk=pk)
     if request.method == 'POST':
@@ -259,7 +229,7 @@ def coach_update_view(request, pk):
 @staff_required
 def coach_delete_view(request, pk):
     """
-    Menangani penghapusan data coach. (Delete)
+    Menangani penghapusan data coach.
     """
     coach = get_object_or_404(Coach, pk=pk)
     if request.method == 'POST':
@@ -277,7 +247,7 @@ def add_to_wishlist_view(request, pk):
     if wishlist_item.exists():
         wishlist_item.delete()
     else:
-        CoachWishlist.objects.create(user=user, coach=coach)        
+        CoachWishlist.objects.create(user=user, coach=coach)
     return redirect('coach:coach_detail', pk=pk)
 
 @login_required

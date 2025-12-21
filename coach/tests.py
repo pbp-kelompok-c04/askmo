@@ -7,9 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 import json
 
 
-class CoachModelTestCase(TestCase):
-    """Test lengkap untuk model Coach"""
-    
+class CoachModelTestCase(TestCase):    
     def setUp(self):
         """Setup data untuk testing"""
         self.user = User.objects.create_user(
@@ -24,7 +22,7 @@ class CoachModelTestCase(TestCase):
             contact="08123456789",
             experience="5 years coaching experience in football",
             certifications="AFC A License, UEFA B License",
-            service_fee="Rp 300,000 / Jam"
+            service_fee="Rp 300000 / Jam"
         )
     
     def test_coach_creation(self):
@@ -35,7 +33,7 @@ class CoachModelTestCase(TestCase):
         self.assertEqual(self.coach.contact, "08123456789")
         self.assertEqual(self.coach.experience, "5 years coaching experience in football")
         self.assertEqual(self.coach.certifications, "AFC A License, UEFA B License")
-        self.assertEqual(self.coach.service_fee, "Rp 300,000 / Jam")
+        self.assertEqual(self.coach.service_fee, "Rp 300000 / Jam")
     
     def test_coach_str_method(self):
         """Test string representation"""
@@ -81,7 +79,7 @@ class CoachModelTestCase(TestCase):
             contact="08123456789",
             experience="10 years experience",
             certifications="Pro License",
-            service_fee="Rp 500,000 / Jam"
+            service_fee="Rp 500000 / Jam"
         )
         self.assertIsNotNone(full_coach.name)
         self.assertIsNotNone(full_coach.sport_branch)

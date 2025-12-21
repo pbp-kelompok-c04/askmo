@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from main.models import Lapangan
-
+from coach.models import Coach
 
 class Review(models.Model):
     lapangan = models.ForeignKey(Lapangan, on_delete=models.CASCADE, related_name='reviews')
@@ -21,7 +21,6 @@ class Review(models.Model):
 
     def can_edit(self, user, session_key=None):
         if user and user.is_authenticated:
-            # Hanya pemilik akun atau admin
             if self.user and self.user == user:
                 return True
             if user.is_staff:
@@ -35,11 +34,6 @@ class Review(models.Model):
 
     def can_delete(self, user, session_key=None):
         return self.can_edit(user, session_key)
-
-   
-from django.db import models
-from django.contrib.auth.models import User
-from coach.models import Coach
 
 class ReviewCoach(models.Model):
     coach = models.ForeignKey(Coach, on_delete=models.CASCADE, related_name='reviews')

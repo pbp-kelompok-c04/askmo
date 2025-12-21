@@ -2,7 +2,7 @@ from main.models import Avatar, UserProfile
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-
+# management untuk import avatar yang disediakan, dengan salah satu defaukt avatar ketika user baru membuat akun
 Avatar.objects.get_or_create(id=5, defaults={'name': 'Default User', 'image_url': staticfiles_storage.url('avatar/default_avatar.png')})
 print("Default avatar path confirmed.")
 

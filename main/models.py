@@ -90,16 +90,13 @@ class Event(models.Model):
     def __str__(self):
         return self.nama
  
-
 class Avatar(models.Model):
-    # Simpan URL/path ke gambar avatar
     name = models.CharField(max_length=50, unique=True)
     image_url = models.URLField(default='/static/avatar/default_avatar.png')
 
     def __str__(self):
         return self.name
 
-# --- Model Profile yang terhubung ke User ---
 class UserProfile(models.Model):
     OLAHRAGA_CHOICES = [
         ('sepakbola', 'Sepak Bola'),

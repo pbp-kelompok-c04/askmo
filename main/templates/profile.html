@@ -1,3 +1,5 @@
+<!-- PROFILE PAGE -->
+
 {% extends 'base.html' %}
 {% load static %}
 
@@ -89,12 +91,6 @@
                             <img src="{% static 'image/wishlist_placeholder_1.png' %}" class="w-full h-full object-cover" alt="Lapangan Besar">
                             <div class="absolute inset-0 bg-black/10"></div> 
                         </div>
-                        <!-- <div class="relative overflow-hidden h-full rounded-lg">
-                            <img src="{% static 'image/wishlist_placeholder_2.png' %}" class="w-full h-full object-cover" alt="Lapangan Basket">
-                        </div>
-                        <div class="relative overflow-hidden h-full rounded-lg">
-                            <img src="{% static 'image/wishlist_placeholder_3.png' %}" class="w-full h-full object-cover" alt="Lapangan Malam">
-                        </div> -->
                     </div>
                     <a href="{% url 'main:show_user_collections' %}" class="block mt-4">
                         <p class="text-xl font-semibold hover:text-[#6C5CE7] transition duration-150">Wishlist - Koleksi Lapangan</p>
@@ -219,7 +215,7 @@
     }
     document.addEventListener('DOMContentLoaded', markInitialAvatar);
     
-    // --- Logika Pilih Avatar ---
+    // --- Pilih Avatar ---
     function selectAvatar(avatarId, avatarUrl) {
         document.querySelectorAll('#avatar-grid img').forEach(img => {
             img.classList.remove('selected-avatar', 'border-[#6C5CE7]');
@@ -234,7 +230,7 @@
         }
     }
 
-    // --- Logika Pilih Olahraga ---
+    // --- Pilih Olahraga ---
     function selectSport(sportKey) {
         document.querySelectorAll('.sport-item').forEach(item => {
             item.classList.remove('selected-sport', 'border-[#6C5CE7]');

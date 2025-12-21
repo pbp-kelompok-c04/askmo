@@ -1,17 +1,11 @@
-# coach/urls.py
 from django.urls import include, path
 from . import views
 
 app_name = 'coach'
 
 urlpatterns = [
-    # URL untuk Halaman Publik
     path('', views.coach_list_view, name='coach_list'),
-    
-    # !!! PATH BARU UNTUK DETAIL COACH !!!
     path('<int:pk>/', views.coach_detail_view, name='coach_detail'),
-
-    # URL untuk Panel Admin Kustom
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),

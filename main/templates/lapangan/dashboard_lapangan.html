@@ -121,8 +121,6 @@
             line-height: 1.6;
             white-space: pre-wrap; 
         }
-        
-        /* Modal contact button: outline gray to match dark theme */
         #modal-kontak-btn {
             display: inline-block;
             text-decoration: none;
@@ -197,8 +195,6 @@
         border-radius: 12px;  
         border: none;        
         }
-
-        /* === KODE AURA === */
         .background-aura-container {
             position: fixed;
             top: 0;
@@ -209,7 +205,6 @@
             pointer-events: none;
             z-index: 0;
         }
-
         .background-aura-container::before,
         .background-aura-container::after {
             content: '';
@@ -219,7 +214,6 @@
             filter: blur(100px);
             animation: pulseAura 15s infinite alternate ease-in-out;
         }
-
         .background-aura-container::before {
             background: radial-gradient(circle at center, rgba(87, 30, 136, 0.7), rgba(6, 0, 94, 0));
             width: 700px;
@@ -228,7 +222,6 @@
             left: -150px;
             animation-delay: 0s;
         }
-
         .background-aura-container::after {
             background: radial-gradient(circle at center, rgba(111, 7, 50), rgba(87, 30, 136, 0));
             width: 800px;
@@ -237,7 +230,6 @@
             right: -200px;
             animation-delay: 7.5s;
         }
-
         @keyframes pulseAura {
             0% { transform: scale(1); opacity: 0.6; }
             50% { transform: scale(1.05); opacity: 0.7; }
@@ -245,13 +237,10 @@
         }
         .rating-empty {
             font-style: italic;
-            font-weight: 400;               /* JANGAN bold */
-            color: rgba(255,255,255,0.55);  /* kalem */
+            font-weight: 400;
+            color: rgba(255,255,255,0.55);
             letter-spacing: 0.2px;
         }
-
-        /* === BATAS KODE AURA === */
-
     </style>
 {% endblock meta %}
 
@@ -727,7 +716,7 @@
 
             } catch (error) {
                 console.error("Error toggling wishlist:", error);
-                alert("Gagal menghubungi server. Pastikan Anda sudah login."); // Tambahkan pesan ini jika login diperlukan
+                alert("Gagal menghubungi server. Pastikan Anda sudah login.");
             }
         }
         function updateBookmarkIcon(itemId, action) {

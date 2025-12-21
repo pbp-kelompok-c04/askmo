@@ -1,3 +1,5 @@
+<!-- EDIT PROFILE -->
+
 <div id="delete-modal" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 font-['Plus_Jakarta_Sans']">
     <div class="bg-white rounded-lg shadow-lg w-11/12 sm:w-1/3">
       <div class="p-6 text-center">
@@ -16,9 +18,7 @@
 </div>
   
 <script>
-    // ===================================================================
-    // PENAMBAHAN FUNGSI getCookie (WAJIB ADA)
-    // ===================================================================
+    // get Cookie
     function getCookie(name) {zz
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -33,22 +33,20 @@
         }
         return cookieValue;
     }
-    // ===================================================================
 
-    // Cek dulu apakah elemen-elemen ini sudah ada (untuk menghindari error duplikat)
     let deleteModal = document.getElementById('delete-modal');
     let confirmDeleteBtn = document.getElementById('confirm-delete-btn');
     
     let eventIdToDelete = null;
 
-    if (!window.showDeleteModal) { // Cek apakah fungsi sudah didefinisikan
+    if (!window.showDeleteModal) {
         function showDeleteModal(eventId) {
             eventIdToDelete = eventId;
             if (deleteModal) deleteModal.classList.remove('hidden'); 
         }
     }
 
-    if (!window.hideDeleteModal) { // Cek apakah fungsi sudah didefinisikan
+    if (!window.hideDeleteModal) {
         function hideDeleteModal() {
             eventIdToDelete = null;
             if (deleteModal) deleteModal.classList.add('hidden'); 
@@ -59,7 +57,6 @@
         confirmDeleteBtn.addEventListener('click', async function() {
             if (!eventIdToDelete) return; 
 
-            // Buat URL yang benar menggunakan URL template Django
             const baseUrl = "{% url 'main:delete_event_ajax' '0000' %}";
             const deleteUrl = baseUrl.replace('0000', eventIdToDelete);
 
@@ -80,19 +77,14 @@
                 
                 if (result.status === 'success') {
                     hideDeleteModal();
-                    // alert(result.message); // Ganti showToast dengan alert sederhana
-                    
-                    // Ini akan memicu fetchEvents() di event.html
                     document.dispatchEvent(new CustomEvent('event-changed'));
 
                 } else {
                     hideDeleteModal();
-                    // alert(result.message || 'Gagal menghapus event.');
                     console.error(result.message || 'Gagal menghapus event.');
                 }
             } catch (error) {
                 hideDeleteModal();
-                // alert(error.message || 'Terjadi kesalahan.');
                 console.error(error.message || 'Terjadi kesalahan.');
             }
         });

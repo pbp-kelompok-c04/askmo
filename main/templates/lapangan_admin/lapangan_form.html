@@ -14,8 +14,8 @@
        
         .form-container {
             max-width: 700px;
-            margin: 40px auto; /* Add margin top/bottom */
-            padding: 30px 40px; /* More padding */
+            margin: 40px auto;
+            padding: 30px 40px;
             background-color: #1A1A1A;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
@@ -69,13 +69,13 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            margin-top: 10px; /* Add some space above */
+            margin-top: 10px;
         }
         .form-field-checkbox input[type="checkbox"] {
             margin-right: 10px;
             width: 1.1em; 
             height: 1.1em;
-            accent-color: #7A3EAA; /* Lighter purple */
+            accent-color: #7A3EAA;
             cursor: pointer;
         }
          .form-field-checkbox label {
@@ -87,8 +87,8 @@
 
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #7A3EAA; /* Lighter purple */
-            box-shadow: 0 0 0 2px rgba(122, 62, 170, 0.3); /* Subtle glow */
+            border-color: #7A3EAA;
+            box-shadow: 0 0 0 2px rgba(122, 62, 170, 0.3);
         }
         textarea {
             min-height: 100px; 
@@ -96,11 +96,11 @@
         }
 
         .form-actions {
-            margin-top: 35px; /* More space before actions */
+            margin-top: 35px;
             display: flex;
             gap: 15px; 
             align-items: center;
-            justify-content: flex-end; /* Align buttons to the right */
+            justify-content: flex-end;
         }
 
         button[type="submit"] {
@@ -117,12 +117,11 @@
         }
         button[type="submit"]:hover {
             background-image: linear-gradient(to right, #1A107A, #7A3EAA);
-            transform: translateY(-1px); /* Slight lift on hover */
+            transform: translateY(-1px);
         }
          button[type="submit"]:active {
-            transform: translateY(0px); /* Return to original position on click */
+            transform: translateY(0px);
          }
-
 
         .cancel-link {
             background-color: #444;
@@ -145,24 +144,20 @@
             font-style: italic;
         }
         .errorlist { 
-            color: #ff948f; /* Brighter red for errors */
+            color: #ff948f;
             margin: 5px 0 0 0;
-            padding-left: 1.2em; /* Indent errors */
-            list-style: disc; /* Use bullet points */
+            padding-left: 1.2em;
+            list-style: disc;
             font-size: 0.9em;
         }
-        /* Style individual error messages if needed */
         .errorlist li {
             margin-bottom: 3px;
         }
-        /* Style error fields */
         .form-field input.error,
         .form-field textarea.error,
         .form-field select.error {
-            border-color: #e3342f; /* Red border for error fields */
+            border-color: #e3342f;
         }
-
-        /* Message Styles (if needed) */
         .messages { list-style: none; padding: 0; margin: 0 0 20px 0; }
         .messages li { padding: 12px 18px; margin-bottom: 10px; border-radius: 6px; color: #fff; font-weight: 500;}
         .messages li.error { background-color: #791f2a; border-left: 5px solid #e3342f; }

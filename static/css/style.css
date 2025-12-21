@@ -1,3 +1,5 @@
+/* STYLE CSS */
+
 body {
     background-color: #000000;
     color: #ffffff;
@@ -8,10 +10,10 @@ body {
 
 header {
     display: flex;
-    justify-content: space-between; /* Untuk menempatkan nav dan user-profile di ujung */
+    justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    position: relative; /* Penting untuk penempatan absolut nav */
+    position: relative;
 }
 
 nav ul {

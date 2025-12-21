@@ -1,31 +1,21 @@
 from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Q, Avg
-
-
 from main.forms import ReviewCoachForm, ReviewForm
 from main.models import Lapangan
 from review.models import Review, ReviewCoach
-
-
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core import serializers
-
-
 from main import models
 from main.forms import LapanganForm, CoachForm, EventForm
 from main.models import Lapangan, Coach, Event
 from django.db.models import Q
-
-
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
-
-
 import datetime
 import json
 import uuid
@@ -34,15 +24,12 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags;
-
-
-
 from coach.models import Coach  # 
 from .models import ReviewCoach
 from .models import ReviewCoach
 from coach.models import Coach  
-
 from datetime import timezone as dt_timezone, timedelta
+from django.db.models import Avg
 
 WIB = dt_timezone(timedelta(hours=7))
 
@@ -54,21 +41,15 @@ def to_wib(dt):
     return dt.astimezone(WIB)
 
 
-#=================================================================================================
-#===================================REVIW BUAT LAPANGAN=============================================
-#===================================================================================================
+# REVIEW LAPANGAN
 
-#============= MUNCULIN FITUR REVIEW LAPANGAN =============
 def show_review_lapangan(request, lapangan_id):
-    # dia bakal nyari id lapangannya
     try:
         lapangan = Lapangan.objects.get(pk=lapangan_id)
     except Lapangan.DoesNotExist:
         return HttpResponse("Lapangan tidak ditemukan.", status=404)
        
-    # ngeproses ambil review per id lapangan itu
     reviews = Review.objects.filter(lapangan=lapangan)
-    # nyediain review kosong juga buat add yang baru
     review_form = ReviewForm()
 
 
@@ -78,10 +59,9 @@ def show_review_lapangan(request, lapangan_id):
         'review_form': review_form,
         'is_authenticated': request.user.is_authenticated
     }
-    # ngirim semua datanya ke html
     return render(request, 'review/lapangan/review_lapangan.html', context)
 
-#============= NAMPILIN SEMUA REVIEW LAPANGAN =============
+# MENAMPILKAN SEMUA REVIEW LAPANGAN
 def show_feeds_review_lapangan(request, lapangan_id):
     try:
         lapangan = Lapangan.objects.get(pk=lapangan_id)
@@ -104,7 +84,7 @@ def show_feeds_review_lapangan(request, lapangan_id):
     }
     return render(request, 'review/lapangan/feeds_review_lapangan.html', context)
 
-#============= MENAMPILKAN FORM TAMBAH REVIEW LAPANGAN =============
+# MENAMPILAKN FORM TAMBAH LAPANGAN
 def show_form_review_lapangan(request, lapangan_id):
     try:
         lapangan = Lapangan.objects.get(pk=lapangan_id)
@@ -130,7 +110,6 @@ def show_form_review_lapangan(request, lapangan_id):
             
             new_review.save()
            
-           # ini ngehubungin review dengan lapangan yang dituju sebelum disimpan
             update_lapangan_rating(lapangan)
            
             return redirect('main:show_feeds_review_lapangan', lapangan_id=lapangan.id)
@@ -144,7 +123,6 @@ def show_form_review_lapangan(request, lapangan_id):
     }
     return render(request, 'review/lapangan/form_review_lapangan.html', context)
 
-#============= NGAMBIL DATA SINGLE REVIEW (JSON) =============
 def get_single_review_json(request, review_id):
     try:
         review = Review.objects.get(pk=review_id)
@@ -161,7 +139,7 @@ def get_single_review_json(request, review_id):
     except Review.DoesNotExist:
         return JsonResponse({'detail': 'Review not found'}, status=404)
 
-#============= INI FUNGSI MUNCULLIN FORM EDIT REVIEW LAPANGAN =============
+# FORM EDIT REVIEW LAPANGAN
 def show_edit_review_lapangan(request, review_id):
     try:
         review = Review.objects.get(pk=review_id)
@@ -188,7 +166,7 @@ def show_edit_review_lapangan(request, review_id):
     except Review.DoesNotExist:
         return HttpResponse("Review tidak ditemukan.", status=404)
     
-#============= TAMBAH REVIEW LAPANGAN VIA AJAX =============
+# TAMBAH REVIEW LAPANGAN VIA AJAX
 @csrf_exempt
 def add_review_lapangan(request, lapangan_id):
     if request.method == 'POST':
@@ -229,7 +207,7 @@ def add_review_lapangan(request, lapangan_id):
    
     return JsonResponse({'status': 'error', 'message': 'Metode permintaan tidak valid.'}, status=405)
 
-#============= FUNGSI UPDATE RATING LAPANGAN =============
+# FUNGSI UPDATE RATING LAPANGAN 
 def update_lapangan_rating(lapangan):
     qs = Review.objects.filter(lapangan=lapangan)
     avg = qs.aggregate(avg=Avg('rating'))['avg']
@@ -245,7 +223,7 @@ def update_lapangan_rating(lapangan):
     lapangan.save(update_fields=["rating"])
     return new_rating
 
-#============= MENDAPATKAN SEMUA REVIEW LAPANGAN (JSON) =============
+# MENDAPATKAN SEMUA REVIEW LAPANGAN (JSON)
 def get_reviews_json_lapangan(request, lapangan_id):
     try:
         lapangan = Lapangan.objects.get(pk=lapangan_id)
@@ -285,10 +263,7 @@ def get_reviews_json_lapangan(request, lapangan_id):
 
     return JsonResponse(all_reviews, safe=False)
 
-
-
-
-#============= UPDATE REVIEW LAPANGAN VIA AJAX =============
+# UPDATE REVIEW LAPANGAN VIA AJAX
 @csrf_exempt
 def update_review(request, review_id):
     if request.method == 'POST':
@@ -313,7 +288,7 @@ def update_review(request, review_id):
         except Review.DoesNotExist: 
             return JsonResponse({'status': 'error', 'message': 'Review tidak ditemukan.'}, status=404)
 
-#============= HAPUS REVIEW LAPANGAN VIA AJAX =============
+# HAPUS REVIEW LAPANGAN VIA AJAX 
 @csrf_exempt
 @require_POST
 def delete_review(request, review_id):
@@ -348,11 +323,7 @@ def show_lapangan_dashboard(request):
     }
     return render(request, 'main/lapangan_dashboard.html', context)
     
-#=================================================================================================
-#====================================REVIW BUAT COACH=============================================
-#===================================================================================================
-
-from django.db.models import Avg
+# COACH REVIEW
 
 def show_feeds_review_coach(request, coach_id):
     coach = get_object_or_404(Coach, pk=coach_id)
@@ -411,7 +382,7 @@ def show_form_review_coach(request, coach_id):
 def edit_review_coach(request, review_id):
     review = get_object_or_404(ReviewCoach, pk=review_id)
 
-    if not review.can_edit(request.user):  # pakai helper
+    if not review.can_edit(request.user):
         return HttpResponseForbidden("Anda tidak memiliki izin untuk mengedit review ini.")
 
     if request.method == 'POST':
@@ -487,7 +458,6 @@ def add_review_coach_ajax(request, coach_id):
         review = form.save(commit=False)
         review.coach = coach
 
-        # sama kayak lapangan: kalau login, simpan user
         if request.user.is_authenticated:
             review.user = request.user
             if not review.reviewer_name:
@@ -547,4 +517,3 @@ def edit_review_coach_ajax(request, review_id):
         },
         status=400
     )
-#tes123
