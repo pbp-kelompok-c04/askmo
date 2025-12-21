@@ -216,9 +216,9 @@
                 {% if lapangan.rating and lapangan.rating > 0 %}
                     {{ lapangan.rating|floatformat:1 }}
                 {% else %}
-                    <span class="rating-empty">Belum ada review</span>
+                    <span class="rating-empty">Belum ada rating</span>
                 {% endif %}
-            </p>
+                </p>
 
               <div class="flex justify-between space-x-3">
                 {% if user.is_authenticated %}<a href="tel:{{ lapangan.kontak }}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% else %}<a href="{% url 'main:login' %}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% endif %}
@@ -275,7 +275,12 @@
                     <div class="flex justify-between space-x-3">
                       {% if user.is_authenticated %}<a href="tel:{{ coach.contact }}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% else %}<a href="{% url 'main:login' %}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>{% endif %}
                       {% if user.is_authenticated %}
-                          <a href="{% url 'coach:coach_detail' coach.id %}" 
+                        <a href="tel:{{ coach.contact }}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>
+                      {% else %}
+                        <a href="{% url 'main:login' %}" class="flex-1 text-center px-4 py-2 border border-gray-500 text-gray-300 rounded-md text-sm font-medium hover:bg-gray-700 transition-colors">Hubungi</a>
+                      {% endif %}
+                      {% if user.is_authenticated %}
+                          <a href="{% url 'coach:coach_detail_view' coach.id %}" 
                             class="flex-1 text-center px-4 py-2 bg-gradient-to-r from-[#06005E] to-[#571E88] text-white rounded-md text-sm font-medium hover:from-[#1A107A] hover:to-[#7A3EAA] transition-colors">
                             Detail
                           </a>
@@ -998,7 +1003,6 @@ document.addEventListener('alpine:init', () => {
                 }, frameRate);
               },
               animateCounters() {
-            console.log("Animate counters triggered!"); // debug log
             const counters = document.querySelectorAll('#count-lapangan, #count-coach, #count-event');
             counters.forEach(counterEl => {
                 this.animateCountUp(counterEl);
@@ -1131,10 +1135,74 @@ if (testimonialSlider && testimonialPrevBtn && testimonialNextBtn && testimonial
       const data = await response.json();
         const rating = parseFloat(data.rating);
 
-        modalRating.textContent =
-            (!isNaN(rating) && rating > 0)
-                ? rating.toFixed(1)
-                : 'Belum ada rating';
+        async function showDetail(lapanganId) {
+    console.log("showDetail called with ID:", lapanganId);
+    if (!modalOverlay) {
+        console.error("Modal overlay element not found!");
+        return;
+    }
+
+    // Tampilkan loading
+    modalOverlay.innerHTML = '<div style="color:white; font-size: 1.5rem;">Loading...</div>'; 
+    modalOverlay.style.display = 'flex';
+
+    try {
+        const response = await fetch(`/json/${lapanganId}/`);
+        if (!response.ok) throw new Error(`Data not found (${response.status})`);
+        const data = await response.json();
+
+        // 1. Olah data rating terlebih dahulu
+        const rating = parseFloat(data.rating);
+        const ratingDisplay = (!isNaN(rating) && rating > 0) ? rating.toFixed(1) : 'Belum ada rating';
+
+        // 2. Masukkan HTML ke modal (Ini harus dilakukan SEBELUM mengambil elemen detailnya)
+        modalOverlay.innerHTML = `
+        <div id="modal-content"> 
+            <button id="modal-close-btn" onclick="hideDetail()">&times;</button>
+            <img id="modal-image" src="${data.thumbnail || 'https://via.placeholder.com/600x250.png?text=No+Image'}" alt="Foto ${data.nama}">
+            <div class="modal-body">
+                <h2 id="modal-nama">${data.nama}</h2>
+                <div class="modal-priority-info">
+                    <p><i class="fas fa-map-marker-alt"></i> <span id="modal-alamat">${data.alamat || '-'}</span></p>
+                    <p><i class="fas fa-star"></i> <span id="modal-rating">${ratingDisplay}</span></p>
+                    <p><i class="fas fa-futbol"></i> <span id="modal-olahraga">${data.olahraga}</span></p>
+                    <p><i class="fas fa-money-bill-wave"></i> <span id="modal-tarif"></span></p> 
+                    <p><i class="fas fa-undo"></i> <span id="modal-refund">${data.refund ? 'Bisa Refund' : 'Tidak Bisa Refund'}</span></p>
+                </div>
+                <a id="modal-kontak-btn" href="#" target="_blank" style="display: none;"><i class="fas fa-phone"></i> Hubungi</a> 
+                <hr class="modal-divider">
+                <div class="modal-details">
+                    <h4>Deskripsi</h4><p id="modal-deskripsi">${data.deskripsi || '-'}</p>
+                    <h4>Fasilitas</h4><p id="modal-fasilitas">${data.fasilitas || '-'}</p>
+                    <h4>Peraturan</h4><p id="modal-peraturan">${data.peraturan || '-'}</p>
+                    <h4>Review</h4><p id="modal-review">${data.review || '-'}</p>
+                </div>
+            </div>
+        </div>`;
+
+        // 3. Update elemen spesifik yang butuh pemformatan (seperti mata uang)
+        const modalTarif = getModalElement('modal-tarif');
+        const modalKontakBtn = getModalElement('modal-kontak-btn');
+
+        if (modalTarif) {
+            const tarif = data.tarif_per_sesi ? parseFloat(data.tarif_per_sesi) : null;
+            modalTarif.textContent = tarif ? `Rp ${tarif.toLocaleString('id-ID')}` : 'N/A';
+        }
+        
+        if (modalKontakBtn && data.kontak) {
+            modalKontakBtn.href = `tel:${data.kontak}`;
+            modalKontakBtn.style.display = 'inline-block';
+        }
+
+    } catch (error) { 
+        console.error("Error in showDetail:", error); 
+        modalOverlay.innerHTML = `
+            <div style="color:white; padding: 20px; text-align: center;">
+                Error: ${error.message}<br/>
+                <button onclick="hideDetail()" style="margin-top: 10px; padding: 5px 10px; background: #571E88; border-radius: 5px;">Close</button>
+            </div>`;
+    }
+}
 
 
       console.log("Data received:", data); 
@@ -1164,9 +1232,6 @@ if (testimonialSlider && testimonialPrevBtn && testimonialNextBtn && testimonial
       const modalTarif = getModalElement('modal-tarif');
       const modalKontakBtn = getModalElement('modal-kontak-btn');
       const modalRatingEl = getModalElement('modal-rating');
-        if (modalRatingEl) {
-        modalRatingEl.textContent = ratingText;
-        }
 
       if (modalTarif) {
           const tarif = data.tarif_per_sesi ? parseFloat(data.tarif_per_sesi) : null;
