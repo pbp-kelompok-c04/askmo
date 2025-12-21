@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+
 
 {% block meta %}
     <title>Detail {{ coach.name }} - ASKMO</title>
@@ -285,8 +287,13 @@
            
             <div class="info-item">
                 <strong><i class="fas fa-money-bill-wave"></i>Tarif Jasa:</strong>
-                <span>{{ coach.service_fee|default:"-" }}</span>
+                {% if coach.service_fee %}
+                    <span>Rp {{ coach.service_fee|floatformat:0|intcomma }}/sesi</span>
+                {% else %}
+                    <span>-</span>
+                {% endif %}
             </div>
+
 
 
             {% if not is_email and phone_number_cleaned and whatsapp_number %}

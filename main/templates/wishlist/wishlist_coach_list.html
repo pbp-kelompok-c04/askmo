@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
+
 
 {% block meta %}
 <title>List - Coach - ASKMO</title>
@@ -109,8 +111,12 @@
                     <p class="card-cabor">{{ coach.sport_branch|capfirst }}</p> 
                     <p>
                         <i class="fas fa-money-bill-wave" style="margin-right: 5px;"></i> 
-                        {{ coach.service_fee }} 
-                    </p> 
+                        {% if coach.service_fee %}
+                            Rp {{ coach.service_fee|floatformat:0|intcomma }}/sesi
+                        {% else %}
+                            -
+                        {% endif %}
+                    </p>
                     <p>
                         <i class="fas fa-phone" style="margin-right: 5px;"></i> 
                         {{ coach.contact }}
