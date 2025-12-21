@@ -66,7 +66,7 @@ Admin mempunyai peran dalam mengurus keberlangsungan sebagian besar fitur pada A
 - **Review Lapangan**: Admin dapat menambahkan review awal lapangan, yang kemudian bisa ditambahkan serta diakumulasi lebih lanjut oleh User.
 - **Tambah Pelatih**: Admin dapat menambahkan pelatih beserta detail lengkapnya (profil, keahlian, kontak, lokasi) agar dapat ditampilkan di website dan mudah dikenali oleh User.
 
-## Link pws
+## Link pws 
 https://lessyarta-kamali-askmo.pbp.cs.ui.ac.id/
 
 ## Link design website

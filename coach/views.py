@@ -42,7 +42,6 @@ def create_coach_flutter(request):
             new_coach.save()            
             return JsonResponse({"status": "success"}, status=200)
         except Exception as e:
-            print(f"DEBUG: Error: {str(e)}")
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
             
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
