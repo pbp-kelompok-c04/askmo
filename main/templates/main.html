@@ -257,7 +257,7 @@
           {% for coach in coach_list %}
           <div class="flex-shrink-0 w-80 bg-[#353535] rounded-2xl overflow-hidden shadow-lg"> <div class="h-48 w-full bg-[#4F4F4F]">
                   {% if coach.photo %} 
-                      <img src="{{ coach.photo.url }}" alt="Foto {{ coach.name }}" class="w-full h-full object-cover">
+                      <img src="{{ coach.photo }}" alt="Foto {{ coach.name }}" class="w-full h-full object-cover">
                   {% else %}
                       <div class="w-full h-full flex items-center justify-center text-gray-400">Foto tidak ditemukan</div>
                   {% endif %}
