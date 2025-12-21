@@ -999,7 +999,6 @@ document.addEventListener('alpine:init', () => {
                 }, frameRate);
               },
               animateCounters() {
-            console.log("Animate counters triggered!"); // debug log
             const counters = document.querySelectorAll('#count-lapangan, #count-coach, #count-event');
             counters.forEach(counterEl => {
                 this.animateCountUp(counterEl);
